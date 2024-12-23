@@ -22,7 +22,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function show(Request $request, $id) { 
-        return null;
+    public function show($id) { 
+        return $id;
     }
 }
