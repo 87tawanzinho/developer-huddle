@@ -17,7 +17,14 @@ class Project extends Model
             "image",
     ];
 
+    // um projeto pertence a muitos usuarios
     public function users() {
         return $this->belongsToMany(User::class, 'users_projects');
+    }
+
+
+    // um projeto possui muitos convites
+    public function invitations() {
+        return $this->hasMany(Invitation::class);
     }
 }

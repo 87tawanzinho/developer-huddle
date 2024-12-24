@@ -2,7 +2,7 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import {ref, defineProps, computed} from 'vue';
 import { Icon } from '@iconify/vue';
-import { ElMessage } from 'element-plus';
+import { ElButton, ElMessage, ElMessageBox, ElText } from 'element-plus';
 import axios from 'axios';
 const drawer = ref(false)
 
@@ -11,7 +11,9 @@ const props = defineProps({
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
-    projects: Array
+    projects: Array,
+    user: Array,
+    invitations: Object
 });
 
 const searchQuery = ref('')
@@ -82,16 +84,53 @@ const ErrorWhenCreated = () => {
   })
 }
 
+ 
+const openSendInvite = (projectId) => {
+  ElMessageBox.prompt('Pergunte a seu colega o e-mail da conta', 'Convite', {
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancelar',
+    inputPattern:
+      /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+    inputErrorMessage: 'Email inválido. Tente novamente.',
+  })
+    .then(({ value }) => {
+        alert(projectId)
+      // Envia o convite ao backend
+      axios.post(route('invite.send'), {
+        email: value,
+        project_id: projectId, // ID do projeto relacionado
+      }, {
+        onSuccess: () => {
+          ElMessage({
+            type: 'success',
+            message: `Convite enviado para: ${value}`,
+          });
+        },
+        onError: (errors) => {
+          ElMessage({
+            type: 'error',
+            message: errors.email || 'Falha ao enviar convite.',
+          });
+        },
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Convite cancelado.',
+      });
+    });
+};
+
 </script>
 
 <template>
     <Head title="Welcome" />
 
     <div class="flex">
-        <div v-if="canLogin" class="p-4 border-r flex flex-col gap-1 border-gray-400  h-screen">
-            <Link v-if="$page.props.auth.user" :href="route('home')" class="border-b  border-blue-800 hover:text-blue-600">Início</Link>
-            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="hover:text-blue-600">Perfil</Link>
-
+        <div v-if="canLogin" class="p-4 border-r flex flex-col gap-1  bg-slate-900 text-white  h-screen">
+            <Link v-if="$page.props.auth.user" :href="route('home')" class="border-b  border-blue-400 hover:text-yellow-200">Início</Link>
+            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="hover:text-yellow-200">Perfil</Link>
             <template v-else>
             <Link :href="route('login')" class="font-semibold hover:text-blue-600">Log in</Link>
 
@@ -100,22 +139,41 @@ const ErrorWhenCreated = () => {
         </div>
 
        <div class="mt-4 mx-4 flex-1">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Meus Projetos</h2>
+            <h2 class="text-3xl font-bold text-center text-gray-800 mt-4">Meus Projetos</h2>
             <div class="flex justify-center items-center py-4 gap-4">
-                <input type="text" v-model="searchQuery" placeholder="Procurar por Projetos" class="border p-3 w-full sm:w-80 rounded-lg shadow-md" />
+                <ElInput type="text" v-model="searchQuery" placeholder="Procurar por Projetos" class=" p-4 w-full sm:w-80 rounded-lg hover:shadow-md" />
                 <Icon icon="flat-color-icons:plus" @click="drawer=true" class="text-[2rem] hover:text-blue-600 cursor-pointer transition-colors duration-300"/>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-8 ">
-                <div v-for="project in projectsFiltered" :key="project.id" class=" relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div v-for="project in projectsFiltered" :key="project.id" class=" relative bg-white shadow-lg  py-4 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                     <img :src="`/storage/${project.image}`" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3">{{ project.name }}</h3>
                         <p class="text-gray-700 mb-8 h-24 overflow-hidden ">{{ project.description }}</p>
-                        <Link :href="route('projects.show', project.id)" class="text-white bg-blue-600 rounded-lg  p-2 hover:underline absolute bottom-0 ">Ver Projeto</Link>
+                       <div class="flex absolute bottom-2 items-center gap-2 ">
+                       <a :href="route('projects.show', project.id)">
+                        <ElButton size="large" type="primary"  class="font-bold bg-yellow-200 text-black rounded-lg  p-2 hover:underline  ">Ver Projeto</ElButton>
+                       </a>
+                        <ElButton size="large" @click="openSendInvite(project.id)" class="font-bold bg-blue-200 text-black rounded-lg  p-2 hover:underline  ">Enviar um Convite</ElButton>
+                    </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="border w-96 flex justify-center  bg-slate-900 flex-col text-center text-yellow-200  pt-4">
+            <span v-if="!invitations.length">Você ainda não possui convites para projetos</span>
+            <span v-else class="px-2 flex flex-col gap-2" >
+              <div v-for="invitation in invitations" class="border flex flex-col gap-2 text-sm  ">
+                <p>Meus parabéns</p>
+                <p>Voce foi convidado(a) para participar de um projeto</p>
+               <div class="flex items-center">
+                <ElButton type="success">Fazer Parte</ElButton>
+                <ElButton type="danger">Recusar</ElButton>
+               </div>
+              </div>
+            </span>
         </div>
 
         <el-drawer v-model="drawer" style="background: #f4f4f4;" title="Criar Novo Projeto" :with-header="false">
@@ -152,7 +210,9 @@ const ErrorWhenCreated = () => {
                 </el-form-item>
             </el-form>
         </el-drawer>
-       
+        
+
+
     </div>
 </template>
 

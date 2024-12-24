@@ -39,6 +39,7 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'invitations'
     ];
 
     /**
@@ -63,4 +64,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'users_projects');
     }
+
+    
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invitation;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,13 +14,15 @@ class ProjectController extends Controller
     public function index(Request $request) {
        
         $projects = $request->user()->projects;
-
+        $invitations = Invitation::where('email', $request->user()->email)->get();
         return Inertia::render("Welcome", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
             'phpVersion' => PHP_VERSION,
-            "projects" => $projects
+            "projects" => $projects,
+            'user' => $request->user(),
+            'invitations' => $invitations,
         ]);
     }
 

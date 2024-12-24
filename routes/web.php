@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,11 @@ Route::middleware([
     Route::get('/', [ProjectController::class,'index'])->name('home');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
     Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
-
+    
+    
+    
+    // invite
+    Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');  
 });
 
 
