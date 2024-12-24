@@ -1,8 +1,8 @@
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import {ref, defineProps} from 'vue';
+import {ref, defineProps, computed} from 'vue';
 import { Icon } from '@iconify/vue';
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
@@ -12,6 +12,16 @@ defineProps({
 
 const searchQuery = ref('')
 
+const projectsFiltered = computed(() => {
+     if(searchQuery.value.length > 0) {
+        return props.projects.filter(project => 
+         project.name.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
+         project.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+);
+     } else {
+        return props.projects
+     }
+})
  
 </script>
 
@@ -44,7 +54,7 @@ const searchQuery = ref('')
             </div>
 
             <div class="flex flex-wrap -mx-2 ">
-            <div v-for="project in projects" :key="project.id" class="w-full   sm:w-1/2 lg:w-1/3 px-4 mb-6 ">
+            <div v-for="project in projectsFiltered" :key="project.id" class="w-full   sm:w-1/2 lg:w-1/3 px-4 mb-6 ">
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300  relative  ">
                 <img :src="project.image" alt="Project Image" class="w-full h-48 object-cover">
                 <div class="p-6  min-h-[16rem] max-h-[16rem] h-[16rem]">
