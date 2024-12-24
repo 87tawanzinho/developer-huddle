@@ -19,8 +19,8 @@ const searchQuery = ref('')
     <Head title="Welcome" />
 
     <div class="flex">
-        <div v-if="canLogin" class="p-4 border-r flex flex-col border-gray-400 w-96 h-screen">
-            <Link v-if="$page.props.auth.user" :href="route('home')" class="hover:text-blue-600">Início</Link>
+        <div v-if="canLogin" class="p-4 border-r flex flex-col gap-1 border-gray-400  h-screen">
+            <Link v-if="$page.props.auth.user" :href="route('home')" class="border-b  border-blue-800 hover:text-blue-600">Início</Link>
             <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="hover:text-blue-600">Perfil</Link>
 
             <template v-else>
