@@ -19,6 +19,10 @@ return new class extends Migration
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamp('expires_at')->nullable(); // Data de expiração
             $table->timestamps();
+            $table->string('project_name');
+            $table->string('project_description');
+            $table->string('start_date');
+            $table->string('end_date');
         });
     }
 

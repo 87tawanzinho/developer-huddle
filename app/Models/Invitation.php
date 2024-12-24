@@ -15,6 +15,10 @@ class Invitation extends Model
         'token',
         'status',
         'expires_at',
+        'project_name',
+        'project_description',
+        'start_date',
+        'end_date'
     ];
 
     public function project()

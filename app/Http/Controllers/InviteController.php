@@ -41,6 +41,10 @@ class InviteController extends Controller
             'token' => $token,
             'status' => 'pending',
             'expires_at' => now()->addDays(7),
+            'project_name' => $project->name,
+            'project_description' => $project->description,
+            'start_date' => $project->start_date,
+            'end_date' => $project->end_date,
         ]);
 
      
