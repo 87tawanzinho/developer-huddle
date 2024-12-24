@@ -14,7 +14,7 @@ class ProjectController extends Controller
     public function index(Request $request) {
        
         $projects = $request->user()->projects;
-        $invitations = Invitation::where('email', $request->user()->email)->get();
+        $invitations = Invitation::where('email', $request->user()->email)->where('status', 'pending')->get();
         return Inertia::render("Welcome", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),

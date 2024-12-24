@@ -41,7 +41,7 @@ const handleImageChange = (file, fileList) => {
 }
 
  
-const handleSubmit = () => {
+const handleSubmit = async () => {
     const formData = new FormData()
     formData.append('name', form.value.title)
     formData.append('description', form.value.description)
@@ -53,8 +53,10 @@ const handleSubmit = () => {
     }
     axios.post(route('projects.create'), formData)
     .then(response => {
+        this.$router.go();  
         Created()
         drawer.value = false
+        
     })
     .catch(error => {
         console.log(error)
@@ -122,12 +124,20 @@ const openSendInvite = (projectId) => {
     });
 };
 
+
+const acceptedInvitation = (projectId, token) => {
+
+      axios.post(route('projects.updateInvite'), {
+        project_id: projectId, // ID do projeto relacionado
+        token: token
+      })
+}
 </script>
 
 <template>
     <Head title="Welcome" />
 
-    <div class="flex">
+    <div class="flex ">
         <div v-if="canLogin" class="p-4 border-r flex flex-col gap-1  bg-slate-900 text-white  h-screen">
             <Link v-if="$page.props.auth.user" :href="route('home')" class="border-b  border-blue-400 hover:text-yellow-200">Início</Link>
             <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="hover:text-yellow-200">Perfil</Link>
@@ -162,16 +172,15 @@ const openSendInvite = (projectId) => {
             </div>
         </div>
 
-        <div class="border w-96 flex justify-center  bg-slate-900 flex-col text-center text-yellow-200  pt-4">
+        <div class=" w-72 flex overflow-auto  bg-slate-900  flex-col text-center text-yellow-200  pt-8">
             <span v-if="!invitations.length">Você ainda não possui convites para projetos</span>
-            <span v-else class="px-2 flex flex-col gap-2" >
-              <div v-for="invitation in invitations" class="border flex flex-col gap-2 text-sm  ">
-                <p>Meus parabéns</p>
-                <p>Voce foi convidado(a) para participar de um projeto</p>
-               <div class="flex items-center">
-                <ElButton type="success">Fazer Parte</ElButton>
-                <ElButton type="danger">Recusar</ElButton>
-               </div>
+            <span v-else class="px-4 py-2 flex flex-col gap-4   ">
+              <div v-for="invitation in invitations" :key="invitation.id" class="border border-gray-300 rounded-lg p-4 bg-white text-left">
+              <p class="text-lg font-semibold text-gray-800">Você foi convidado(a) para um projeto.</p>
+              <div class="flex items-center justify-end mt-2 gap-2">
+                <ElButton type="success" class="bg-green-500 text-white rounded-lg px-3 py-1 hover:bg-green-600" @click="acceptedInvitation(invitation.project_id, invitation.token)">Aceitar</ElButton>
+                <ElButton type="danger" class="bg-red-500 text-white rounded-lg px-3 py-1 hover:bg-red-600">Recusar</ElButton>
+              </div>
               </div>
             </span>
         </div>

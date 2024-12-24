@@ -29,11 +29,13 @@ Route::middleware([
     Route::get('/', [ProjectController::class,'index'])->name('home');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
     Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
-    
+
     
     
     // invite
     Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');  
+    Route::post('/updateInvite', [InviteController::class,'updateInvite'])->name('projects.updateInvite');
+    
 });
 
 

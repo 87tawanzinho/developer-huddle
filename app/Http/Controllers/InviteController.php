@@ -47,4 +47,38 @@ class InviteController extends Controller
 
         return back()->with('success', 'Convite enviado com sucesso!');
     }
+
+    public function updateInvite(Request $request)
+    {
+        // Recuperando o convite pelo token
+        $invitation = Invitation::where('token', $request->token)->first();
+    
+        // Verificando se o convite existe
+        if (!$invitation) {
+            return back()->with('error', 'Convite não encontrado!');
+        }
+    
+        // Atualizando o status do convite para 'aceito'
+        $invitation->update([
+            'status' => 'accepted',
+        ]);
+    
+        // Recuperando o usuário autenticado
+        $user = auth()->user();
+    
+        // Recuperando o projeto
+        $project = Project::find($request->project_id);
+    
+        // Verificando se o projeto existe
+        if (!$project) {
+            return back()->with('error', 'Projeto não encontrado!');
+        }
+    
+        // Associando o usuário ao projeto usando a tabela pivot
+        $project->users()->attach($user->id);
+    
+        // Retornando com sucesso
+        return back()->with('success', 'Convite aceito com sucesso!');
+    }
+    
 }
