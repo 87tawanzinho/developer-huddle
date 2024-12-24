@@ -27,6 +27,7 @@ Route::middleware([
     })->name('dashboard');
     Route::get('/', [ProjectController::class,'index'])->name('home');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
+    Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
 
 });
 

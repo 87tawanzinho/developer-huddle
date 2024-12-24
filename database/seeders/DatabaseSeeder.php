@@ -23,13 +23,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(class: UserAdminSeed::class);
         
-          // Cria 10 usuários
-          User::factory(10)->create()->each(function ($user) {
-            // Cria 3 projetos para cada usuário
-            $projects = Project::factory(3)->create();
-
-            // Associa os projetos ao usuário na tabela pivot
-            $user->projects()->attach($projects->pluck('id')->toArray());
-        });
+       
+    
     }
 }

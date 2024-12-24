@@ -21,7 +21,6 @@ class UserAdminSeed extends Seeder
             "password" => bcrypt("12345678"),
             ]);
 
-            $projects = Project::factory(3)->create();
-            $admin->projects()->attach($projects->pluck('id')->toArray());
+          
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,34 @@ class ProjectController extends Controller
     public function show($id) { 
         return Inertia::render("InProject", [
          "id" => $id,
+        ]);
+    }
+
+    public function create(Request $request,) {
+        $request->validate([
+            "name" => "required|string|max:255",
+            "description" => "required|string",
+            "start_date" => "required",
+            "end_date" => "required",
+            "image" => "image",
+        ]);
+
+        $project = new Project();
+        $project->name = $request->input('name');
+        $project->description = $request->input('description');
+        $project->start_date = $request->input('start_date');
+        $project->end_date = $request->input('end_date');
+
+        if ($request->hasFile('image')) {
+            $project->image = $request->file('image')->store('images', 'public');
+        }
+
+        $project->save();
+        $request->user()->projects()->attach($project->id);
+
+        return response()->json([
+            'message' => 'Project created successfully',
+            'project' => $project
         ]);
     }
 }

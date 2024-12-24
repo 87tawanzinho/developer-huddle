@@ -2,6 +2,10 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import {ref, defineProps, computed} from 'vue';
 import { Icon } from '@iconify/vue';
+import { ElMessage } from 'element-plus';
+import axios from 'axios';
+const drawer = ref(false)
+
 const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
@@ -11,7 +15,14 @@ const props = defineProps({
 });
 
 const searchQuery = ref('')
-
+const fileList = ref([])
+const form = ref({
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    image: []
+})
 const projectsFiltered = computed(() => {
      if(searchQuery.value.length > 0) {
         return props.projects.filter(project => 
@@ -22,7 +33,55 @@ const projectsFiltered = computed(() => {
         return props.projects
      }
 })
+
+const handleImageChange = (file, fileList) => {
+    form.value.image = fileList;  // Update the form image list with the selected file
+}
+
  
+const handleSubmit = () => {
+    const formData = new FormData()
+    formData.append('name', form.value.title)
+    formData.append('description', form.value.description)
+    formData.append('start_date', form.value.start_date)
+    formData.append('end_date', form.value.end_date)
+ 
+    if (form.value.image && form.value.image.length > 0) {
+        formData.append('image', form.value.image[0].raw); // Add the raw file object to FormData
+    }
+    axios.post(route('projects.create'), formData)
+    .then(response => {
+        Created()
+        drawer.value = false
+    })
+    .catch(error => {
+        console.log(error)
+        ErrorWhenCreated()
+    })
+}
+
+const isClosed = () => {
+    drawer.value = false
+    ElMessage({
+        message: 'Operação cancelada.',
+        type: 'info',
+    })
+}
+
+const Created = () => {
+  ElMessage({
+    message: 'Parabéns, você criou um novo projeto.',
+    type: 'success',
+  })
+}
+ 
+const ErrorWhenCreated = () => {
+  ElMessage({
+    message: 'Ocorreu um erro.',
+    type: 'error',
+  })
+}
+
 </script>
 
 <template>
@@ -40,38 +99,68 @@ const projectsFiltered = computed(() => {
             </template>
         </div>
 
-       <div class="mt-4 mx-4">
-        <div class="projects-section"></div>
-
-
-        <div class="search-projects-section mt-8">
-
-        </div>
-            <h2 class="text-2xl font-bold text-center">Meus Projetos</h2>
-            <div class="flex justify-center items-center py-4">
-                <input type="text" v-model="searchQuery" placeholder="Procurar por Projetos" class="border p-3 w-full  rounded-lg shadow-sm" />
-                <Icon icon="flat-color-icons:plus" class="text-[2rem] ml-4 hover:text-blue-600 cursor-pointer transition-colors duration-300"/>
+       <div class="mt-4 mx-4 flex-1">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Meus Projetos</h2>
+            <div class="flex justify-center items-center py-4 gap-4">
+                <input type="text" v-model="searchQuery" placeholder="Procurar por Projetos" class="border p-3 w-full sm:w-80 rounded-lg shadow-md" />
+                <Icon icon="flat-color-icons:plus" @click="drawer=true" class="text-[2rem] hover:text-blue-600 cursor-pointer transition-colors duration-300"/>
             </div>
 
-            <div class="flex flex-wrap -mx-2 ">
-            <div v-for="project in projectsFiltered" :key="project.id" class="w-full   sm:w-1/2 lg:w-1/3 px-4 mb-6 ">
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300  relative  ">
-                <img :src="project.image" alt="Project Image" class="w-full h-48 object-cover">
-                <div class="p-6  min-h-[16rem] max-h-[16rem] h-[16rem]">
-                    <h3 class="text-xl font-semibold mb-3">{{ project.name }}</h3>
-                    <p class="text-gray-700 mb-4">{{ project.description }}</p>
-                    <Link :href="route('projects.show', project.id)" class="text-white bg-blue-600 rounded-lg  p-2 hover:underline absolute bottom-4">Ver Projeto</Link>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-8 ">
+                <div v-for="project in projectsFiltered" :key="project.id" class=" relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <img :src="`/storage/${project.image}`" alt="Project Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">{{ project.name }}</h3>
+                        <p class="text-gray-700 mb-8 h-24 overflow-hidden ">{{ project.description }}</p>
+                        <Link :href="route('projects.show', project.id)" class="text-white bg-blue-600 rounded-lg  p-2 hover:underline absolute bottom-0 ">Ver Projeto</Link>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
         </div>
 
-         
+        <el-drawer v-model="drawer" style="background: #f4f4f4;" title="Criar Novo Projeto" :with-header="false">
+            <el-form :model="form" label-width="120px">
+                <el-form-item label="Título">
+                    <el-input v-model="form.title"></el-input>
+                </el-form-item>
+                <el-form-item label="Descrição">
+                    <el-input type="textarea" v-model="form.description"></el-input>
+                </el-form-item>
+                <el-form-item label="Data de Início">
+                    <el-date-picker v-model="form.start_date" type="date" placeholder="Escolha a data de início"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="Data Final">
+                    <el-date-picker v-model="form.end_date" type="date" placeholder="Escolha a data final"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="Imagem">
+                    <el-upload  
+                        action="#"
+                        list-type="picture-card"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :file-list="form.image"
+                        :auto-upload="false"
+                        :on-change="handleImageChange">
+                        <i class="el-icon-plus"></i>
+                        <img v-if="form.image && form.image.length > 0" :src="form.image[0].url" class="avatar" />
+                    </el-upload>
+                </el-form-item>
+
+                <el-form-item class="flex justify-between">
+                    <el-button type="primary" @click="handleSubmit">Criar Projeto</el-button>
+                    <el-button @click="isClosed">Cancelar</el-button>
+                </el-form-item>
+            </el-form>
+        </el-drawer>
        
     </div>
 </template>
 
-<style>
-
+<style scoped>
+    .project-card {
+        transition: transform 0.3s ease-in-out;
+    }
+    .project-card:hover {
+        transform: scale(1.05);
+    }
 </style>
