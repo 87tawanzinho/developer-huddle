@@ -23,6 +23,8 @@ class ProjectController extends Controller
     }
 
     public function show($id) { 
-        return $id;
+        return Inertia::render("InProject", [
+         "id" => $id,
+        ]);
     }
 }
