@@ -53,7 +53,7 @@ const handleSubmit = async () => {
     }
     axios.post(route('projects.create'), formData)
     .then(response => {
-        this.$router.go();  
+
         Created()
         drawer.value = false
         
@@ -159,6 +159,7 @@ const acceptedInvitation = (projectId, token) => {
                 <div v-for="project in projectsFiltered" :key="project.id" class=" relative bg-white shadow-lg  py-4 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                     <img :src="`/storage/${project.image}`" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
+                      <span>Criador: {{ project.owner }}</span>
                         <h3 class="text-xl font-semibold mb-3">{{ project.name }}</h3>
                         <p class="text-gray-700 mb-8 h-24 overflow-hidden ">{{ project.description }}</p>
                        <div class="flex absolute bottom-2 items-center gap-2 ">

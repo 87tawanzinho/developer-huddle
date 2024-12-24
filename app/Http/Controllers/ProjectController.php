@@ -14,6 +14,7 @@ class ProjectController extends Controller
     public function index(Request $request) {
        
         $projects = $request->user()->projects;
+   
         $invitations = Invitation::where('email', $request->user()->email)->where('status', 'pending')->get();
         return Inertia::render("Welcome", [
             'canLogin' => Route::has('login'),
@@ -43,6 +44,7 @@ class ProjectController extends Controller
 
         $project = new Project();
         $project->name = $request->input('name');
+        $project->owner = $request->user()->name; 
         $project->description = $request->input('description');
         $project->start_date = $request->input('start_date');
         $project->end_date = $request->input('end_date');
