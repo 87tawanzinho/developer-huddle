@@ -58,9 +58,12 @@ class ProjectController extends Controller
         $project->save();
         $request->user()->projects()->attach($project->id);
 
-        return response()->json([
-            'message' => 'Project created successfully',
-            'project' => $project
-        ]);
+        return redirect()->route('/')->with('message', 'Project created successfully');
+    }
+
+    public function delete($id) {
+        $project = Project::findOrFail($id); 
+        $project->delete();
+        return  redirect()->route('/')->with('message', 'Project deleted successfully');
     }
 }

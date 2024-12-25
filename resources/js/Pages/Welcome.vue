@@ -5,7 +5,7 @@ import { Icon } from '@iconify/vue';
 import { ElButton, ElMessage, ElMessageBox, ElText, ElInput, ElDrawer, ElForm, ElFormItem, ElDatePicker, ElUpload } from 'element-plus';
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
-import { formatDate } from './utils/formatDate';
+
 
 
 const drawer = ref(false);
@@ -150,125 +150,124 @@ const acceptedInvitation = async (projectId, token) => {
 <template>
   <Head title="Welcome" />
 
-  <div class="flex">
+  <div class="flex flex-col lg:flex-row min-h-screen">
     <SidebarLayout />
-    <div class="flex-1 p-24">
-      <h2 class="text-3xl font-medium text-center text-gray-800 mb-6">Meus Projetos</h2>
+    <div class="flex-1 p-4 md:p-8 lg:p-12">
+      <h2 class="text-2xl md:text-3xl font-medium text-center text-gray-800 mb-4 md:mb-6">Meus Projetos</h2>
       
-      <div class="flex justify-center items-center gap-4 mb-6">
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
         <ElInput
           v-model="searchQuery"
           placeholder="Procurar por Projetos"
-          class=""
-          :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500 ' })"
-          />
+          class="w-full sm:w-auto"
+          :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500' })"
+        />
         <ElButton
           type="primary"
           @click="drawer=true"
-          class="bg-blue-600 text-white font-medium rounded-lg  hover:bg-blue-500 transition duration-300"
+          class="w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 transition duration-300"
         >
-        <Icon icon="mdi:plus" class="text-xl mr-1"/>
+          <Icon icon="mdi:plus" class="text-xl mr-1"/>
           Criar Novo Projeto
         </ElButton>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 px-4 sm:px-0">
         <div v-for="project in projectsFiltered" :key="project.id" class="relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300">
-          <img :src="`/storage/${project.image}`" alt="Project Image" class="w-full h-48 object-cover rounded-t-lg" />
-          <div class="p-6">
-             <div class="flex items-center gap-2 mb-2">
-              <Icon icon="mdi:account" class="text-gray-500" />
-              <ElText>
-              
-              {{ project.owner }}
-            </ElText>
-             </div>
-            <h3 class="text-xl font-medium text-gray-800 mb-3">{{ project.name }}</h3>
-            <p class="text-gray-600 mb-6 h-24 overflow-hidden">{{ project.description }}</p>
-            <div class="flex gap-2">
-              <a :href="route('projects.show', project.id)">
-                <ElButton
-                  size="medium"
-                  type="primary"
-                  class="bg-blue-600 text-white font-medium rounded-lg p-2 hover:bg-blue-500 transition duration-300"
-                >
-                  Ver Projeto
-                </ElButton>
-              </a>
-              <ElButton
-                size="medium"
-                @click="openSendInvite(project.id)"
-                class="bg-green-600 text-white font-medium rounded-lg p-2 hover:bg-green-500 transition duration-300"
-              >
-                Enviar Convite
-              </ElButton>
-            </div>
+          <img :src="`/storage/${project.image}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
+          <div class="p-3 sm:p-4 md:p-6">
+        <div class="flex items-center gap-2 mb-2">
+          <Icon icon="mdi:account" class="text-gray-500 text-sm sm:text-base" />
+          <ElText class="text-sm sm:text-base">{{ project.owner }}</ElText>
+        </div>
+        <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3">{{ project.name }}</h3>
+        <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden">{{ project.description }}</p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <a :href="route('projects.show', project.id)" class="w-full">
+            <ElButton
+          size=""
+          type="primary"
+          class="w-full bg-blue-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-blue-500 transition duration-300"
+            >
+          Ver Projeto
+            </ElButton>
+          </a>
+          <ElButton
+            size=""
+            @click="openSendInvite(project.id)"
+            class="w-full bg-green-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-green-500 transition duration-300"
+          >
+            Enviar Convite
+          </ElButton>
+        </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="w-auto bg-white text-gray-900 p-6 shadow-lg border-l border-gray-200 rounded-lg">
-    <span v-if="!props.invitations.length" class="text-gray-500 text-sm">Você ainda não possui convites para projetos</span>
-    
-    <div v-else class="flex flex-col gap-6">
-      <div v-for="invitation in props.invitations" :key="invitation.id" class="border border-gray-300 rounded-lg p-4 bg-white text-left shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <ElText class="text-lg font-semibold text-gray-800 mb-2">Você foi convidado(a) para um projeto.</ElText>
-        
-       <div class="flex items-center gap-2 text-gray-600">
-        <Icon icon="mdi:account" />
-        <p class="text-gray-700 font-medium">{{ invitation.project_name }}</p>
-       </div>
-       <div class="flex items-center gap-2 text-gray-600">
-        <Icon icon="mdi:desktop-mac-dashboard" />
-        <p class="text-gray-700 font-medium">{{ invitation.project_description }}</p>
-       </div>
-        <!-- Exibição das datas -->
-        <div class="text-gray-500 text-sm mt-4">
-          <p><strong>Início:</strong> {{ formatDate(invitation.start_date) }}</p>
-          <p><strong>Fim:</strong> {{ formatDate(invitation.end_date) }}</p>
-        </div>
-
-        <!-- Botões de ação com ícones -->
-        <div class="flex items-center justify-end gap-4 mt-4">
-          <ElButton
-            type="success"
-            class="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-400 transition duration-300"
-            @click="acceptedInvitation(invitation.project_id, invitation.token)"
-          >
-            <Icon icon="mdi:check-circle" class="mr-2" />
-            Aceitar
-          </ElButton>
+    <div class="w-full lg:w-80 bg-white text-gray-900 p-4 md:p-6 shadow-lg border-t lg:border-t-0 lg:border-l border-gray-200">
+      <span v-if="!props.invitations.length" class="text-gray-500 text-sm">Você ainda não possui convites para projetos</span>
+      
+      <div v-else class="flex flex-col gap-4 md:gap-6">
+        <div v-for="invitation in props.invitations" :key="invitation.id" class="border border-gray-300 rounded-lg p-3 md:p-4 bg-white text-left shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <ElText class="text-base md:text-lg font-semibold text-gray-800 mb-2">Você foi convidado(a) para um projeto.</ElText>
           
-          <ElButton
-            type="danger"
-            class="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-400 transition duration-300"
-          >
-            <Icon icon="mdi:cancel" class="mr-2" />
-            Recusar
-          </ElButton>
+          <div class="flex items-center gap-2 text-gray-600">
+            <Icon icon="mdi:account" />
+            <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_name }}</p>
+          </div>
+          <div class="flex items-center gap-2 text-gray-600">
+            <Icon icon="mdi:desktop-mac-dashboard" />
+            <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_description }}</p>
+          </div>
+          
+          <div class="text-gray-500 text-xs md:text-sm mt-3 md:mt-4">
+            <p><strong>Início:</strong> {{ formatDate(invitation.start_date) }}</p>
+            <p><strong>Fim:</strong> {{ formatDate(invitation.end_date) }}</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-end gap-2 md:gap-4 mt-3 md:mt-4">
+            <ElButton
+              type="success"
+              class="w-full sm:w-auto bg-green-500 text-white rounded-lg px-3 py-1.5 md:px-4 md:py-2 hover:bg-green-400 transition duration-300"
+              @click="acceptedInvitation(invitation.project_id, invitation.token)"
+            >
+              <Icon icon="mdi:check-circle" class="mr-2" />
+              Aceitar
+            </ElButton>
+            
+            <ElButton
+              type="danger"
+              class="w-full sm:w-auto bg-red-500 text-white rounded-lg px-3 py-1.5 md:px-4 md:py-2 hover:bg-red-400 transition duration-300"
+            >
+              <Icon icon="mdi:cancel" class="mr-2" />
+              Recusar
+            </ElButton>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
     <ElDrawer
       v-model="drawer"
       style="background: #f9fafb;"
       title="Criar Novo Projeto"
       :with-header="false"
+      size="40%"
+      :before-close="isClosed"
     >
-      <ElForm :model="form" label-width="120px">
+      <ElForm :model="form" label-width="120px" class="p-4">
         <ElFormItem label="Título">
-          <ElInput v-model="form.title" placeholder="Título do Projeto" class="border-gray-300" />
+          <ElInput v-model="form.title" placeholder="Título do Projeto" class="w-full" />
         </ElFormItem>
         <ElFormItem label="Descrição">
-          <ElInput type="textarea" v-model="form.description" placeholder="Descrição do Projeto" class="border-gray-300" />
+          <ElInput type="textarea" v-model="form.description" placeholder="Descrição do Projeto" class="w-full" />
         </ElFormItem>
         <ElFormItem label="Data de Início">
-          <ElDatePicker v-model="form.start_date" type="date" placeholder="Escolha a data de início" />
+          <ElDatePicker v-model="form.start_date" type="date" placeholder="Escolha a data de início" class="w-full" />
         </ElFormItem>
         <ElFormItem label="Data Final">
-          <ElDatePicker v-model="form.end_date" type="date" placeholder="Escolha a data final" />
+          <ElDatePicker v-model="form.end_date" type="date" placeholder="Escolha a data final" class="w-full" />
         </ElFormItem>
         <ElFormItem label="Imagem">
           <ElUpload
@@ -282,9 +281,9 @@ const acceptedInvitation = async (projectId, token) => {
             <img v-if="form.image && form.image.length > 0" :src="form.image[0].url" class="avatar" />
           </ElUpload>
         </ElFormItem>
-        <ElFormItem class="flex justify-between">
-          <ElButton type="primary" @click="handleSubmit" class="bg-blue-600 text-white hover:bg-blue-500 transition duration-300">Criar Projeto</ElButton>
-          <ElButton @click="isClosed" class="bg-gray-400 text-white hover:bg-gray-300 transition duration-300">Cancelar</ElButton>
+        <ElFormItem class="flex flex-col sm:flex-row justify-between gap-2">
+          <ElButton type="primary" @click="handleSubmit" class="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-500 transition duration-300">Criar Projeto</ElButton>
+          <ElButton @click="isClosed" class="w-full sm:w-auto bg-gray-400 text-white hover:bg-gray-300 transition duration-300">Cancelar</ElButton>
         </ElFormItem>
       </ElForm>
     </ElDrawer>
@@ -297,7 +296,7 @@ const acceptedInvitation = async (projectId, token) => {
   }
 
   .project-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 
   .avatar {
@@ -305,5 +304,11 @@ const acceptedInvitation = async (projectId, token) => {
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .project-card:hover {
+      transform: none;
+    }
   }
 </style>

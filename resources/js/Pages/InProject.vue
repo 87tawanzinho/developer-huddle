@@ -5,8 +5,8 @@
         <SidebarLayout />
 
         <!-- Main Content -->
-        <div class="flex-1 flex   justify-center p-6 sm:p-12">
-            <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-8 sm:p-10 transform transition-all hover:shadow-2xl">
+        <div class="flex-1 flex justify-center p-6 sm:p-12">
+            <div class="bg-white rounded-lg shadow-lg max-w-4xl relative w-full p-8 sm:p-10 transform transition-all hover:shadow-2xl">
                 <!-- Project Header -->
                 <div class="flex flex-col sm:flex-row items-center gap-6">
                     <!-- Project Image -->
@@ -17,17 +17,29 @@
                     />
 
                     <!-- Project Info -->
-                    <div class="text-center sm:text-left">
-                        <h1 class="text-3xl font-bold text-gray-800 leading-tight">
-                            {{ project.name }}
-                        </h1>
+                    <div class="text-center sm:text-left w-full">
+                        <div class="flex items-center justify-between">
+                            <h1 class="text-3xl font-bold text-gray-800 leading-tight">
+                                {{ project.name }}
+                            </h1>
+
+                            <div v-if="$page.props.auth.user.name === project.owner" class="absolute right-8 top-2 sm:right-10">
+                                <Icon 
+                                    @click="deleteProjectIfOwner(project.id)"
+                                    icon="mdi:delete" 
+                                    class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Description Section -->
                         <p class="mt-2 text-gray-500" v-if="!showFullDescription">
-                           {{ truncatedDescription }}
-                           <span v-if="isTruncated" @click="showFullDescription = true" class="text-blue-500 cursor-pointer">Ver mais</span>
+                            {{ truncatedDescription }}
+                            <span v-if="isTruncated" @click="showFullDescription = true" class="text-blue-500 cursor-pointer">Ver mais</span>
                         </p>
                         <p class="mt-2 text-gray-500" v-else>
-                           {{ project.description }}
-                           <span @click="showFullDescription = false" class="text-blue-500 cursor-pointer">Ver menos</span>
+                            {{ project.description }}
+                            <span @click="showFullDescription = false" class="text-blue-500 cursor-pointer">Ver menos</span>
                         </p>
                     </div>
                 </div>
@@ -52,6 +64,115 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class=" flex flex-col gap-4 justify-center pb-48 items-center h-full">
+                    <ElText size="large">Você ainda não possui tarefas</ElText>
+                    <ElButton @click="drawer = true" class="flex items-center gap-2" type="primary">
+                        <Icon icon="mdi:plus" class="mr-2 text-xl"/>
+                        Criar uma nova tarefa
+                    </ElButton>
+                </div>
+
+                <!-- Drawer -->
+                 <ElDrawer v-model="drawer" title="Nova Tarefa" size="50%" :withHeader="false">
+                    <div class=" text-center" >
+                       <ElText>Criar nova Tarefa</ElText>
+                    </div>
+                    <div class="p-6">
+                        <form class="space-y-6">
+                            <!-- Título -->
+                            <div class="space-y-2">
+                                <ElText class="text-gray-700">Título da Tarefa</ElText>
+                                <ElInput
+                                    v-model="create.taskTitle"
+                                    placeholder="Digite um título descritivo"
+                                    :prefix-icon="() => h(Icon, { icon: 'mdi:format-title' })"
+                                />
+                            </div>
+
+                            <!-- Descrição -->
+                            <div class="space-y-2">
+                                <ElText class="text-gray-700">Descrição</ElText>
+                                <ElInput
+                                    v-model="create.taskDescription"
+                                    type="textarea"
+                                    :rows="4"
+                                    placeholder="Descreva os detalhes da tarefa"
+                                />
+                            </div>
+
+                            <!-- Prioridade e Status -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <ElText class="text-gray-700">Prioridade</ElText>
+                                    <ElSelect v-model="create.priority" class="w-full">
+                                        <ElOption value="low" label="Baixa">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:flag-outline" class="mr-2 text-green-500" />
+                                                Baixa
+                                            </div>
+                                        </ElOption>
+                                        <ElOption value="medium" label="Média">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:flag" class="mr-2 text-yellow-500" />
+                                                Média
+                                            </div>
+                                        </ElOption>
+                                        <ElOption value="high" label="Alta">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:flag" class="mr-2 text-red-500" />
+                                                Alta
+                                            </div>
+                                        </ElOption>
+                                    </ElSelect>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <ElText class="text-gray-700">Status</ElText>
+                                    <ElSelect v-model="create.status" class="w-full">
+                                        <ElOption value="todo" label="A fazer">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:clipboard-outline" class="mr-2 text-gray-500" />
+                                                A fazer
+                                            </div>
+                                        </ElOption>
+                                        <ElOption value="doing" label="Em andamento">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:progress-clock" class="mr-2 text-blue-500" />
+                                                Em andamento
+                                            </div>
+                                        </ElOption>
+                                        <ElOption value="done" label="Concluído">
+                                            <div class="flex items-center">
+                                                <Icon icon="mdi:check-circle" class="mr-2 text-green-500" />
+                                                Concluído
+                                            </div>
+                                        </ElOption>
+                                    </ElSelect>
+                                </div>
+                            </div>
+
+                            <!-- Progresso -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <ElText class="text-gray-700">Progresso</ElText>
+                                    <span class="text-sm text-gray-500">{{ progress }}%</span>
+                                </div>
+                                <ElSlider v-model="create.progress" :step="10" show-stops />
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="flex justify-end space-x-4 pt-4">
+                                <ElButton @click="drawer = false">Cancelar</ElButton>
+                                <ElButton type="primary" class="flex items-center">
+                                    <Icon icon="mdi:check" class="mr-2" />
+                                    Criar Tarefa
+                                </ElButton>
+                            </div>
+                        </form>
+                    </div>
+
+                 </ElDrawer>
             </div>
         </div>
     </div>
@@ -62,6 +183,7 @@ import SidebarLayout from '@/Layouts/SidebarLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { formatDate } from './utils/formatDate';
 import { Icon } from '@iconify/vue';
+import { h } from 'vue';
 
 const props = defineProps([
     'id',
@@ -70,7 +192,15 @@ const props = defineProps([
 
 import { ref, computed } from 'vue';
 
+const drawer = ref(false)
 const showFullDescription = ref(false);
+const create = ref({
+    taskTitle: '',
+    taskDescription: '',
+    priority: 'low',
+    status: 'todo',
+    progress: 0,
+});
 
 const truncatedDescription = computed(() => {
     const maxLength = 100;
@@ -83,4 +213,24 @@ const truncatedDescription = computed(() => {
 const isTruncated = computed(() => {
     return props.project.description.length > 100;
 });
+
+import { ElButton, ElDrawer, ElInput, ElMessageBox, ElText } from 'element-plus';
+
+const deleteProjectIfOwner = (id) => {
+    ElMessageBox.confirm('Tem certeza que deseja excluir este projeto?', 'Confirmação', {
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        type: 'warning',
+    }).then(() => {
+        axios.delete(route('projects.delete', { id }))
+            .then(response => {
+                // Handle success
+            })
+            .catch(error => {
+                // Handle error
+            });
+    }).catch(() => {
+        // Handle cancel action
+    });
+};
 </script>
