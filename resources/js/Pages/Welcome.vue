@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue';
 import { ElButton, ElMessage, ElMessageBox, ElText, ElInput, ElDrawer, ElForm, ElFormItem, ElDatePicker, ElUpload } from 'element-plus';
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
+import { formatDate } from './utils/formatDate';
 
 
 
@@ -96,7 +97,6 @@ const openSendInvite = (projectId) => {
     inputErrorMessage: 'Email inválido. Tente novamente.',
   })
     .then(({ value }) => {
-      alert(projectId);
       axios.post(route('invite.send'), {
         email: value,
         project_id: projectId,
@@ -205,48 +205,55 @@ const acceptedInvitation = async (projectId, token) => {
       </div>
     </div>
 
-    <div class="w-full lg:w-80 bg-white text-gray-900 p-4 md:p-6 shadow-lg border-t lg:border-t-0 lg:border-l border-gray-200">
-      <span v-if="!props.invitations.length" class="text-gray-500 text-sm">Você ainda não possui convites para projetos</span>
-      
-      <div v-else class="flex flex-col gap-4 md:gap-6">
-        <div v-for="invitation in props.invitations" :key="invitation.id" class="border border-gray-300 rounded-lg p-3 md:p-4 bg-white text-left shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <ElText class="text-base md:text-lg font-semibold text-gray-800 mb-2">Você foi convidado(a) para um projeto.</ElText>
-          
-          <div class="flex items-center gap-2 text-gray-600">
-            <Icon icon="mdi:account" />
-            <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_name }}</p>
-          </div>
-          <div class="flex items-center gap-2 text-gray-600">
-            <Icon icon="mdi:desktop-mac-dashboard" />
-            <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_description }}</p>
-          </div>
-          
-          <div class="text-gray-500 text-xs md:text-sm mt-3 md:mt-4">
-            <p><strong>Início:</strong> {{ formatDate(invitation.start_date) }}</p>
-            <p><strong>Fim:</strong> {{ formatDate(invitation.end_date) }}</p>
-          </div>
+    <div class="w-full sm:w-4/5 md:w-[20%] bg-white p-6 md:p-8 shadow-lg rounded-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+  <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Convites Pendentes</h3>
 
-          <div class="flex flex-col sm:flex-row items-center justify-end gap-2 md:gap-4 mt-3 md:mt-4">
-            <ElButton
-              type="success"
-              class="w-full sm:w-auto bg-green-500 text-white rounded-lg px-3 py-1.5 md:px-4 md:py-2 hover:bg-green-400 transition duration-300"
-              @click="acceptedInvitation(invitation.project_id, invitation.token)"
-            >
-              <Icon icon="mdi:check-circle" class="mr-2" />
-              Aceitar
-            </ElButton>
-            
-            <ElButton
-              type="danger"
-              class="w-full sm:w-auto bg-red-500 text-white rounded-lg px-3 py-1.5 md:px-4 md:py-2 hover:bg-red-400 transition duration-300"
-            >
-              <Icon icon="mdi:cancel" class="mr-2" />
-              Recusar
-            </ElButton>
-          </div>
-        </div>
+  <!-- Mensagem quando não há convites -->
+  <div v-if="!props.invitations.length" class="flex text-sm flex-col items-center justify-center mt-8 p-8 bg-gray-50 rounded-lg shadow-inner">
+    <Icon icon="mdi:email-outline" class=" text-gray-400  text-4xl mb-4" />
+    <span class="text-gray-500 text-center ">Você não possui convites para projetos no momento</span>
+  </div>
+
+  <!-- Lista de convites -->
+  <div v-else>
+    <div v-for="invitation in props.invitations" :key="invitation.id" class="bg-gray-50 p-6 rounded-lg shadow-md mb-6 transition-all duration-200 hover:shadow-xl">
+      <div class="flex items-center gap-3 mb-4">
+        <Icon icon="mdi:account" class="text-gray-500 text-2xl" />
+        <p class="text-gray-700 font-semibold text-lg md:text-xl">{{ invitation.project_name }}</p>
+      </div>
+
+      <div class="flex items-center gap-3 text-gray-600 mb-4">
+        <Icon icon="mdi:desktop-mac-dashboard" class="text-gray-500 text-xl" />
+        <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_description }}</p>
+      </div>
+
+      <div class="text-gray-500 text-sm md:text-base mb-6">
+        <p><strong>Início:</strong> {{ formatDate(invitation.start_date) }}</p>
+        <p><strong>Fim:</strong> {{ formatDate(invitation.end_date) }}</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-end gap-4">
+        <ElButton
+          type="success"
+          class="w-full sm:w-auto bg-green-500 text-white rounded-lg px-4 py-2 md:px-5 md:py-3 hover:bg-green-400 transition duration-300 shadow-md hover:shadow-lg"
+          @click="acceptedInvitation(invitation.project_id, invitation.token)"
+        >
+          <Icon icon="mdi:check-circle" class="mr-2" />
+          Aceitar
+        </ElButton>
+
+        <ElButton
+          type="danger"
+          class="w-full sm:w-auto bg-red-500 text-white rounded-lg px-4 py-2 md:px-5 md:py-3 hover:bg-red-400 transition duration-300 shadow-md hover:shadow-lg"
+        >
+          <Icon icon="mdi:cancel" class="mr-2" />
+          Recusar
+        </ElButton>
       </div>
     </div>
+  </div>
+</div>
+
 
     <ElDrawer
       v-model="drawer"

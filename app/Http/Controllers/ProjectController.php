@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invitation;
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -29,9 +30,12 @@ class ProjectController extends Controller
 
     public function show($id) { 
         $project = Project::findOrFail($id);
+        $users = $project->users;
         return Inertia::render("InProject", [
          "id" => $id,
          "project" => $project,
+         'users' => $users,
+         'tasks' => $project->tasks,
         ]);
     }
 
@@ -58,12 +62,43 @@ class ProjectController extends Controller
         $project->save();
         $request->user()->projects()->attach($project->id);
 
-        return redirect()->route('/')->with('message', 'Project created successfully');
+        return redirect()->route('home')->with('message', 'Project created successfully');
     }
 
     public function delete($id) {
         $project = Project::findOrFail($id); 
         $project->delete();
-        return  redirect()->route('/')->with('message', 'Project deleted successfully');
+        return  redirect()->route('home')->with('message', 'Project deleted successfully');
+    }
+
+    public function createTask(Request $request) {
+        $request->validate([
+            "title" => "required|string|max:255",
+            "description" => "required|string",
+            "priority" => "required|string",
+            "responsible" => "required|string|max:255",
+            "status" => "required|string|max:255",
+            "progress" => "required|integer|min:0|max:100",
+            "project_id" => "required|exists:projects,id",
+        ]);
+
+
+       
+        $task = new Task(); 
+        $task->title = $request->title;
+        $task->description = $request->description;
+        $task->status = $request->status;
+        $task->priority = $request->priority;
+        $task->responsible = $request->responsible;
+        $task->progress = $request->progress;
+        $task->project_id = $request->project_id;
+        $task->save();
+
+
+        return response()->json([
+            'message' => 'Task added successfully',
+            'task' => $task
+        ]);
+        
     }
 }

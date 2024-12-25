@@ -33,6 +33,7 @@ Route::middleware([
     
 
     // tasks creation 
+    Route::post('/createTask', [ProjectController::class,'createTask'])->name('projects.createTask');
     
     // invite
     Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');  

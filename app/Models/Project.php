@@ -28,4 +28,8 @@ class Project extends Model
     public function invitations() {
         return $this->hasMany(Invitation::class);
     }
+
+    public function tasks() {
+        return $this->hasMany(Task::class);
+    }
 }

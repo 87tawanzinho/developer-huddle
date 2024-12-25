@@ -15,7 +15,7 @@
                         alt="Imagem do Projeto"
                         class="rounded-full w-24 h-24 sm:w-32 sm:h-32 object-cover border border-gray-200 shadow-sm"
                     />
-
+ 
                     <!-- Project Info -->
                     <div class="text-center sm:text-left w-full">
                         <div class="flex items-center justify-between">
@@ -43,7 +43,20 @@
                         </p>
                     </div>
                 </div>
+                
+              <div class="flex justify-between items-center">
+               <div class="mt-8 flex items-center gap-2">
+                <ElText> Participantes: </ElText>
+                <div v-for="user in project.users" :key="user.name" class="">
+                    <ElText>{{ user.name }},</ElText>
+                </div>
+               </div>
 
+                <ElButton @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
+                        <Icon icon="mdi:plus" class="mr-2 text-xl"/>
+                        Criar uma nova tarefa
+                    </ElButton>
+              </div>
                 <!-- Project Dates -->
                 <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- Start Date -->
@@ -65,13 +78,42 @@
                     </div>
                 </div>
                 
-                <div class=" flex flex-col gap-4 justify-center pb-48 items-center h-full">
+               <div>
+                <div v-if="!tasks" class=" flex flex-col gap-4 justify-center pb-48 items-center h-full">
                     <ElText size="large">Você ainda não possui tarefas</ElText>
                     <ElButton @click="drawer = true" class="flex items-center gap-2" type="primary">
                         <Icon icon="mdi:plus" class="mr-2 text-xl"/>
                         Criar uma nova tarefa
                     </ElButton>
                 </div>
+ <div v-else>
+  
+
+    <div v-for="task in tasks" :key="task.id" class=" mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
+    <div class="flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
+        <span :class="{
+            'text-green-500': task.status === 'done',
+            'text-blue-500': task.status === 'doing',
+            'text-red-500': task.status === 'todo'
+        }" class="text-sm font-medium">{{ translatedStatus[task.status] }}</span>
+    </div>
+    <p class="text-gray-600 mt-2">{{ task.description }}</p>
+
+    <div class="flex justify-between mt-4">
+        <div class="flex items-center gap-2 text-gray-500">
+            <Icon icon="mdi:account" class="w-5 h-5" />
+            <span>{{ task.responsible }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-gray-500">
+            <Icon icon="mdi:flag" class="w-5 h-5" />
+            <span>{{ translatedPriority[task.priority] }}</span>
+        </div>
+    </div>
+        <ElProgress :percentage="task.progress"  class="mt-4"/>
+ </div>
+                </div>
+               </div>
 
                 <!-- Drawer -->
                  <ElDrawer v-model="drawer" title="Nova Tarefa" size="50%" :withHeader="false">
@@ -101,8 +143,24 @@
                                 />
                             </div>
 
+                        
+                        
+
+                            <div class="space-y-2">
+                                    <ElText class="text-gray-700">Responsável</ElText>
+                                    <ElSelect v-model="create.responsible"  placeholder="Selecione um responsável" class="w-full"  >
+                                        <ElOption  v-for="user in users"  :key="user" :value="user.name" :label="user.name"  />
+                                    </ElSelect>
+                                </div>
+ 
+                                
                             <!-- Prioridade e Status -->
                             <div class="grid grid-cols-2 gap-4">
+
+                            
+                           
+
+
                                 <div class="space-y-2">
                                     <ElText class="text-gray-700">Prioridade</ElText>
                                     <ElSelect v-model="create.priority" class="w-full">
@@ -164,7 +222,7 @@
                             <!-- Botões -->
                             <div class="flex justify-end space-x-4 pt-4">
                                 <ElButton @click="drawer = false">Cancelar</ElButton>
-                                <ElButton type="primary" class="flex items-center">
+                                <ElButton type="primary" class="flex items-center" @click="createTask">
                                     <Icon icon="mdi:check" class="mr-2" />
                                     Criar Tarefa
                                 </ElButton>
@@ -187,17 +245,21 @@ import { h } from 'vue';
 
 const props = defineProps([
     'id',
-    'project'
+    'project',
+    'users',
+    'tasks'
 ]);
 
 import { ref, computed } from 'vue';
 
 const drawer = ref(false)
 const showFullDescription = ref(false);
+
 const create = ref({
     taskTitle: '',
     taskDescription: '',
     priority: 'low',
+    responsible: '',
     status: 'todo',
     progress: 0,
 });
@@ -214,7 +276,22 @@ const isTruncated = computed(() => {
     return props.project.description.length > 100;
 });
 
-import { ElButton, ElDrawer, ElInput, ElMessageBox, ElText } from 'element-plus';
+console.log(props.project)
+
+import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText } from 'element-plus';
+import axios from 'axios';
+
+const translatedPriority = computed(() => ({
+    low: 'Baixa',
+    medium: 'Média',
+    high: 'Alta',
+}));
+
+const translatedStatus = computed(() => ({
+    done: 'Concluído',
+    doing: 'Em andamento',
+    todo: 'A fazer',
+}))
 
 const deleteProjectIfOwner = (id) => {
     ElMessageBox.confirm('Tem certeza que deseja excluir este projeto?', 'Confirmação', {
@@ -233,4 +310,26 @@ const deleteProjectIfOwner = (id) => {
         // Handle cancel action
     });
 };
+
+const createTask = () => {
+    axios.post(route('projects.createTask'), {
+        title: create.value.taskTitle,
+        description: create.value.taskDescription,
+        priority: create.value.priority,
+        responsible: create.value.responsible,
+        status: create.value.status,
+        progress: create.value.progress,
+        project_id: props.project.id,
+    })
+        .then(response => {
+            // Handle success
+            drawer.value = false;
+        })
+        .catch(error => {
+            // Handle error
+        });
+};
+
+
+ 
 </script>
