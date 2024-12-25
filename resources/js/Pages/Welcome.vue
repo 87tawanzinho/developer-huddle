@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue';
 import { ElButton, ElMessage, ElMessageBox, ElText, ElInput, ElDrawer, ElForm, ElFormItem, ElDatePicker, ElUpload } from 'element-plus';
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
+import { formatDate } from './utils/formatDate';
 
 
 const drawer = ref(false);
@@ -143,10 +144,7 @@ const acceptedInvitation = async (projectId, token) => {
  }
 };
 
-const formatDate = (date) => {
-  const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(date).toLocaleDateString('pt-BR', options);
-};
+ 
 </script>
 
 <template>
