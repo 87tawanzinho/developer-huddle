@@ -101,4 +101,14 @@ class ProjectController extends Controller
         ]);
         
     }
+
+    public function deleteTask(Request $request) {
+        $task = Task::findOrFail($request->id);
+
+        $task->delete();
+
+        return response()->json([
+            'message'=> 'Task deleted successfully',
+        ]);
+    }
 }

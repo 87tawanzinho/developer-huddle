@@ -52,7 +52,7 @@
                 </div>
                </div>
 
-                <ElButton @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
+                <ElButton v-if="tasks.length" @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
                         <Icon icon="mdi:plus" class="mr-2 text-xl"/>
                         Criar uma nova tarefa
                     </ElButton>
@@ -79,7 +79,7 @@
                 </div>
                 
                <div>
-                <div v-if="!tasks" class=" flex flex-col gap-4 justify-center pb-48 items-center h-full">
+                <div v-if="!tasks.length" class=" mt-24 flex flex-col gap-4 justify-center pb-48 items-center h-full">
                     <ElText size="large">Você ainda não possui tarefas</ElText>
                     <ElButton @click="drawer = true" class="flex items-center gap-2" type="primary">
                         <Icon icon="mdi:plus" class="mr-2 text-xl"/>
@@ -92,6 +92,11 @@
   <div  class="flex flex-col overflow-auto max-h-96 ">
     <div v-for="task in tasks" :key="task.id" class="gap-4 border  mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
     <div class="flex justify-between items-center">
+        <Icon 
+            icon="mdi:delete" 
+            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
+            @click="deleteTask(task.id)" 
+        />
         <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
         <span :class="{
             'text-green-500': task.status === 'done',
@@ -332,6 +337,24 @@ const createTask = () => {
         });
 };
 
+
+const deleteTask = (id) => {
+    ElMessageBox.confirm('Tem certeza que deseja excluir esta tarefa?', 'Confirmação', {
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        type: 'warning',
+    }).then(() => {
+        axios.delete(route('projects.deleteTask', { id }))
+            .then(response => {
+                // Handle success
+            })
+            .catch(error => {
+                // Handle error
+            });
+    }).catch(() => {
+        // Handle cancel action
+    });
+}
 
  
 </script>
