@@ -86,10 +86,11 @@
                         Criar uma nova tarefa
                     </ElButton>
                 </div>
- <div v-else>
-  
+ <div v-else  >
+    <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
 
-    <div v-for="task in tasks" :key="task.id" class=" mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
+  <div  class="flex flex-col overflow-auto max-h-96 ">
+    <div v-for="task in tasks" :key="task.id" class="gap-4 border  mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
     <div class="flex justify-between items-center">
         <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
         <span :class="{
@@ -112,6 +113,7 @@
     </div>
         <ElProgress :percentage="task.progress"  class="mt-4"/>
  </div>
+  </div>
                 </div>
                </div>
 

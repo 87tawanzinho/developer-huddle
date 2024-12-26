@@ -223,7 +223,6 @@ const acceptedInvitation = async (projectId, token) => {
       </div>
 
       <div class="flex items-center gap-3 text-gray-600 mb-4">
-        <Icon icon="mdi:desktop-mac-dashboard" class="text-gray-500 text-xl" />
         <p class="text-gray-700 font-medium text-sm md:text-base">{{ invitation.project_description }}</p>
       </div>
 
