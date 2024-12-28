@@ -15,7 +15,7 @@
                         alt="Imagem do Projeto"
                         class="rounded-full w-24 h-24 sm:w-32 sm:h-32 object-cover border border-gray-200 shadow-sm"
                     />
- 
+
                     <!-- Project Info -->
                     <div class="text-center sm:text-left w-full">
                         <div class="flex items-center justify-between">
@@ -44,19 +44,23 @@
                     </div>
                 </div>
                 
-              <div class="flex justify-between items-center">
-               <div class="mt-8 flex items-center gap-2">
-                <ElText> Participantes: </ElText>
-                <div v-for="user in project.users" :key="user.name" class="">
-                    <ElText>{{ user.name }},</ElText>
-                </div>
-               </div>
+                <div class="flex justify-between items-center">
+                    <div class="mt-8 flex items-center gap-2">
+                        <div v-for="user in project.users" :key="user.name" class="flex items-center gap-2">
+                            <span 
+                                class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600"
+                            >
+                                {{ user.name }}
+                            </span>
+                        </div>
+                    </div>
 
-                <ElButton v-if="tasks.length" @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
+                    <ElButton v-if="tasks.length" @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
                         <Icon icon="mdi:plus" class="mr-2 text-xl"/>
                         Criar uma nova tarefa
                     </ElButton>
-              </div>
+                </div>
+
                 <!-- Project Dates -->
                 <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- Start Date -->
@@ -78,54 +82,86 @@
                     </div>
                 </div>
                 
-               <div>
-                <div v-if="!tasks.length" class=" mt-24 flex flex-col gap-4 justify-center pb-48 items-center h-full">
-                    <ElText size="large">Você ainda não possui tarefas</ElText>
-                    <ElButton @click="drawer = true" class="flex items-center gap-2" type="primary">
-                        <Icon icon="mdi:plus" class="mr-2 text-xl"/>
-                        Criar uma nova tarefa
-                    </ElButton>
-                </div>
- <div v-else  >
-    <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
+                <div>
+                    <div v-if="!tasks.length" class="mt-24 flex flex-col gap-4 justify-center pb-48 items-center h-full">
+                        <ElText size="large">Você ainda não possui tarefas</ElText>
+                        <ElButton @click="drawer = true" class="flex items-center gap-2" type="primary">
+                            <Icon icon="mdi:plus" class="mr-2 text-xl"/>
+                            Criar uma nova tarefa
+                        </ElButton>
+                    </div>
+                    <div v-else>
+                        <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
 
-  <div  class="flex flex-col overflow-auto max-h-96 ">
-    <div v-for="task in tasks" :key="task.id" class="gap-4 border  mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
-    <div class="flex justify-between items-center">
-        <Icon 
-            icon="mdi:delete" 
-            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
-            @click="deleteTask(task.id)" 
-        />
-        <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
-        <span :class="{
-            'text-green-500': task.status === 'done',
-            'text-blue-500': task.status === 'doing',
-            'text-red-500': task.status === 'todo'
-        }" class="text-sm font-medium">{{ translatedStatus[task.status] }}</span>
-    </div>
-    <p class="text-gray-600 mt-2">{{ task.description }}</p>
+                        <div class="flex flex-col overflow-auto max-h-96">
+                            <div v-for="task in tasks" :key="task.id" class="gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
+                                <div class="flex justify-between items-center">
+                                    <Icon 
+                                        icon="mdi:delete" 
+                                        class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
+                                        @click="deleteTask(task.id)" 
+                                    />
+                                    <ElDrawer v-model="descriptionDrawer" title="Descrição da Tarefa" size="50%" :withHeader="false">
+                                        <div class="p-6 space-y-6">
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Sua antiga descrição:</ElText>
+                                                <ElInput
+                                                    v-model="activeDescriptionForCompare"
+                                                    type="textarea"
+                                                    readonly
+                                                    :rows="4"
+                                                    class="mt-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Sua nova descrição:</ElText>
+                                                <ElInput
+                                                    v-model="newDescription"
+                                                    type="textarea"
+                                                    :rows="4"
+                                                    placeholder="Descreva os detalhes da tarefa"
+                                                    class="mt-2"
+                                                />
+                                            </div>
+                                            <div class="flex justify-end space-x-4 pt-4">
+                                                <ElButton @click="descriptionDrawer = false">Cancelar</ElButton>
+                                                <ElButton type="primary" class="flex items-center" @click="updateTaskDescription(task.id)">
+                                                    <Icon icon="mdi:check" class="mr-2" />
+                                                    Atualizar Descrição
+                                                </ElButton>
+                                            </div>
+                                        </div>
+                                    </ElDrawer>
 
-    <div class="flex justify-between mt-4">
-        <div class="flex items-center gap-2 text-gray-500">
-            <Icon icon="mdi:account" class="w-5 h-5" />
-            <span>{{ task.responsible }}</span>
-        </div>
-        <div class="flex items-center gap-2 text-gray-500">
-            <Icon icon="mdi:flag" class="w-5 h-5" />
-            <span>{{ translatedPriority[task.priority] }}</span>
-        </div>
-    </div>
-        <ElProgress :percentage="task.progress"  class="mt-4"/>
- </div>
-  </div>
+                                    <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
+                                    <span :class="{
+                                        'text-green-500': task.status === 'done',
+                                        'text-blue-500': task.status === 'doing',
+                                        'text-red-500': task.status === 'todo'
+                                    }" class="text-sm font-medium">{{ translatedStatus[task.status] }}</span>
+                                </div>
+                                <p class="text-gray-600 mt-2" @click="changeDescriptionDrawer(task.description, task.id)">{{ task.description }}</p>
+
+                                <div class="flex justify-between mt-4">
+                                    <div class="flex items-center gap-2 text-gray-500">
+                                        <Icon icon="mdi:account" class="w-5 h-5" />
+                                        <span>{{ task.responsible }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-500">
+                                        <Icon icon="mdi:flag" class="w-5 h-5" />
+                                        <span>{{ translatedPriority[task.priority] }}</span>
+                                    </div>
+                                </div>
+                                <ElProgress :percentage="task.progress" class="mt-4"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-               </div>
 
                 <!-- Drawer -->
-                 <ElDrawer v-model="drawer" title="Nova Tarefa" size="50%" :withHeader="false">
-                    <div class=" text-center" >
-                       <ElText>Criar nova Tarefa</ElText>
+                <ElDrawer v-model="drawer" title="Nova Tarefa" size="50%" :withHeader="false">
+                    <div class="text-center">
+                        <ElText>Criar nova Tarefa</ElText>
                     </div>
                     <div class="p-6">
                         <form class="space-y-6">
@@ -150,24 +186,15 @@
                                 />
                             </div>
 
-                        
-                        
-
                             <div class="space-y-2">
-                                    <ElText class="text-gray-700">Responsável</ElText>
-                                    <ElSelect v-model="create.responsible"  placeholder="Selecione um responsável" class="w-full"  >
-                                        <ElOption  v-for="user in users"  :key="user" :value="user.name" :label="user.name"  />
-                                    </ElSelect>
-                                </div>
- 
-                                
+                                <ElText class="text-gray-700">Responsável</ElText>
+                                <ElSelect v-model="create.responsible" placeholder="Selecione um responsável" class="w-full">
+                                    <ElOption v-for="user in users" :key="user" :value="user.name" :label="user.name" />
+                                </ElSelect>
+                            </div>
+
                             <!-- Prioridade e Status -->
                             <div class="grid grid-cols-2 gap-4">
-
-                            
-                           
-
-
                                 <div class="space-y-2">
                                     <ElText class="text-gray-700">Prioridade</ElText>
                                     <ElSelect v-model="create.priority" class="w-full">
@@ -236,8 +263,7 @@
                             </div>
                         </form>
                     </div>
-
-                 </ElDrawer>
+                </ElDrawer>
             </div>
         </div>
     </div>
@@ -249,7 +275,7 @@ import { Head } from '@inertiajs/vue3';
 import { formatDate } from './utils/formatDate';
 import { Icon } from '@iconify/vue';
 import { h } from 'vue';
-
+import { router } from '@inertiajs/vue3';
 const props = defineProps([
     'id',
     'project',
@@ -259,7 +285,7 @@ const props = defineProps([
 
 import { ref, computed } from 'vue';
 
-const drawer = ref(false)
+const drawer = ref(false);
 const showFullDescription = ref(false);
 
 const create = ref({
@@ -283,9 +309,7 @@ const isTruncated = computed(() => {
     return props.project.description.length > 100;
 });
 
-console.log(props.project)
-
-import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText } from 'element-plus';
+import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText, ElProgress, ElSlider } from 'element-plus';
 import axios from 'axios';
 
 const translatedPriority = computed(() => ({
@@ -298,7 +322,7 @@ const translatedStatus = computed(() => ({
     done: 'Concluído',
     doing: 'Em andamento',
     todo: 'A fazer',
-}))
+}));
 
 const deleteProjectIfOwner = (id) => {
     ElMessageBox.confirm('Tem certeza que deseja excluir este projeto?', 'Confirmação', {
@@ -306,20 +330,14 @@ const deleteProjectIfOwner = (id) => {
         cancelButtonText: 'Não',
         type: 'warning',
     }).then(() => {
-        axios.delete(route('projects.delete', { id }))
-            .then(response => {
-                // Handle success
-            })
-            .catch(error => {
-                // Handle error
-            });
+        router.delete(route('projects.delete', { id }));
     }).catch(() => {
         // Handle cancel action
     });
 };
 
 const createTask = () => {
-    axios.post(route('projects.createTask'), {
+    router.post(route('projects.createTask'), {
         title: create.value.taskTitle,
         description: create.value.taskDescription,
         priority: create.value.priority,
@@ -327,16 +345,9 @@ const createTask = () => {
         status: create.value.status,
         progress: create.value.progress,
         project_id: props.project.id,
-    })
-        .then(response => {
-            // Handle success
-            drawer.value = false;
-        })
-        .catch(error => {
-            // Handle error
-        });
+    });
+    drawer.value = false;
 };
-
 
 const deleteTask = (id) => {
     ElMessageBox.confirm('Tem certeza que deseja excluir esta tarefa?', 'Confirmação', {
@@ -344,17 +355,39 @@ const deleteTask = (id) => {
         cancelButtonText: 'Não',
         type: 'warning',
     }).then(() => {
-        axios.delete(route('projects.deleteTask', { id }))
-            .then(response => {
-                // Handle success
-            })
-            .catch(error => {
-                // Handle error
-            });
+        router.delete(route('projects.deleteTask', { id }));
     }).catch(() => {
         // Handle cancel action
     });
+};
+
+const descriptionDrawer = ref(false);
+const activeDescriptionForCompare = ref('');
+const newDescription = ref('');
+const currentTaskId = ref(null);
+
+function changeDescriptionDrawer(description, taskId) {
+    descriptionDrawer.value = true;
+    activeDescriptionForCompare.value = description;
+    currentTaskId.value = taskId;
 }
 
- 
+function updateTaskDescription() {
+    if (newDescription.value !== '') {
+        try {
+            router.put(route('projects.updateTaskDescription', { projectId: props.project.id, taskId: currentTaskId.value }), {
+                description: newDescription.value
+            });
+            newDescription.value = '';
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        ElMessageBox.alert('A descrição não pode ser vazia', 'Erro', {
+            confirmButtonText: 'Ok',
+            type: 'error',
+        });
+    }
+    descriptionDrawer.value = false;
+}
 </script>

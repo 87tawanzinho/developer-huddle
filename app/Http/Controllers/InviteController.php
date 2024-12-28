@@ -82,7 +82,7 @@ class InviteController extends Controller
         $project->users()->attach($user->id);
     
         // Retornando com sucesso
-        return back()->with('success', 'Convite aceito com sucesso!');
+        return redirect()->back();
     }
     
 }

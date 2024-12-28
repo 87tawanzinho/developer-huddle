@@ -57,18 +57,18 @@ class ProjectController extends Controller
 
         if ($request->hasFile('image')) {
             $project->image = $request->file('image')->store('images', 'public');
-        }
+        } 
 
         $project->save();
         $request->user()->projects()->attach($project->id);
 
-        return redirect()->route('home')->with('message', 'Project created successfully');
+        return redirect()->back();
     }
 
     public function delete($id) {
         $project = Project::findOrFail($id); 
         $project->delete();
-        return  redirect()->route('home')->with('message', 'Project deleted successfully');
+        return redirect('/');
     }
 
     public function createTask(Request $request) {
@@ -94,11 +94,7 @@ class ProjectController extends Controller
         $task->project_id = $request->project_id;
         $task->save();
 
-
-        return response()->json([
-            'message' => 'Task added successfully',
-            'task' => $task
-        ]);
+    return redirect()->back();
         
     }
 
@@ -107,8 +103,19 @@ class ProjectController extends Controller
 
         $task->delete();
 
-        return response()->json([
-            'message'=> 'Task deleted successfully',
-        ]);
+        return redirect()->back();
     }
+
+    public function updateTaskDescription(Request $request, $projectId, $taskId) { {
+       $request->validate([
+              "description" => "required|string",
+         ]);
+
+         $task = Task::where('project_id', $projectId)->findOrFail($taskId);
+         $task->description = $request->description;
+         $task->save();
+
+         return redirect()->back();
+    }
+}
 }

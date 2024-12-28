@@ -35,6 +35,7 @@ Route::middleware([
     // tasks creation 
     Route::post('/createTask', [ProjectController::class,'createTask'])->name('projects.createTask');
     Route::delete('/deleteTask', [ProjectController::class,'deleteTask'])->name('projects.deleteTask');
+    Route::put('/updateTaskDescription/{projectId}/{taskId}', [ProjectController::class,'updateTaskDescription'])->name('projects.updateTaskDescription');
     // invite
     Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');  
     Route::post('/updateInvite', [InviteController::class,'updateInvite'])->name('projects.updateInvite');

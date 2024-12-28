@@ -6,7 +6,7 @@ import { ElButton, ElMessage, ElMessageBox, ElText, ElInput, ElDrawer, ElForm, E
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
 import { formatDate } from './utils/formatDate';
-
+import { router } from '@inertiajs/vue3'
 
 
 const drawer = ref(false);
@@ -30,6 +30,10 @@ const form = ref({
   image: []
 });
 
+const isFormValid = computed(() => {
+  return form.value.title && form.value.description && form.value.start_date && form.value.end_date;
+});
+
 const projectsFiltered = computed(() => {
   if (searchQuery.value.length > 0) {
     return props.projects.filter(project =>
@@ -43,9 +47,20 @@ const projectsFiltered = computed(() => {
 
 const handleImageChange = (file, fileList) => {
   form.value.image = fileList;
+  console.log(fileList)
 };
 
 const handleSubmit = async () => {
+
+  if(!form.value.image || form.value.image.length === 0) {
+    ElMessage({
+      message: 'Por favor, adicione uma imagem para o projeto.',
+      type: 'error',
+    });
+    return;
+  }
+
+  
   const formData = new FormData();
   formData.append('name', form.value.title);
   formData.append('description', form.value.description);
@@ -55,15 +70,8 @@ const handleSubmit = async () => {
   if (form.value.image && form.value.image.length > 0) {
     formData.append('image', form.value.image[0].raw);
   }
-  axios.post(route('projects.create'), formData)
-    .then(response => {
-      Created();
+  router.post(route('projects.create'), formData)
       drawer.value = false;
-    })
-    .catch(error => {
-      console.log(error);
-      ErrorWhenCreated();
-    });
 };
 
 const isClosed = () => {
@@ -123,25 +131,14 @@ const openSendInvite = (projectId) => {
 };
 
 const acceptedInvitation = async (projectId, token) => {
- try {
-  await axios.post(route('projects.updateInvite'), {
+ router.post(route('projects.updateInvite'), {
     project_id: projectId,
     token: token
-  });
-
+  })
   ElMessage({
     type: 'success',
     message: 'Convite aceito com sucesso.',
   });
-
-  await axios.get(route('home'));
- } catch (error) {
-  ElMessage({
-    type: 'error',
-    message: 'Falha ao aceitar convite.',
-  });
-   console.log(error);
- }
 };
 
  
@@ -279,7 +276,7 @@ const acceptedInvitation = async (projectId, token) => {
           <ElUpload
             action="#"
             list-type="picture-card"
-            :file-list="form.image"
+ 
             :on-change="handleImageChange"
             :auto-upload="false"
           >
@@ -288,7 +285,7 @@ const acceptedInvitation = async (projectId, token) => {
           </ElUpload>
         </ElFormItem>
         <ElFormItem class="flex flex-col sm:flex-row justify-between gap-2">
-          <ElButton type="primary" @click="handleSubmit" class="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-500 transition duration-300">Criar Projeto</ElButton>
+          <ElButton type="primary" @click="handleSubmit" class="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-500 transition duration-300" :disabled="!isFormValid">Criar Projeto</ElButton>
           <ElButton @click="isClosed" class="w-full sm:w-auto bg-gray-400 text-white hover:bg-gray-300 transition duration-300">Cancelar</ElButton>
         </ElFormItem>
       </ElForm>
