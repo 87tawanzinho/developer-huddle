@@ -40,6 +40,10 @@ Route::middleware([
     Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');  
     Route::post('/updateInvite', [InviteController::class,'updateInvite'])->name('projects.updateInvite');
     
+
+    Route::get('/prices', function () {
+        return Inertia::render('Prices');
+    })->name('prices');
 });
 
 

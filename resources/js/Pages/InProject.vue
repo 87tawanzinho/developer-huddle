@@ -96,60 +96,46 @@
                         <div class="flex flex-col overflow-auto max-h-96">
                             <div v-for="task in tasks" :key="task.id" class="gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
                                 <div class="flex justify-between items-center">
-                                    <Icon 
-                                        icon="mdi:delete" 
-                                        class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
-                                        @click="deleteTask(task.id)" 
-                                    />
-                                    <ElDrawer v-model="descriptionDrawer" title="Descrição da Tarefa" size="50%" :withHeader="false">
-                                        <div class="p-6 space-y-6">
-                                            <div>
-                                                <ElText class="text-gray-700 font-semibold">Sua antiga descrição:</ElText>
-                                                <ElInput
-                                                    v-model="activeDescriptionForCompare"
-                                                    type="textarea"
-                                                    readonly
-                                                    :rows="4"
-                                                    class="mt-2"
-                                                />
-                                            </div>
-                                            <div>
-                                                <ElText class="text-gray-700 font-semibold">Sua nova descrição:</ElText>
-                                                <ElInput
-                                                    v-model="newDescription"
-                                                    type="textarea"
-                                                    :rows="4"
-                                                    placeholder="Descreva os detalhes da tarefa"
-                                                    class="mt-2"
-                                                />
-                                            </div>
-                                            <div class="flex justify-end space-x-4 pt-4">
-                                                <ElButton @click="descriptionDrawer = false">Cancelar</ElButton>
-                                                <ElButton type="primary" class="flex items-center" @click="updateTaskDescription(task.id)">
-                                                    <Icon icon="mdi:check" class="mr-2" />
-                                                    Atualizar Descrição
-                                                </ElButton>
-                                            </div>
-                                        </div>
-                                    </ElDrawer>
-
-                                    <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
+                                    <div class="flex items-center gap-4">
+                                        <Icon 
+                                            icon="mdi:delete" 
+                                            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
+                                            @click="deleteTask(task.id)" 
+                                        />
+                                        <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
+                                    </div>
                                     <span :class="{
                                         'text-green-500': task.status === 'done',
                                         'text-blue-500': task.status === 'doing',
                                         'text-red-500': task.status === 'todo'
-                                    }" class="text-sm font-medium">{{ translatedStatus[task.status] }}</span>
+                                    }" class="text-sm font-medium flex items-center gap-2">
+                                        <Icon v-if="task.status === 'done'" icon="mdi:check-circle" class="w-5 h-5" />
+                                        <Icon v-if="task.status === 'doing'" icon="mdi:progress-clock" class="w-5 h-5" />
+                                        <Icon v-if="task.status === 'todo'" icon="mdi:clipboard-outline" class="w-5 h-5" />
+                                        {{ translatedStatus[task.status] }}
+                                    </span>
                                 </div>
-                                <p class="text-gray-600 mt-2" @click="changeDescriptionDrawer(task.description, task.id)">{{ task.description }}</p>
+                                <p class="text-gray-600 mt-2 cursor-pointer" @click="changeDescriptionDrawer(task.description, task.id)">{{ task.description }}</p>
 
                                 <div class="flex justify-between mt-4">
-                                    <div class="flex items-center gap-2 text-gray-500">
-                                        <Icon icon="mdi:account" class="w-5 h-5" />
-                                        <span>{{ task.responsible }}</span>
+                                    <div class="flex items-center gap-2">
+
+                                        <span class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600 flex items-center gap-2">
+                                            <Icon icon="mdi:account" class="w-4 h-4" />
+                                            {{ task.responsible }}
+                                        </span>
                                     </div>
-                                    <div class="flex items-center gap-2 text-gray-500">
-                                        <Icon icon="mdi:flag" class="w-5 h-5" />
-                                        <span>{{ translatedPriority[task.priority] }}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span :class="{
+                                            'bg-green-500': task.priority === 'low',
+                                            'bg-yellow-500': task.priority === 'medium',
+                                            'bg-red-500': task.priority === 'high'
+                                        }" class="px-3 py-1 rounded-full text-sm border-b text-white flex items-center gap-2">
+                                            <Icon v-if="task.priority === 'low'" icon="mdi:flag-outline" class="w-4 h-4" />
+                                            <Icon v-if="task.priority === 'medium'" icon="mdi:flag-outline" class="w-4 h-4" />
+                                            <Icon v-if="task.priority === 'high'" icon="mdi:flag" class="w-4 h-4" />
+                                            {{ translatedPriority[task.priority] }}
+                                        </span>
                                     </div>
                                 </div>
                                 <ElProgress :percentage="task.progress" class="mt-4"/>
@@ -264,6 +250,39 @@
                         </form>
                     </div>
                 </ElDrawer>
+
+                <ElDrawer v-model="descriptionDrawer" title="Mudança de Descrição " size="50%" :withHeader="false" >
+                                        <div class="p-6 space-y-6">
+                                            <div class=" text-gray-700 font-semibold flex items-center justify-center gap-2">
+                                                <p>Mudança de Descrição</p>
+                                                <Icon icon="mdi:alert-circle-outline" class="text-xl"/>
+
+
+                                                                                        </div>
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Sua antiga descrição:</ElText>
+                                                <p class="border rounded-md p-2 text-gray-600 text-sm mt-1 bg-gray-200">{{ activeDescriptionForCompare }}</p>
+
+                                            </div>
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Sua nova descrição:</ElText>
+                                                <ElInput
+                                                    v-model="newDescription"
+                                                    type="textarea"
+                                                    :rows="4"
+                                                    placeholder="Descreva os detalhes da tarefa"
+                                                    class="mt-2"
+                                                />
+                                            </div>
+                                            <div class="flex justify-end space-x-4 pt-4">
+                                                <ElButton @click="descriptionDrawer = false">Cancelar</ElButton>
+                                                <ElButton type="primary" class="flex items-center" @click="updateTaskDescription">
+                                                    <Icon icon="mdi:check" class="mr-2" />
+                                                    Atualizar Descrição
+                                                </ElButton>
+                                            </div>
+                                        </div>
+                                    </ElDrawer>
             </div>
         </div>
     </div>

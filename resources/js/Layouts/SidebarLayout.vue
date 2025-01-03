@@ -8,8 +8,8 @@
           <!-- Logo/Icon -->
           <div class="flex flex-col items-center gap-2">
               <Icon icon="openmoji:cat" class="text-6xl text-blue-600" />
-              <span class="text-xl font-semibold text-gray-800 tracking-wide">
-                  Reunião dos Devs
+              <span class="text-xl text-center font-semibold text-gray-800 tracking-wide">
+                  Reunião dos Devs (Versão Beta)
               </span>
           </div>
 
@@ -28,6 +28,14 @@
               >
                   <Icon icon="mdi:account-circle" class="text-2xl text-blue-500" />
                   <span>Perfil</span>
+              </Link>
+
+              <Link 
+                  :href="route('prices')" 
+                  class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
+              >
+                  <Icon icon="mdi:currency-usd" class="text-2xl text-blue-500" />
+                  <span>Planos</span>
               </Link>
           </nav>
       </div>
