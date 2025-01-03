@@ -1,8 +1,8 @@
 <template>
-    <div class="flex flex-col   bg-gray-50 text-gray-900 ">
+    <div class="flex flex-col bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
-        <div v-if="$page.props.auth.user" class=" mb-12 md:hidden bg-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
-            <Icon icon="openmoji:cat" class="text-3xl text-blue-600" />
+        <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
+            <Icon icon="mdi:cat" class="text-3xl text-blue-600" />
             <span class="text-lg font-semibold text-gray-800">Reunião dos Devs (Versão Beta)</span>
             <button @click="toggleMenu" class="text-gray-600">
                 <Icon icon="mdi:menu" class="text-2xl" />
@@ -16,14 +16,14 @@
                     :href="route('home')" 
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:home" class="text-2xl text-blue-500" />
+                    <Icon icon="mdi:home-outline" class="text-2xl text-blue-500" />
                     <span>Início</span>
                 </Link>
                 <Link 
                     :href="route('dashboard')" 
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:account-circle" class="text-2xl text-blue-500" />
+                    <Icon icon="mdi:account-outline" class="text-2xl text-blue-500" />
                     <span>Perfil</span>
                 </Link>
                 <Link 
@@ -43,7 +43,7 @@
         >
             <!-- Logo/Icon -->
             <div class="flex flex-col items-center gap-2">
-                <Icon icon="openmoji:cat" class="text-6xl text-blue-600" />
+                <Icon icon="mdi:cat" class="text-6xl text-blue-600" />
                 <span class="text-xl text-center font-semibold text-gray-800 tracking-wide">
                     Reunião dos Devs (Versão Beta)
                 </span>
@@ -55,14 +55,14 @@
                     :href="route('home')" 
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:home" class="text-2xl text-blue-500" />
+                    <Icon icon="mdi:home-outline" class="text-2xl text-blue-500" />
                     <span>Início</span>
                 </Link>
                 <Link 
                     :href="route('dashboard')" 
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:account-circle" class="text-2xl text-blue-500" />
+                    <Icon icon="mdi:account-outline" class="text-2xl text-blue-500" />
                     <span>Perfil</span>
                 </Link>
                 <Link 
