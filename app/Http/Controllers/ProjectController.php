@@ -12,7 +12,11 @@ use Illuminate\Foundation\Application;
 class ProjectController extends Controller
 {
     //
-    public function index(Request $request) {
+
+    public function index() {
+        return Inertia::render("House");
+    }
+    public function home(Request $request) {
        
         $projects = $request->user()->projects;
    

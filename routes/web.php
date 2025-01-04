@@ -26,7 +26,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::get('/', [ProjectController::class,'index'])->name('home');
+    Route::get('/', [ProjectController::class,'index'])->name('landingpage');
+    Route::get('/home', [ProjectController::class,'home'])->name('home');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
     Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
     Route::delete('/removeProject/{id}', [ProjectController::class,'delete'])->name('projects.delete');
