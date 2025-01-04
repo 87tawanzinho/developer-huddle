@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('owner');
-            $table->string('description');
-            $table->string('start_date');
-            $table->string('end_date');
-            $table->string('image');
+            $table->text('description');;
+            $table->string('cover_path');
+            $table->timestamp('start_date');
+            $table->timestamp('end_date');
             $table->timestamps();
         });
     }
