@@ -4,25 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invitation extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'project_id',
-        'email',
-        'token',
+        'user_id',
         'status',
         'expires_at',
-        'project_name',
-        'project_description',
-        'start_date',
-        'end_date'
     ];
 
-    public function project()
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

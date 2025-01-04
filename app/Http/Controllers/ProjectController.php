@@ -12,14 +12,14 @@ use Illuminate\Foundation\Application;
 class ProjectController extends Controller
 {
     //
-
     public function index() {
         return Inertia::render("House");
     }
+
     public function home(Request $request) {
        
         $projects = $request->user()->projects;
-   
+
         $invitations = Invitation::where('email', $request->user()->email)->where('status', 'pending')->get();
         return Inertia::render("Welcome", [
             'canLogin' => Route::has('login'),
@@ -32,7 +32,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function show($id) { 
+    public function show($id) {
         $project = Project::findOrFail($id);
         $users = $project->users;
         return Inertia::render("InProject", [
@@ -54,14 +54,14 @@ class ProjectController extends Controller
 
         $project = new Project();
         $project->name = $request->input('name');
-        $project->owner = $request->user()->name; 
+        $project->owner = $request->user()->name;
         $project->description = $request->input('description');
         $project->start_date = $request->input('start_date');
         $project->end_date = $request->input('end_date');
 
         if ($request->hasFile('image')) {
             $project->image = $request->file('image')->store('images', 'public');
-        } 
+        }
 
         $project->save();
         $request->user()->projects()->attach($project->id);
@@ -70,7 +70,7 @@ class ProjectController extends Controller
     }
 
     public function delete($id) {
-        $project = Project::findOrFail($id); 
+        $project = Project::findOrFail($id);
         $project->delete();
         return redirect('/');
     }
@@ -87,8 +87,8 @@ class ProjectController extends Controller
         ]);
 
 
-       
-        $task = new Task(); 
+
+        $task = new Task();
         $task->title = $request->title;
         $task->description = $request->description;
         $task->status = $request->status;
@@ -99,7 +99,7 @@ class ProjectController extends Controller
         $task->save();
 
     return redirect()->back();
-        
+
     }
 
     public function deleteTask(Request $request) {

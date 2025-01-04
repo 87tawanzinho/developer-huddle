@@ -13,16 +13,11 @@ return new class extends Migration
     {
         Schema::create('invitations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->onDelete('cascade');
-            $table->string('email');
-            $table->string('token')->unique();
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
-            $table->timestamp('expires_at')->nullable(); // Data de expiração
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
-            $table->string('project_name');
-            $table->text('project_description');
-            $table->string('start_date');
-            $table->string('end_date');
         });
     }
 

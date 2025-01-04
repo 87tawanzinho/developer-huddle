@@ -4,6 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -17,6 +22,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +31,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
+        'phone',
+        'cpf_cnpj',
         'password',
+        'address_id',
+        'gateway_id',
     ];
 
     /**
@@ -39,7 +50,6 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
-        'invitations'
     ];
 
     /**
@@ -60,10 +70,29 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function projects()
+    public function subscription(): HasOne
     {
-        return $this->belongsToMany(Project::class, 'users_projects');
+        return $this->hasOne(Subscription::class);
     }
 
-    
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'user_projects')
+            ->withPivot('role');
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'responsible_id');
+    }
 }

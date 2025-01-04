@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        #TODO: adicionar comentários, anexos...
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable(false);
-            $table->text('description')->nullable(false);
-            $table->string('priority')->nullable(false);
-            $table->string('responsible')->nullable(false);
-            $table->string('status')->nullable(false);
-            $table->integer('progress')->nullable(false)->default(0)->unsigned();
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('responsible_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->enum('priority', ['low', 'medium', 'high']);
+            $table->enum('status',['todo', 'in_progress', 'done']);
+            $table->tinyInteger('progress')->default(0)->unsigned();
             $table->timestamps();
         });
     }
