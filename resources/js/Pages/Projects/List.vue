@@ -18,6 +18,7 @@ import {
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
 import Invites from '@/Components/Invites.vue';
+import { formatDate, formatDateJustYearAndMonth } from '../utils/formatDate';
 
 const inviteStore = useInvitesStore();
 
@@ -153,16 +154,15 @@ onMounted(() => {
   <div class="flex flex-col lg:flex-row min-h-screen">
     <SidebarLayout />
     <div class="flex-1 p-4 md:p-8 lg:p-12">
-      <h2 class="text-2xl md:text-3xl font-medium text-center text-gray-800 mb-4 md:mb-6">Meus Projetos</h2>
-
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
-        <ElInput
+      <ElInput
           v-model="searchQuery"
           placeholder="Procurar por Projetos"
           class="w-full sm:w-auto"
           size="large"
           :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500' })"
         />
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
+       
         <ElButton
           type="primary"
           size="large"
@@ -175,7 +175,7 @@ onMounted(() => {
       </div>
 
       <div class=" flex flex-wrap gap-2">
-        <div v-for="project in projectsFiltered" :key="project.id" class="border rounded-2xl flex flex-wrap w-96 relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out ">
+        <div v-for="project in projectsFiltered" :key="project.id" class="border  w-full flex flex-wrap  sm:w-96 lg:w-[24rem] relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out ">
           <a :href="route('projects.show', project.id)" class="w-full">
           <img :src="`/storage/${project.cover_path}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
           <div class="p-3 sm:p-4 md:p-6">
@@ -184,14 +184,20 @@ onMounted(() => {
               <p class=" ">{{ project.owner[0]?.name }}</p>
             </div>
             <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3">{{ project.name }}</h3>
-            <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden truncate ">{{ project.description }}</p>
+            <p class="text-sm sm:text-base text-gray-600  mb-8 overflow-hidden truncate ">{{ project.description }}</p>
+          
+            <div class="flex items-center gap-2 p-1 border-b mb-1 ">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="#575757" d="M12 20a7 7 0 0 1-7-7a7 7 0 0 1 7-7a7 7 0 0 1 7 7a7 7 0 0 1-7 7m7.03-12.61l1.42-1.42c-.45-.51-.9-.97-1.41-1.41L17.62 6c-1.55-1.26-3.5-2-5.62-2a9 9 0 0 0-9 9a9 9 0 0 0 9 9c5 0 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61M11 14h2V8h-2m4-7H9v2h6z"/></svg>
+              <ElText>{{ formatDateJustYearAndMonth(project.start_date) }}</ElText>
+             </div>
+            
             <div class="flex flex-col sm:flex-row gap-2 items-center">
               
-              
+             
               <div class="flex items-center justify-between w-full">
 
               <div v-for="pic in project.users">
-                <img :src="pic.profile_photo_url" alt="" class="rounded-full h-11 w-11">
+                <img :src="pic.profile_photo_url" alt="" class="rounded-full h-8 w-8">
               </div>
 
               
@@ -199,7 +205,7 @@ onMounted(() => {
                <svg class="hover:bg-blue-200 rounded-full" @click="(e) => {
                 e.preventDefault()
                 openSendInvite(project.id)
-               }" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="#242424" d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"/></svg>
+               }" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#575757" d="M15 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 1.9a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12.9 8A2.1 2.1 0 0 1 15 5.9M4 7v3H1v2h3v3h2v-3h3v-2H6V7zm11 6c-2.67 0-8 1.33-8 4v3h16v-3c0-2.67-5.33-4-8-4m0 1.9c2.97 0 6.1 1.46 6.1 2.1v1.1H8.9V17c0-.64 3.1-2.1 6.1-2.1"/></svg>
 
               </div>
 

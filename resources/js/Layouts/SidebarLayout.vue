@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col  bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
-        <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-md p-3 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
+        <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-md p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
             <div class="flex items-center gap-2">
                 <Icon icon="mdi:cat" class="text-xl text-blue-600" />
             <span class="text-base font-medium text-gray-800">Reunião dos Devs</span>
