@@ -12,21 +12,13 @@ use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
-    public function index() {
-        return Inertia::render("LandingPage");
-    }
-
-    public function home()
+    public function index()
     {
         $user = Auth::user();
         $projects = $user->projects->load(['users','owner'])->toArray();
         $invitations = $user->invitations->where('status', 'pending')->load(['owner','project'])->toArray();
 
-        return Inertia::render("Welcome", [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'laravelVersion' => Application::VERSION,
-            'phpVersion' => PHP_VERSION,
+        return Inertia::render('Projects/List', [
             'projects' => $projects,
             'user' => $user,
             'invitations' => $invitations,
@@ -37,15 +29,14 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $users = $project->users;
-        return Inertia::render("InProject", [
-            "id" => $id,
+        return Inertia::render("Projects/Show", [
             "project" => $project->load(['tasks','owner'])->toArray(),
             'users' => $users,
             'tasks' => $project->tasks->load(['responsible'])->toArray(),
         ]);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             "name" => "required|string|max:255",

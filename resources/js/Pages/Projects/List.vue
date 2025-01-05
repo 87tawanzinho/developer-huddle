@@ -61,7 +61,6 @@ const projectsFiltered = computed(() => {
 
 const handleImageChange = (file, fileList) => {
   form.value.image = fileList;
-  console.log(fileList);
 };
 
 const handleSubmit = async () => {
@@ -82,7 +81,7 @@ const handleSubmit = async () => {
   if (form.value.image && form.value.image.length > 0) {
     formData.append('image', form.value.image[0].raw);
   }
-  router.post(route('projects.create'), formData);
+  router.post(route('projects.store'), formData);
   drawer.value = false;
 };
 
@@ -214,34 +213,34 @@ onMounted(() => {
       :size="isMobile ? '100%' : '40%'"
       :before-close="isClosed"
     >
-    <ElForm    
+    <ElForm
     :label-position="'left'"
-    label-width="auto" 
+    label-width="auto"
     style="max-width: 500px"
     class="flex flex-col gap-2  justify-center   items-start   ">
   <ElFormItem label="Título" class="w-full">
     <ElInput v-model="form.title" placeholder="Título do Projeto" class="w-full" />
   </ElFormItem>
-  
+
   <ElFormItem label="Descrição" class="w-full">
     <ElInput type="textarea" v-model="form.description" placeholder="Descrição do Projeto" class="w-full" />
   </ElFormItem>
-  
+
   <ElFormItem label="Data de Início" class="w-full">
     <ElDatePicker format="DD/MM/YYYY" value-format="YYYY-MM-DD HH:mm:ss" v-model="form.start_date" type="date" placeholder="Escolha a data de início" class="w-full" />
   </ElFormItem>
-  
+
   <ElFormItem label="Data Final" class="w-full">
     <ElDatePicker format="DD/MM/YYYY" value-format="YYYY-MM-DD HH:mm:ss" v-model="form.end_date" type="date" placeholder="Escolha a data final" class="w-full" />
   </ElFormItem>
-  
+
   <ElFormItem label="Imagem" class="w-full">
     <ElUpload action="#" list-type="picture-card" :on-change="handleImageChange" :auto-upload="false">
       <i class="el-icon-plus"></i>
       <img v-if="form.image && form.image.length > 0" :src="form.image[0].url" class="avatar" />
     </ElUpload>
   </ElFormItem>
-  
+
   <ElFormItem class="w-full flex flex-col sm:flex-row justify-between gap-2">
    <div class="flex items-center">
     <ElButton type="primary" @click="handleSubmit" class="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-500 transition duration-300" :disabled="!isFormValid">

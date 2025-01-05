@@ -9,7 +9,7 @@
         <div class="flex items-center gap-2">
             <div @click="inviteStore.isOpen = !inviteStore.isOpen">
                 <Icon icon="mi:email" class="text-xl text-gray-700" />
-            </div>    
+            </div>
             <button @click="toggleMenu" class="text-gray-600">
                 <Icon icon="mi:menu" class="text-xl text-gray-700" />
             </button>
@@ -19,16 +19,16 @@
         <!-- Dropdown for mobile -->
         <div v-if="menuOpen" class="md:hidden bg-white shadow-lg p-4 fixed top-16 left-0 right-0 z-10">
             <nav class="flex flex-col w-full gap-3">
-                <Link 
-                    :href="route('projects')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="material-symbols:feed-outline" class="text-xl text-blue-600" />
                     <span>Feed</span>
                 </Link>
 
-                <Link 
-                    :href="route('projects')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mi:folder" class="text-xl text-blue-600" />
@@ -36,16 +36,16 @@
                 </Link>
 
 
-                <Link 
-                    :href="route('dashboard')" 
+                <Link
+                    :href="route('dashboard')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mi:user" class="text-xl text-blue-600" />
                     <span>Perfil</span>
                 </Link>
 
-                <Link 
-                    :href="route('prices')" 
+                <Link
+                    :href="route('prices')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="qlementine-icons:money-16" class="text-xl text-blue-600" />
@@ -55,8 +55,8 @@
         </div>
 
         <!-- Sidebar for desktop -->
-        <div 
-            v-if="$page.props.auth.user" 
+        <div
+            v-if="$page.props.auth.user"
             class="hidden md:flex w-60 bg-white shadow-md h-screen p-5 flex-col items-center gap-6"
         >
             <!-- Logo/Icon -->
@@ -69,23 +69,23 @@
 
             <!-- Navigation Links -->
             <nav class="flex flex-col w-full gap-3">
-                <Link 
-                    :href="route('projects')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="material-symbols:feed-outline" class="text-xl text-blue-600" />
                     <span>Feed</span>
                 </Link>
 
-                <Link 
-                    :href="route('projects')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mi:folder" class="text-xl text-blue-600" />
                     <span>Meus Projetos</span>
                 </Link>
 
-                <div 
+                <div
                     @click="inviteStore.isOpen = !inviteStore.isOpen"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
@@ -93,16 +93,16 @@
                     <span>Convites</span>
                 </div>
 
-                <Link 
-                    :href="route('dashboard')" 
+                <Link
+                    :href="route('dashboard')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mi:user" class="text-xl text-blue-600" />
                     <span>Perfil</span>
                 </Link>
 
-                <Link 
-                    :href="route('prices')" 
+                <Link
+                    :href="route('prices')"
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="qlementine-icons:money-16" class="text-xl text-blue-600" />
