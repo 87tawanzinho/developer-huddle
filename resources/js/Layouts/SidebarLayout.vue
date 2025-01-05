@@ -2,11 +2,18 @@
     <div class="flex flex-col bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
         <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-md p-3 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
-            <Icon icon="mdi:cat" class="text-xl text-blue-600" />
+            <div class="flex items-center gap-2">
+                <Icon icon="mdi:cat" class="text-xl text-blue-600" />
             <span class="text-base font-medium text-gray-800">Reunião dos Devs</span>
+            </div>
+        <div class="flex items-center gap-2">
+            <div @click="inviteStore.isOpen = !inviteStore.isOpen">
+                <Icon icon="mi:email" class="text-xl text-gray-700" />
+            </div>    
             <button @click="toggleMenu" class="text-gray-600">
-                <Icon icon="mdi:menu" class="text-xl text-gray-700" />
+                <Icon icon="mi:menu" class="text-xl text-gray-700" />
             </button>
+        </div>
         </div>
 
         <!-- Dropdown for mobile -->
@@ -16,7 +23,7 @@
                     :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:timeline" class="text-xl text-blue-600" />
+                    <Icon icon="material-symbols:feed-outline" class="text-xl text-blue-600" />
                     <span>Feed</span>
                 </Link>
 
@@ -24,15 +31,16 @@
                     :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:folder-outline" class="text-xl text-blue-600" />
+                    <Icon icon="mi:folder" class="text-xl text-blue-600" />
                     <span>Meus Projetos</span>
                 </Link>
+
 
                 <Link 
                     :href="route('dashboard')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:account-outline" class="text-xl text-blue-600" />
+                    <Icon icon="mi:user" class="text-xl text-blue-600" />
                     <span>Perfil</span>
                 </Link>
 
@@ -40,7 +48,7 @@
                     :href="route('prices')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:currency-usd" class="text-xl text-blue-600" />
+                    <Icon icon="qlementine-icons:money-16" class="text-xl text-blue-600" />
                     <span>Planos</span>
                 </Link>
             </nav>
@@ -65,7 +73,7 @@
                     :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:timeline" class="text-xl text-blue-600" />
+                    <Icon icon="material-symbols:feed-outline" class="text-xl text-blue-600" />
                     <span>Feed</span>
                 </Link>
 
@@ -73,15 +81,23 @@
                     :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:folder-outline" class="text-xl text-blue-600" />
+                    <Icon icon="mi:folder" class="text-xl text-blue-600" />
                     <span>Meus Projetos</span>
                 </Link>
+
+                <div 
+                    @click="inviteStore.isOpen = !inviteStore.isOpen"
+                    class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
+                >
+                    <Icon icon="mi:email" class="text-xl text-blue-600" />
+                    <span>Convites</span>
+                </div>
 
                 <Link 
                     :href="route('dashboard')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:account-outline" class="text-xl text-blue-600" />
+                    <Icon icon="mi:user" class="text-xl text-blue-600" />
                     <span>Perfil</span>
                 </Link>
 
@@ -89,7 +105,7 @@
                     :href="route('prices')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
-                    <Icon icon="mdi:currency-usd" class="text-xl text-blue-600" />
+                    <Icon icon="qlementine-icons:money-16" class="text-xl text-blue-600" />
                     <span>Planos</span>
                 </Link>
             </nav>
@@ -106,8 +122,10 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
+import { useInvitesStore } from '@/stores/useInviteStore';
 
 const menuOpen = ref(false);
+const inviteStore = useInvitesStore();
 
 function toggleMenu() {
     menuOpen.value = !menuOpen.value;
