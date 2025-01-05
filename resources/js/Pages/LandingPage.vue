@@ -1,7 +1,7 @@
 <template>
     <div>
       <Head title="Reunião dos Devs" />
-      <div id="topbar" class="p-4 border-b">
+      <div id="topbar" class="p-4 border-b fixed top-0 w-full bg-white z-10">
         <div class="container mx-auto flex justify-between items-center">
           <div class="flex items-center gap-2">
             <Icon icon="mdi:account-group" class="text-4xl text-blue-600" />
@@ -22,7 +22,7 @@
           </div>
       </div>
   
-      <div class="items-center flex flex-col h-full lg:h-screen py-8 lg:py-0 mt-0 lg:mt-12">
+      <div class="items-center flex flex-col h-full lg:h-screen py-8 lg:py-0 mt-24 lg:mt-32">
         <p variant="h1" class="text-4xl font-extrabold text-gray-800 mb-4 sm:text-4xl text-center">
           Reunião dos Devs
         </p>
