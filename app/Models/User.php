@@ -88,7 +88,12 @@ class User extends Authenticatable
 
     public function invitations(): HasMany
     {
-        return $this->hasMany(Invitation::class);
+        return $this->hasMany(Invitation::class, 'invited_id');
+    }
+
+    public function invitationsSent(): HasMany
+    {
+        return $this->hasMany(Invitation::class, 'owner_id');
     }
 
     public function tasks(): HasMany

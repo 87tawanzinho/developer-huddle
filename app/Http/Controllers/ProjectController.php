@@ -2,48 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invitation;
 use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
 class ProjectController extends Controller
 {
-    //
     public function index() {
         return Inertia::render("House");
     }
 
-    public function home(Request $request) {
-       
-        $projects = $request->user()->projects;
+    public function home()
+    {
+        $user = Auth::user();
+        $projects = $user->projects->load(['users','owner'])->toArray();
+        $invitations = $user->invitations->where('status', 'pending')->load(['owner','project'])->toArray();
 
-        $invitations = Invitation::where('email', $request->user()->email)->where('status', 'pending')->get();
         return Inertia::render("Welcome", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
             'phpVersion' => PHP_VERSION,
-            "projects" => $projects,
-            'user' => $request->user(),
+            'projects' => $projects,
+            'user' => $user,
             'invitations' => $invitations,
         ]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $project = Project::findOrFail($id);
         $users = $project->users;
         return Inertia::render("InProject", [
-         "id" => $id,
-         "project" => $project,
-         'users' => $users,
-         'tasks' => $project->tasks,
+            "id" => $id,
+            "project" => $project->load(['tasks','owner'])->toArray(),
+            'users' => $users,
+            'tasks' => $project->tasks->load(['responsible'])->toArray(),
         ]);
     }
 
-    public function create(Request $request,) {
+    public function create(Request $request)
+    {
         $request->validate([
             "name" => "required|string|max:255",
             "description" => "required|string",
@@ -52,30 +55,20 @@ class ProjectController extends Controller
             "image" => "image",
         ]);
 
-        $project = new Project();
-        $project->name = $request->input('name');
-        $project->owner = $request->user()->name;
-        $project->description = $request->input('description');
-        $project->start_date = $request->input('start_date');
-        $project->end_date = $request->input('end_date');
-
-        if ($request->hasFile('image')) {
-            $project->image = $request->file('image')->store('images', 'public');
-        }
-
-        $project->save();
-        $request->user()->projects()->attach($project->id);
+        $project = Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'cover_path' => $request->file('image')->store('images/projects'),
+        ]);
+        $project->users()->attach($request->user()->id, ['role' => 'owner']);
 
         return redirect()->back();
     }
 
-    public function delete($id) {
-        $project = Project::findOrFail($id);
-        $project->delete();
-        return redirect('/');
-    }
-
-    public function createTask(Request $request) {
+    public function createTask(Request $request)
+    {
         $request->validate([
             "title" => "required|string|max:255",
             "description" => "required|string",
@@ -85,7 +78,6 @@ class ProjectController extends Controller
             "progress" => "required|integer|min:0|max:100",
             "project_id" => "required|exists:projects,id",
         ]);
-
 
 
         $task = new Task();
@@ -98,11 +90,12 @@ class ProjectController extends Controller
         $task->project_id = $request->project_id;
         $task->save();
 
-    return redirect()->back();
+        return redirect()->back();
 
     }
 
-    public function deleteTask(Request $request) {
+    public function deleteTask(Request $request)
+    {
         $task = Task::findOrFail($request->id);
 
         $task->delete();
@@ -110,16 +103,25 @@ class ProjectController extends Controller
         return redirect()->back();
     }
 
-    public function updateTaskDescription(Request $request, $projectId, $taskId) { {
-       $request->validate([
-              "description" => "required|string",
-         ]);
-
-         $task = Task::where('project_id', $projectId)->findOrFail($taskId);
-         $task->description = $request->description;
-         $task->save();
-
-         return redirect()->back();
+    public function delete($id)
+    {
+        $project = Project::findOrFail($id);
+        $project->delete();
+        return redirect('/');
     }
-}
+
+    public function updateTaskDescription(Request $request, $projectId, $taskId)
+    {
+        {
+            $request->validate([
+                "description" => "required|string",
+            ]);
+
+            $task = Task::where('project_id', $projectId)->findOrFail($taskId);
+            $task->description = $request->description;
+            $task->save();
+
+            return redirect()->back();
+        }
+    }
 }

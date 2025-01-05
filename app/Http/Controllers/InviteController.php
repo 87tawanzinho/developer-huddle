@@ -10,79 +10,60 @@ use Illuminate\Support\Str;
 
 class InviteController extends Controller
 {
+    #TODO: adicionar role ao convite
     public function store(Request $request)
     {
         // Validação do email
         $validated = $request->validate([
-            'email' => 'required|email',
+            'username' => 'required|exists:users,username',
             'project_id' => 'required|exists:projects,id',
+        ],[
+            'username.exists' => 'User not found',
+            'project_id.exists' => 'Project not found',
         ]);
 
-        // Encontrando o usuário pelo email
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return back()->with('error', 'User not found');
-        }
-
-        // Encontrando o projeto
+        $user = User::where('username', $validated['username'])->first();
         $project = Project::find($validated['project_id']);
-        // Verificando se o usuário já é membro do projeto
+
         if ($user && $project->users()->wherePivot('user_id', $user->id)->exists()) {
-            return back()->with('error', 'User is already a member of this project');
+            return response()->json(['error' => 'User already in project'], 422);
         }
 
-        // Gerando token
-        $token = Str::random(32);
-
-        // Criando o convite na tabela de 'invitations'
         Invitation::create([
+            'invited_id' => $user->id,
             'project_id' => $project->id,
-            'email' => $validated['email'],
-            'token' => $token,
-            'status' => 'pending',
-            'expires_at' => now()->addDays(7),
-            'project_name' => $project->name,
-            'project_description' => $project->description,
-            'start_date' => $project->start_date,
-            'end_date' => $project->end_date,
+            'owner_id' => $request->user()->id,
+            'role' => 'member',
+            'expires_at' => now()->addMonth(),
         ]);
-
-     
 
         return back()->with('success', 'Convite enviado com sucesso!');
     }
 
     public function updateInvite(Request $request)
     {
-        // Recuperando o convite pelo token
-        $invitation = Invitation::where('token', $request->token)->first();
-    
-        // Verificando se o convite existe
-        if (!$invitation) {
-            return back()->with('error', 'Convite não encontrado!');
-        }
-    
-        // Atualizando o status do convite para 'aceito'
-        $invitation->update([
-            'status' => 'accepted',
+        $validated = $request->validate([
+            'invitation_id' => 'required|exists:invitations,id',
+            'status' => 'required|in:accepted,rejected',
         ]);
-    
-        // Recuperando o usuário autenticado
-        $user = auth()->user();
-    
-        // Recuperando o projeto
-        $project = Project::find($request->project_id);
-    
-        // Verificando se o projeto existe
-        if (!$project) {
-            return back()->with('error', 'Projeto não encontrado!');
+
+        $user = $request->user();
+        $invitation = $user->invitations()->findOrfail($validated['invitation_id']);
+
+        $invitation->update([
+            'status' => $validated['status'],
+        ]);
+
+        if($validated['status'] == 'accepted') {
+            $project = $invitation->project;
+            if($project->users()->wherePivot('user_id', $user->id)->exists()) {
+                return redirect()->back();
+            }
+            $project->users()->attach($user->id, ['role' => $invitation->role]);
         }
-    
-        // Associando o usuário ao projeto usando a tabela pivot
-        $project->users()->attach($user->id);
-    
-        // Retornando com sucesso
+
+
         return redirect()->back();
     }
-    
+
 }

@@ -10,7 +10,9 @@ class Invitation extends Model
 {
     protected $fillable = [
         'project_id',
-        'user_id',
+        'owner_id',
+        'invited_id',
+        'role',
         'status',
         'expires_at',
     ];
@@ -24,8 +26,13 @@ class Invitation extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function user(): BelongsTo
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function invited(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'invited_id');
     }
 }

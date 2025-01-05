@@ -18,8 +18,8 @@ class ProjectFactory extends Factory
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
             'cover_path' => $this->createImage(),
-            'start_date' => Carbon::now(),
-            'end_date' => Carbon::now(),
+            'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'end_date' => $this->faker->dateTimeBetween('now', '+1 year'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
