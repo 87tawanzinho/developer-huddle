@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description');;
+            $table->text('description');
+            $table->boolean('is_private')->default(false);
             $table->string('cover_path');
             $table->timestamp('start_date');
             $table->timestamp('end_date');

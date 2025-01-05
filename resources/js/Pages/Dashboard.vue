@@ -1,6 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
+import {usePage} from "@inertiajs/vue3";
+import {onMounted} from "vue";
+
+const {auth} = usePage().props;
+
+console.log(auth);
+
+onMounted(() => {
+    console.log('Profile page mounted');
+});
 </script>
 
 <template>
@@ -10,7 +19,5 @@ import Welcome from '@/Components/Welcome.vue';
                 Meu Perfil
             </h2>
         </template>
-
-
     </AppLayout>
 </template>
