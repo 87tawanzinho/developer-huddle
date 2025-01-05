@@ -34,6 +34,9 @@ const props = defineProps({
   invitations: Object
 });
 
+onMounted(() => {
+  inviteStore.invitations = props.invitations
+})
 const searchQuery = ref('');
 const form = ref({
   title: '',
@@ -201,8 +204,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
-    <Invites :invitations="invitations" />
 
     <ElDrawer
       v-model="drawer"

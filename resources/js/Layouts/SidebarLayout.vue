@@ -6,9 +6,13 @@
                 <Icon icon="mdi:cat" class="text-xl text-blue-600" />
             <span class="text-base font-medium text-gray-800">Reunião dos Devs</span>
             </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
             <div @click="inviteStore.isOpen = !inviteStore.isOpen">
-                <Icon icon="mi:email" class="text-xl text-gray-700" />
+                <Icon icon="mi:email" class="text-xl text-gray-700 relative" />
+                <span v-if="inviteStore.invitations.length" 
+    class="absolute right-9 top-[9px] flex items-center justify-center bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4">
+    {{ inviteStore.invitations.length }}
+  </span>
             </div>
             <button @click="toggleMenu" class="text-gray-600">
                 <Icon icon="mi:menu" class="text-xl text-gray-700" />
@@ -86,12 +90,17 @@
                 </Link>
 
                 <div
-                    @click="inviteStore.isOpen = !inviteStore.isOpen"
-                    class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
-                >
-                    <Icon icon="mi:email" class="text-xl text-blue-600" />
-                    <span>Convites</span>
-                </div>
+  @click="inviteStore.isOpen = !inviteStore.isOpen"
+  class="relative flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
+>
+  <Icon icon="mi:email" class="text-xl text-blue-600 relative" />
+  <span v-if="inviteStore.invitations.length" 
+    class="absolute  left-0 top-[4px] flex items-center justify-center bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4">
+    {{ inviteStore.invitations.length }}
+  </span>
+  <span>Convites</span>
+</div>
+
 
                 <Link
                     :href="route('dashboard')"
@@ -115,6 +124,9 @@
         <div class="flex-1 mt-12 md:mt-0">
             <slot />
         </div>
+
+        <Invites />
+
     </div>
 </template>
 
@@ -123,7 +135,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
 import { useInvitesStore } from '@/stores/useInviteStore';
-
+import Invites from '@/Components/Invites.vue';
 const menuOpen = ref(false);
 const inviteStore = useInvitesStore();
 

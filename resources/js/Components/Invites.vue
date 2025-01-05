@@ -3,7 +3,6 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { formatDate } from '@/Pages/utils/formatDate';
 import { useInvitesStore } from '@/stores/useInviteStore';
 import { router } from '@inertiajs/vue3';
-const props = defineProps(['invitations'])
 
 const inviteStore = useInvitesStore();
 const drawerSize = ref('100%');  // Tamanho inicial para mobile (100%)
@@ -47,14 +46,14 @@ const acceptedInvitation = async (invitationId) => {
   >
 
     <!-- Mensagem quando não há convites -->
-    <div v-if="!props.invitations?.length" class="flex text-sm flex-col items-center justify-center mt-8 p-8 bg-gray-50 rounded-lg shadow-inner">
+    <div v-if="!inviteStore.invitations?.length" class="flex text-sm flex-col items-center justify-center mt-8 p-8 bg-gray-50 rounded-lg shadow-inner">
       <Icon icon="mdi:email-outline" class="text-gray-400 text-4xl mb-4"/>
       <span class="text-gray-500 text-center">Você não possui convites para projetos no momento</span>
     </div>
 
     <!-- Lista de convites -->
     <div v-else>
-      <div v-for="invitation in props.invitations" :key="invitation.id" class="bg-gray-50 p-6 rounded-lg shadow-md mb-6 transition-all duration-200 hover:shadow-xl">
+      <div v-for="invitation in inviteStore.invitations" :key="invitation.id" class="bg-gray-50 p-6 rounded-lg shadow-md mb-6 transition-all duration-200 hover:shadow-xl">
         <div class="flex items-center gap-3 mb-4">
           <Icon icon="mdi:account" class="text-gray-500 text-2xl"/>
           <p class="text-gray-700 font-semibold text-lg md:text-xl">{{ invitation.project.name }}</p>
