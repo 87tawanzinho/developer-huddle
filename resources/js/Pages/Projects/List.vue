@@ -160,10 +160,12 @@ onMounted(() => {
           v-model="searchQuery"
           placeholder="Procurar por Projetos"
           class="w-full sm:w-auto"
+          size="large"
           :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500' })"
         />
         <ElButton
           type="primary"
+          size="large"
           @click="drawer=true"
           class="w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 transition duration-300"
         >
@@ -173,36 +175,43 @@ onMounted(() => {
       </div>
 
       <div class=" flex flex-wrap gap-2">
-        <div v-for="project in projectsFiltered" :key="project.id" class=" flex flex-wrap w-96 relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300">
+        <div v-for="project in projectsFiltered" :key="project.id" class="border rounded-2xl flex flex-wrap w-96 relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out ">
+          <a :href="route('projects.show', project.id)" class="w-full">
           <img :src="`/storage/${project.cover_path}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
           <div class="p-3 sm:p-4 md:p-6">
-            <div class="flex items-center gap-2 mb-2">
-              <Icon icon="mdi:account" class="text-gray-500 text-sm sm:text-base" />
-              <ElText class="text-sm sm:text-base">{{ project.owner[0]?.name }}</ElText>
+            <div class="flex items-center gap-2 mb-2 border-b bg-red-50 w-max text-red-600 px-2 text-sm rounded-lg">
+              <Icon icon="mdi:account" class="" />
+              <p class=" ">{{ project.owner[0]?.name }}</p>
             </div>
             <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3">{{ project.name }}</h3>
-            <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden">{{ project.description }}</p>
-            <div class="flex flex-col sm:flex-row gap-2">
-              <a :href="route('projects.show', project.id)" class="w-full">
-                <ElButton
-                  size=""
-                  type="primary"
-                  class="w-full bg-blue-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-blue-500 transition duration-300"
-                >
-                  Ver Projeto
-                </ElButton>
-              </a>
-              <ElButton
-                size=""
-                @click="openSendInvite(project.id)"
-                class="w-full bg-green-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-green-500 transition duration-300"
-              >
-                Enviar Convite
-              </ElButton>
+            <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden truncate ">{{ project.description }}</p>
+            <div class="flex flex-col sm:flex-row gap-2 items-center">
+              
+              
+              <div class="flex items-center justify-between w-full">
+
+              <div v-for="pic in project.users">
+                <img :src="pic.profile_photo_url" alt="" class="rounded-full h-11 w-11">
+              </div>
+
+              
+      
+               <svg class="hover:bg-blue-200 rounded-full" @click="(e) => {
+                e.preventDefault()
+                openSendInvite(project.id)
+               }" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="#242424" d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"/></svg>
+
+              </div>
+
+
             </div>
-          </div>
+            </div>
+        
+        </a>
         </div>
+     
       </div>
+    
     </div>
 
     <ElDrawer
