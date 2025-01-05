@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { formatDate } from '@/Pages/utils/formatDate';
 import { useInvitesStore } from '@/stores/useInviteStore';
 import { router } from '@inertiajs/vue3';
-
+import { ElMessage } from 'element-plus';
 const inviteStore = useInvitesStore();
 const drawerSize = ref('100%');  // Tamanho inicial para mobile (100%)
 
@@ -26,12 +26,12 @@ onUnmounted(() => {
 
 
 const acceptedInvitation = async (invitationId) => {
-  await router.post(route('projects.updateInvite'), {
+   router.post(route('projects.updateInvite'), {
     invitation_id: invitationId,
     status: 'accepted',
   });
   ElMessage.success('Convite aceito com sucesso.');
-  
+  inviteStore.invitations = inviteStore.invitations.filter((invitation) => invitation.id !== invitationId)
 };
 
 </script>

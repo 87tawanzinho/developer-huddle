@@ -9,9 +9,9 @@
         <div class="flex items-center gap-3">
             <div @click="inviteStore.isOpen = !inviteStore.isOpen">
                 <Icon icon="mi:email" class="text-xl text-gray-700 relative" />
-                <span v-if="inviteStore.invitations.length" 
+                <span v-if="invitations" 
     class="absolute right-9 top-[9px] flex items-center justify-center bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4">
-    {{ inviteStore.invitations.length }}
+    {{ invitations }}
   </span>
             </div>
             <button @click="toggleMenu" class="text-gray-600">
@@ -94,9 +94,9 @@
   class="relative flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
 >
   <Icon icon="mi:email" class="text-xl text-blue-600 relative" />
-  <span v-if="inviteStore.invitations.length" 
+  <span v-if="invitations" 
     class="absolute  left-0 top-[4px] flex items-center justify-center bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4">
-    {{ inviteStore.invitations.length }}
+    {{ invitations }}
   </span>
   <span>Convites</span>
 </div>
@@ -136,9 +136,14 @@ import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
 import { useInvitesStore } from '@/stores/useInviteStore';
 import Invites from '@/Components/Invites.vue';
+import { computed } from 'vue';
+
 const menuOpen = ref(false);
 const inviteStore = useInvitesStore();
 
+const invitations = computed(() => inviteStore.invitations.length);
+
+console.log(invitations)
 function toggleMenu() {
     menuOpen.value = !menuOpen.value;
 }
