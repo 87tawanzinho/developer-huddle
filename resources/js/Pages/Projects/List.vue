@@ -172,8 +172,8 @@ onMounted(() => {
         </ElButton>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 px-4 sm:px-0">
-        <div v-for="project in projectsFiltered" :key="project.id" class="relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300">
+      <div class=" flex flex-wrap gap-2">
+        <div v-for="project in projectsFiltered" :key="project.id" class=" flex flex-wrap w-96 relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300">
           <img :src="`/storage/${project.cover_path}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
           <div class="p-3 sm:p-4 md:p-6">
             <div class="flex items-center gap-2 mb-2">

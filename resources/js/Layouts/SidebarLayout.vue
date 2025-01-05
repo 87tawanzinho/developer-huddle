@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col bg-gray-50 text-gray-900">
+    <div class="flex flex-col  bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
         <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-md p-3 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
             <div class="flex items-center gap-2">
@@ -61,7 +61,7 @@
         <!-- Sidebar for desktop -->
         <div
             v-if="$page.props.auth.user"
-            class="hidden md:flex w-60 bg-white shadow-md h-screen p-5 flex-col items-center gap-6"
+            class="hidden  md:flex w-60 bg-white shadow-md h-full p-5 flex-col items-center gap-6"
         >
             <!-- Logo/Icon -->
             <div class="flex flex-col items-center gap-1">
