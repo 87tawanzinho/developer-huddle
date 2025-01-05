@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->text('description');
             $table->decimal('price', 8, 2);
             $table->enum('type', ['free', 'basic', 'premium', 'enterprise']);
+            $table->json('icon')->nullable();
             $table->integer('count_projects');
             $table->integer('count_users_project');
             $table->integer('count_admin_project');

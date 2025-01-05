@@ -14,6 +14,7 @@ class Plan extends Model
         'description',
         'price',
         'type',
+        'icon',
         'count_projects',
         'count_users_project',
         'count_admin_project',
@@ -21,6 +22,7 @@ class Plan extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'icon' => 'array',
     ];
 
     public function subscriptions(): HasMany
