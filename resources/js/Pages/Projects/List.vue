@@ -17,7 +17,6 @@ import {
 } from 'element-plus';
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
-import { formatDate } from './utils/formatDate';
 import Invites from '@/Components/Invites.vue';
 
 const inviteStore = useInvitesStore();
