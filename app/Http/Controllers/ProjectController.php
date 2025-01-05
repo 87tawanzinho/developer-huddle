@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +65,7 @@ class ProjectController extends Controller
             "title" => "required|string|max:255",
             "description" => "required|string",
             "priority" => "required|string",
-            "responsible" => "required|string|max:255",
+            "responsible_id" => "required|integer|max:255",
             "status" => "required|string|max:255",
             "progress" => "required|integer|min:0|max:100",
             "project_id" => "required|exists:projects,id",
@@ -76,7 +77,7 @@ class ProjectController extends Controller
         $task->description = $request->description;
         $task->status = $request->status;
         $task->priority = $request->priority;
-        $task->responsible = $request->responsible;
+        $task->responsible_id = $request->responsible_id;
         $task->progress = $request->progress;
         $task->project_id = $request->project_id;
         $task->save();
@@ -113,11 +114,11 @@ class ProjectController extends Controller
                 "progress" => "nullable",
             ]);
 
+
             $task = Task::where('project_id', $projectId)->findOrFail($taskId);
             $task->description = $request->input('description', $task->description);
             $task->progress = $request->input('progress', $task->progress);
-    
-        
+            $task->responsible_id = $request->input('responsible_id', $task->responsible_id);
             $task->save();
 
             return redirect()->back();

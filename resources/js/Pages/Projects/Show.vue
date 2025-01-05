@@ -91,19 +91,19 @@
               <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
 
               <div class="flex flex-col overflow-auto max-h-96">
-                <div v-for="task in tasks" :key="task.id" :class="['gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300', task.progress === 100 ? 'bg-green-100' : '']">
+                <div v-for="task in tasks" :key="task.id" :class="['gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300', task.progress === 100 ? 'bg-blue-50' : '']">
                   <div class="flex justify-between items-center">
                     <div class="flex items-center gap-4">
                       <Icon icon="mdi:delete" class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" @click="deleteTask(task.id)" />
                       <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
                     </div>
                     <span :class="{
-                      'text-green-500': task.status === 'done',
-                      'text-blue-500': task.status === 'doing',
+                      'text-blue-500': task.status === 'done',
+                      'text-yellow-500': task.status === 'in_progress',
                       'text-red-500': task.status === 'todo'
                     }" class="text-sm font-medium flex items-center gap-2">
                       <Icon v-if="task.status === 'done'" icon="mdi:check-circle" class="w-5 h-5" />
-                      <Icon v-if="task.status === 'doing'" icon="mdi:progress-clock" class="w-5 h-5" />
+                      <Icon v-if="task.status === 'in_progress'" icon="mdi:progress-clock" class="w-5 h-5" />
                       <Icon v-if="task.status === 'todo'" icon="mdi:clipboard-outline" class="w-5 h-5" />
                       {{ translatedStatus[task.status] }}
                     </span>
@@ -112,10 +112,20 @@
 
                   <div class="flex justify-between mt-4">
                     <div class="flex items-center gap-2">
-                      <span class="px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600 flex items-center gap-2">
+                      <ElDropdown onclick="changeResponsible"  placement="top-start">
+                       <ElButton type="primary" style="border-radius: 14px; outline: none;">
                         <Icon icon="mdi:account" class="w-4 h-4" />
                         {{ task.responsible.name }}
-                      </span>
+                       </ElButton>
+                       <template #dropdown>
+                        <div v-for="user in project.users" :key="user.id || user" >
+                          <el-dropdown-item @click="() => {
+                            currentTaskId = task.id
+                            updateTask('responsible', user.id)
+                          }">{{ user.name }}</el-dropdown-item>
+                        </div>
+                       </template>
+                      </ElDropdown>
                     </div>
                     <div class="flex items-center gap-2">
                       <span :class="{
@@ -158,8 +168,8 @@
                 <!-- Responsável -->
                 <div class="space-y-2">
                   <ElText class="text-gray-700">Responsável</ElText>
-                  <ElSelect v-model="create.responsible" placeholder="Selecione um responsável" class="w-full">
-                    <ElOption v-for="user in users" :key="user" :value="user.name" :label="user.name" />
+                  <ElSelect v-model="create.responsible_id" placeholder="Selecione um responsável" class="w-full">
+                    <ElOption v-for="user in users" :key="user" :value="user.id" :label="user.name" />
                   </ElSelect>
                 </div>
 
@@ -198,15 +208,15 @@
                           A fazer
                         </div>
                       </ElOption>
-                      <ElOption value="doing" label="Em andamento">
+                      <ElOption value="in_progress" label="Em andamento">
                         <div class="flex items-center">
-                          <Icon icon="mdi:progress-clock" class="mr-2 text-blue-500" />
+                          <Icon icon="mdi:progress-clock" class="mr-2 text-yellow-500" />
                           Em andamento
                         </div>
                       </ElOption>
                       <ElOption value="done" label="Concluído">
                         <div class="flex items-center">
-                          <Icon icon="mdi:check-circle" class="mr-2 text-green-500" />
+                          <Icon icon="mdi:check-circle" class="mr-2 text-blue-500" />
                           Concluído
                         </div>
                       </ElOption>
@@ -277,7 +287,7 @@
               <ElText>Seu novo Progresso será: {{ newProgress }}%</ElText>
 
               <div class="flex justify-end space-x-4 pt-4">
-                <ElButton @click="descriptionDrawer = false">Cancelar</ElButton>
+                <ElButton @click="progressDrawer = false">Cancelar</ElButton>
                 <ElButton type="primary" class="flex items-center" @click="updateTask('progress', newProgress)">
                   <Icon icon="mdi:check" class="mr-2" />
                   Atualizar Progresso
@@ -314,10 +324,11 @@ const create = ref({
     taskTitle: '',
     taskDescription: '',
     priority: 'low',
-    responsible: '',
+    responsible_id: undefined,
     status: 'todo',
     progress: 0,
 });
+
 
 const truncatedDescription = computed(() => {
     const maxLength = 100;
@@ -331,7 +342,7 @@ const isTruncated = computed(() => {
     return props.project.description.length > 100;
 });
 
-import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText, ElProgress, ElSlider, ElMessage } from 'element-plus';
+import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText, ElProgress, ElSlider, ElMessage, ElDropdown } from 'element-plus';
 import axios from 'axios';
 
 const translatedPriority = computed(() => ({
@@ -342,7 +353,7 @@ const translatedPriority = computed(() => ({
 
 const translatedStatus = computed(() => ({
     done: 'Concluído',
-    doing: 'Em andamento',
+    in_progress: 'Em andamento',
     todo: 'A fazer',
 }));
 
@@ -363,7 +374,7 @@ const createTask = () => {
         title: create.value.taskTitle,
         description: create.value.taskDescription,
         priority: create.value.priority,
-        responsible: create.value.responsible,
+        responsible_id: create.value.responsible_id,
         status: create.value.status,
         progress: create.value.progress,
         project_id: props.project.id,
@@ -408,7 +419,9 @@ function changeDescriptionDrawer(description, taskId) {
     currentTaskId.value = taskId;
 }
 
-function updateTask(type, value) {
+
+
+function updateTask(type, id, value) {
   if(type === 'description') {
     if (newDescription.value !== '') {
         try {
@@ -447,6 +460,17 @@ function updateTask(type, value) {
       }
     }
 
-    
-}
+    if(type === 'responsible') {
+        try {
+            router.put(route('projects.updateTask', { projectId: props.project.id, taskId: currentTaskId.value }), {
+              responsible_id: id
+            });
+        } catch (error) {
+            console.log(error);
+        }
+      } 
+    }
+
 </script>
+
+
