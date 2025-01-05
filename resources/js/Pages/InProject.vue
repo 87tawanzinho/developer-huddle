@@ -10,8 +10,8 @@
                 <!-- Project Header -->
                 <div class="flex flex-col sm:flex-row items-center gap-6">
                     <!-- Project Image -->
-                    <img
-                        :src="`/storage/${project.cover_path}`"
+                    <img 
+                        :src="`/storage/${project.image}`" 
                         alt="Imagem do Projeto"
                         class="rounded-full w-24 h-24 sm:w-32 sm:h-32 object-cover border border-gray-200 shadow-sm"
                     />
@@ -23,11 +23,11 @@
                                 {{ project.name }}
                             </h1>
 
-                            <div v-if="$page.props.auth.user.id === project.owner[0].id" class="absolute right-8 top-2 sm:right-10">
-                                <Icon
+                            <div v-if="$page.props.auth.user.name === project.owner" class="absolute right-8 top-2 sm:right-10">
+                                <Icon 
                                     @click="deleteProjectIfOwner(project.id)"
-                                    icon="mdi:delete"
-                                    class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75"
+                                    icon="mdi:delete" 
+                                    class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
                                 />
                             </div>
                         </div>
@@ -43,11 +43,11 @@
                         </p>
                     </div>
                 </div>
-
+                
                 <div class="flex justify-between items-center">
                     <div class="mt-8 flex items-center gap-2">
                         <div v-for="user in project.users" :key="user.name" class="flex items-center gap-2">
-                            <span
+                            <span 
                                 class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600"
                             >
                                 {{ user.name }}
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div>
                     <div v-if="!tasks.length" class="mt-24 flex flex-col gap-4 justify-center pb-48 items-center h-full">
                         <ElText size="large">Você ainda não possui tarefas</ElText>
@@ -97,10 +97,10 @@
                             <div v-for="task in tasks" :key="task.id" class="gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center gap-4">
-                                        <Icon
-                                            icon="mdi:delete"
-                                            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75"
-                                            @click="deleteTask(task.id)"
+                                        <Icon 
+                                            icon="mdi:delete" 
+                                            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75" 
+                                            @click="deleteTask(task.id)" 
                                         />
                                         <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
                                     </div>
@@ -120,9 +120,9 @@
                                 <div class="flex justify-between mt-4">
                                     <div class="flex items-center gap-2">
 
-                                        <span class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600 flex items-center gap-2">
+                                        <span class="px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600 flex items-center gap-2">
                                             <Icon icon="mdi:account" class="w-4 h-4" />
-                                            {{ task.responsible.name}}
+                                            {{ task.responsible }}
                                         </span>
                                     </div>
                                     <div class="flex items-center gap-2">

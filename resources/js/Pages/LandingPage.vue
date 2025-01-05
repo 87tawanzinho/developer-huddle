@@ -9,10 +9,17 @@
               Developer Huddle
             </p>
           </div>
-          <div>
+          <Link :href="route('login')" v-if="!$page.props.auth.user">
             <ElButton  style="width: 120px; border-radius: 12px;">Login</ElButton>
+          </Link>
+
+          <Link :href="route('dashboard')" v-else>
+             <div class="flex items-center gap-2">
+              <p class="text-sm text-gray-600 hidden lg:flex" >{{ $page.props.auth.user.name }}</p>
+              <img :src="$page.props.auth.user.profile_photo_url" alt="User Avatar" class="w-10 h-10 rounded-full" />
+            </div>
+            </Link>
           </div>
-        </div>
       </div>
   
       <div class="items-center flex flex-col h-full lg:h-screen py-8 lg:py-0 mt-0 lg:mt-12">
@@ -22,9 +29,13 @@
         <p variant="body1" class="text-md text-gray-600 mb-6 sm:text-xl w-full text-center">
           Alcance o topo da produtividade. Organize suas tarefas, colabore com sua equipe e maximize seus resultados de forma eficiente e intuitiva.
         </p>
-        <div class="flex mb-4">
-          <ElButton type="success" size="large" style="width: 140px; border-radius: 12px;">Começar</ElButton>
+        <div class="flex gap-2 mb-4">
+          <Link :href="route('register')">
+            <ElButton type="success" size="large" style="width: 140px; border-radius: 12px;">Começar</ElButton>
+          </Link>
+         <Link :href="route('about')">
           <ElButton type="info" plain size="large" style="width: 140px; border-radius: 12px;">Saber Mais</ElButton>
+          </Link>
         </div>
         <img src="/landing_page/teste.jpg" alt="Landing Page" class="rounded-lg shadow-xl w-full sm:w-auto" style="height: auto; max-height: 600px;" />
       </div>
@@ -74,7 +85,7 @@
   
   <script setup>
     import { Icon } from '@iconify/vue';
-    import { Head } from '@inertiajs/vue3';
+    import { Head, Link } from '@inertiajs/vue3';
     import { ElButton } from 'element-plus';
   </script>
   

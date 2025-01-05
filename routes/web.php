@@ -26,7 +26,18 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::get('/', [ProjectController::class,'index'])->name('landingpage');
+
+
+    Route::get('/', function () {
+        return Inertia::render('LandingPage');
+    })->name('landing_page');
+
+
+    Route::get('/about', function () {
+        return Inertia::render('About');
+    })->name('about');
+
+
     Route::get('/home', [ProjectController::class,'home'])->name('home');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
     Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
