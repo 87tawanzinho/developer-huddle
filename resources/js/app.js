@@ -8,6 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import ptBr from 'element-plus/es/locale/lang/pt-br'
+import { createPinia } from 'pinia';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -20,6 +21,7 @@ createInertiaApp({
             .use(ElementPlus, {
                 locale: ptBr
             })
+            .use(createPinia())
            
             .mount(el);
     },
