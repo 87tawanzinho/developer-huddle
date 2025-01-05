@@ -12,22 +12,22 @@
         <!-- Dropdown for mobile -->
         <div v-if="menuOpen" class="md:hidden bg-white shadow-lg p-4 fixed top-16 left-0 right-0 z-10">
             <nav class="flex flex-col w-full gap-4">
-                <Link 
-                    :href="route('home')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:home-outline" class="text-2xl text-blue-500" />
                     <span>Início</span>
                 </Link>
-                <Link 
-                    :href="route('dashboard')" 
+                <Link
+                    :href="route('dashboard')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:account-outline" class="text-2xl text-blue-500" />
                     <span>Perfil</span>
                 </Link>
-                <Link 
-                    :href="route('prices')" 
+                <Link
+                    :href="route('prices')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:currency-usd" class="text-2xl text-blue-500" />
@@ -37,8 +37,8 @@
         </div>
 
         <!-- Sidebar for desktop -->
-        <div 
-            v-if="$page.props.auth.user" 
+        <div
+            v-if="$page.props.auth.user"
             class="hidden md:flex w-64 bg-white shadow-lg h-screen p-6 flex-col items-center gap-8"
         >
             <!-- Logo/Icon -->
@@ -51,22 +51,22 @@
 
             <!-- Navigation Links -->
             <nav class="flex flex-col w-full gap-4">
-                <Link 
-                    :href="route('home')" 
+                <Link
+                    :href="route('projects.index')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:home-outline" class="text-2xl text-blue-500" />
                     <span>Início</span>
                 </Link>
-                <Link 
-                    :href="route('dashboard')" 
+                <Link
+                    :href="route('dashboard')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:account-outline" class="text-2xl text-blue-500" />
                     <span>Perfil</span>
                 </Link>
-                <Link 
-                    :href="route('prices')" 
+                <Link
+                    :href="route('prices')"
                     class="flex items-center gap-3 p-3 w-full text-lg font-medium text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:currency-usd" class="text-2xl text-blue-500" />

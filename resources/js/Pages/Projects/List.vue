@@ -16,7 +16,7 @@ import {
 } from 'element-plus';
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
-import {formatDate} from './utils/formatDate';
+import {formatDate} from '../utils/formatDate.js';
 
 
 const drawer = ref(false);
@@ -80,7 +80,7 @@ const handleSubmit = async () => {
     if (form.value.image && form.value.image.length > 0) {
         formData.append('image', form.value.image[0].raw);
     }
-    router.post(route('projects.create'), formData)
+    router.post(route('projects.store'), formData)
     drawer.value = false;
 };
 
