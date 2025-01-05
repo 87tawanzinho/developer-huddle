@@ -94,7 +94,7 @@
                         <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
 
                         <div class="flex flex-col overflow-auto max-h-96">
-                            <div v-for="task in tasks" :key="task.id" class="gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
+                            <div v-for="task in tasks" :key="task.id" :class="['gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300', task.progress === 100 ? 'bg-green-100' : '']">
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center gap-4">
                                         <Icon 
@@ -122,7 +122,7 @@
 
                                         <span class="px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600 flex items-center gap-2">
                                             <Icon icon="mdi:account" class="w-4 h-4" />
-                                            {{ task.responsible }}
+                                            {{ task.responsible.name }}
                                         </span>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -138,7 +138,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <ElProgress :percentage="task.progress" class="mt-4"/>
+                                <ElProgress :percentage="task.progress" class="mt-4" @click="changeProgress(task.progress, task.id)"/>
                             </div>
                         </div>
                     </div>
@@ -283,6 +283,34 @@
                                             </div>
                                         </div>
                                     </ElDrawer>
+
+                                    <ElDrawer v-model="progressDrawer" title="Mudança de Descrição " size="50%" :withHeader="false" >
+                                        <div class="p-6 space-y-6">
+                                            <div class=" text-gray-700 font-semibold flex items-center justify-center gap-2">
+                                                <p>Mudança de Progresso</p>
+                                                <Icon icon="mdi:alert-circle-outline" class="text-xl"/>
+
+
+                                                                                        </div>
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Seu antigo Progresso:</ElText>
+                                                <p class="border rounded-md p-2 text-gray-600 text-sm mt-1 bg-gray-200">{{ activeProgressForCompare }}%</p>
+
+                                            </div>
+                                            <div>
+                                                <ElText class="text-gray-700 font-semibold">Seu novo Progresso:</ElText>
+                                                <ElSlider v-model="newProgress" :step="10" show-stops />
+                                            </div>
+                                            <ElText>Seu novo Progresso será: {{ newProgress }}%</ElText>
+                                            <div class="flex justify-end space-x-4 pt-4">
+                                                <ElButton @click="descriptionDrawer = false">Cancelar</ElButton>
+                                                <ElButton type="primary" class="flex items-center" @click="updateTaskDescription">
+                                                    <Icon icon="mdi:check" class="mr-2" />
+                                                    Atualizar Projeto
+                                                </ElButton>
+                                            </div>
+                                        </div>
+                                    </ElDrawer>
             </div>
         </div>
     </div>
@@ -384,7 +412,14 @@ const descriptionDrawer = ref(false);
 const activeDescriptionForCompare = ref('');
 const newDescription = ref('');
 const currentTaskId = ref(null);
-
+const progressDrawer = ref(false);
+const activeProgressForCompare = ref(0)
+const newProgress = ref(0);
+const changeProgress = (progress, taskId) => {
+    progressDrawer.value = true; 
+    activeProgressForCompare.value = progress;
+    currentTaskId.value = taskId;
+};
 function changeDescriptionDrawer(description, taskId) {
     descriptionDrawer.value = true;
     activeDescriptionForCompare.value = description;
