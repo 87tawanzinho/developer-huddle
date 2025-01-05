@@ -379,8 +379,18 @@ const createTask = () => {
         progress: create.value.progress,
         project_id: props.project.id,
     });
+
     drawer.value = false;
-};
+
+
+    create.value.taskTitle = ''
+    create.value.taskDescription = ''
+    create.value.priority = 'low'
+    create.value.responsible_id = undefined
+    create.value.status = 'todo'
+    create.value.progress = 0
+    
+  }
 
 const deleteTask = (id) => {
     ElMessageBox.confirm('Tem certeza que deseja excluir esta tarefa?', 'Confirmação', {
