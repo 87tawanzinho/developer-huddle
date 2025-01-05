@@ -16,6 +16,7 @@ class Project extends Model
         'name',
         'description',
         'cover_path',
+        'is_private',
         'start_date',
         'end_date'
     ];

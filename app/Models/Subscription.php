@@ -15,6 +15,8 @@ class Subscription extends Model
         'canceled_at',
     ];
 
+    protected $with = ['plan'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

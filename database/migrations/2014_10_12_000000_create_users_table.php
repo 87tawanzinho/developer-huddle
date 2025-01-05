@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->string('phone',20)->unique();
-            $table->char('cpf_cnpj', 14)->unique();
+            $table->string('phone',20)->unique()->nullable();
+            $table->char('cpf_cnpj', 14)->unique()->nullable();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
-            $table->string('gateway_id')->comment('ID returned by the payment gateway');
+            $table->string('gateway_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
