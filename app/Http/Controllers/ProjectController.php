@@ -110,15 +110,23 @@ class ProjectController extends Controller
         return redirect('/');
     }
 
-    public function updateTaskDescription(Request $request, $projectId, $taskId)
+    public function updateTask(Request $request, $projectId, $taskId)
     {
         {
             $request->validate([
-                "description" => "required|string",
+                "description" => "nullable|string",
+                "title" => "nullable|string",
+                "status" => "nullable",
+                "responsible" => "nullable",
+                "priority" => "nullable",
+                "progress" => "nullable",
             ]);
 
             $task = Task::where('project_id', $projectId)->findOrFail($taskId);
-            $task->description = $request->description;
+            $task->description = $request->input('description', $task->description);
+            $task->progress = $request->input('progress', $task->progress);
+    
+        
             $task->save();
 
             return redirect()->back();

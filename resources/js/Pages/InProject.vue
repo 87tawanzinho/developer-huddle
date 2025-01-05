@@ -410,7 +410,7 @@ function updateTask(type, value) {
   if(type === 'description') {
     if (newDescription.value !== '') {
         try {
-            router.put(route('projects.updateTaskDescription', { projectId: props.project.id, taskId: currentTaskId.value }), {
+            router.put(route('projects.updateTask', { projectId: props.project.id, taskId: currentTaskId.value }), {
                 description: newDescription.value
             });
             newDescription.value = '';
