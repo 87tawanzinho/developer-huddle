@@ -13,7 +13,7 @@
         <div v-if="menuOpen" class="md:hidden bg-white shadow-lg p-4 fixed top-16 left-0 right-0 z-10">
             <nav class="flex flex-col w-full gap-3">
                 <Link 
-                    :href="route('home')" 
+                    :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:timeline" class="text-xl text-blue-600" />
@@ -21,7 +21,7 @@
                 </Link>
 
                 <Link 
-                    :href="route('home')" 
+                    :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:folder-outline" class="text-xl text-blue-600" />
@@ -62,7 +62,7 @@
             <!-- Navigation Links -->
             <nav class="flex flex-col w-full gap-3">
                 <Link 
-                    :href="route('home')" 
+                    :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:timeline" class="text-xl text-blue-600" />
@@ -70,7 +70,7 @@
                 </Link>
 
                 <Link 
-                    :href="route('home')" 
+                    :href="route('projects')" 
                     class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
                 >
                     <Icon icon="mdi:folder-outline" class="text-xl text-blue-600" />

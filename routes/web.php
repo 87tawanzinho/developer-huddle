@@ -38,7 +38,7 @@ Route::middleware([
     })->name('about');
 
 
-    Route::get('/home', [ProjectController::class,'home'])->name('home');
+    Route::get('/projects', [ProjectController::class,'home'])->name('projects');
     Route::get('/show/{id}', [ProjectController::class,'show'])->name('projects.show');
     Route::post('/createProject', [ProjectController::class,'create'])->name('projects.create');
     Route::delete('/removeProject/{id}', [ProjectController::class,'delete'])->name('projects.delete');
