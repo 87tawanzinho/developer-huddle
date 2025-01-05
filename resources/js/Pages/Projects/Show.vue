@@ -271,11 +271,6 @@
               </div>
 
               <div>
-                <ElText class="text-gray-700 font-semibold">Seu antigo Progresso:</ElText>
-                <p class="border rounded-md p-2 text-gray-600 text-sm mt-1 bg-gray-200">{{ activeProgressForCompare }}%</p>
-              </div>
-
-              <div>
                 <ElText class="text-gray-700 font-semibold">Seu novo Progresso:</ElText>
                 <ElSlider v-model="newProgress" :step="10" show-stops />
               </div>
@@ -336,7 +331,7 @@ const isTruncated = computed(() => {
     return props.project.description.length > 100;
 });
 
-import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText, ElProgress, ElSlider } from 'element-plus';
+import { ElButton, ElDrawer, ElInput, ElMessageBox, ElOption, ElSelect, ElText, ElProgress, ElSlider, ElMessage } from 'element-plus';
 import axios from 'axios';
 
 const translatedPriority = computed(() => ({
@@ -390,12 +385,19 @@ const deleteTask = (id) => {
 
 const descriptionDrawer = ref(false);
 const activeDescriptionForCompare = ref('');
-const newDescription = ref('');
 const currentTaskId = ref(null);
 const progressDrawer = ref(false);
 const activeProgressForCompare = ref(0)
 const newProgress = ref(0);
+const newDescription = ref('');
+
 const changeProgress = (progress, taskId) => {
+  if(progress === 100) {
+   return ElMessage({
+    message: 'A tarefa já foi concluida.',
+    type: 'info',
+  })
+  }
     progressDrawer.value = true;
     activeProgressForCompare.value = progress;
     currentTaskId.value = taskId;
@@ -414,9 +416,10 @@ function updateTask(type, value) {
                 description: newDescription.value
             });
             newDescription.value = '';
+            descriptionDrawer.value = false;
         } catch (error) {
             console.log(error);
-        }
+        } 
     } else {
         ElMessageBox.alert('A descrição não pode ser vazia', 'Erro', {
             confirmButtonText: 'Ok',
@@ -426,7 +429,24 @@ function updateTask(type, value) {
     descriptionDrawer.value = false;
   }
     if(type === 'progress') {
-      //  TODO
+      if(newProgress.value > activeProgressForCompare.value) {
+        try {
+            router.put(route('projects.updateTask', { projectId: props.project.id, taskId: currentTaskId.value }), {
+                progress: newProgress.value
+            });
+            newProgress.value = 0;
+            progressDrawer.value = false;
+        } catch (error) {
+            console.log(error);
+        }
+      } else {
+        ElMessageBox.alert('O novo progresso precisa ser maior que o atual.', 'Erro', {
+            confirmButtonText: 'Ok',
+            type: 'error',
+        });
+      }
     }
+
+    
 }
 </script>
