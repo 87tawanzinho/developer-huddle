@@ -5,3 +5,15 @@
 [x-cloak] {
     display: none;
 }
+
+
+input:focus {
+    outline: none;  /* Remove o contorno */
+    box-shadow: none;  /* Remove qualquer sombra */
+}
+
+/* Remove o foco de todos os campos de entrada do Element Plus */
+.el-input__inner:focus {
+    outline: none;
+    box-shadow: none; /* Remove o box-shadow aplicado no foco */
+}
