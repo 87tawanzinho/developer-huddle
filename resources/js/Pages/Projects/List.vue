@@ -67,7 +67,7 @@ const projectsFiltered = computed(() => {
                     .includes(searchQuery.value.toLowerCase())
         );
     } else {
-        return props.projects.reverse();
+         return [...props.projects].reverse();
     }
 });
 
