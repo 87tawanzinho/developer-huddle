@@ -47,7 +47,7 @@
           <div class="flex justify-between items-center">
             <div class="mt-8 flex items-center gap-2">
               <div v-for="user in project.users"  v-if="project.users.length < 2" :key="user.name" class="flex items-center gap-2">
-                <span  :class="['inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600'], [user.pivot.role === 'owner' && 'bg-gray-200']">
+                <span  :class="['inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600']">
                   {{ user.name }}
                    
                 </span>

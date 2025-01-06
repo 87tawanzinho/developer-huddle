@@ -67,7 +67,7 @@ const projectsFiltered = computed(() => {
                     .includes(searchQuery.value.toLowerCase())
         );
     } else {
-        return props.projects;
+        return props.projects.reverse();
     }
 });
 
@@ -162,7 +162,7 @@ onMounted(() => {
 
     <div class="flex flex-col lg:flex-row min-h-screen">
         <SidebarLayout />
-        <div class="flex-1 p-4 mt-4 ">
+        <div class="flex-1 p-4 mt-4">
             <div
                 class="flex space-x-2 sm:flex-row justify-center items-center gap-4 mb-6"
             >
@@ -202,16 +202,23 @@ onMounted(() => {
                         alt="Project Image"
                         class="w-full h-32 sm:h-48 object-cover rounded-t-lg"
                     />
-                    <div class="p-3 sm:p-4 md:p-6">
-                        <div class="flex items-center gap-2 mb-2">
+                    <div class="p-4 w-full"> 
+                      <div class="flex justify-between items-center mb-2  ">
+                           <div class="flex items-center gap-2 ">
                             <Icon
-                                icon="mdi:account"
-                                class="text-gray-500 text-sm sm:text-base"
+                                icon="prime:user"
+                                class="text-gray-500 text-2xl "
                             />
-                            <ElText class="text-sm sm:text-base">{{
+                            <ElText class="">{{
                                 project.owner[0]?.name
                             }}</ElText>
                         </div>
+
+                            <div class="flex items-center gap-2">
+                          <Icon icon="uiw:date"  class="text-gray-500" />
+                        <ElText>Maio, 2025</ElText>
+                        </div>
+                      </div>
                         <h3
                             class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3"
                         >
@@ -222,6 +229,9 @@ onMounted(() => {
                         >
                             {{ project.description }}
                         </p>
+                         
+                     
+
                         <div class="flex flex-col sm:flex-row gap-2">
                             <a
                                 :href="route('projects.show', project.id)"
