@@ -18,7 +18,6 @@ import {
 import axios from 'axios';
 import SidebarLayout from '@/Layouts/SidebarLayout.vue';
 import Invites from '@/Components/Invites.vue';
-import { formatDate, formatDateJustYearAndMonth } from '../utils/formatDate';
 
 const inviteStore = useInvitesStore();
 
@@ -153,100 +152,57 @@ onMounted(() => {
 
   <div class="flex flex-col lg:flex-row min-h-screen">
     <SidebarLayout />
-    <div class="flex-1 py-4">
- 
-      <div class="flex px-4 sm:px-0 sm:flex-row justify-center items-center gap-4 mb-6">
-        <div class="flex items-center gap-2 w-full border-b-2 rounded-lg border-gray-400 focus-within:border-blue-500">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="w-6 h-6 text-gray-500 absolute mx-2"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M10 18a8 8 0 100-16 8 8 0 000 16zm8-2l4 4"
-    />
-  </svg>
-  <input
-    v-model="searchQuery"
-    type="text"
-    class="w-full py-4 outline-none placeholder-gray-500 px-9 rounded-lg"
-    placeholder="Escreva para procurar.."
-  />
-</div>
+    <div class="flex-1 p-4 md:p-8 lg:p-12">
+      <h2 class="text-2xl md:text-3xl font-medium text-center text-gray-800 mb-4 md:mb-6">Meus Projetos</h2>
 
-  <button
-    @click="drawer = true"
-    title="Add New"
-    class="group cursor-pointer outline-none hover:rotate-90 duration-300"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="50px"
-      height="50px"
-      viewBox="0 0 24 24"
-      class="stroke-blue-600 fill-none group-hover:fill-indigo-800 group-active:stroke-indigo-200 group-active:fill-indigo-600 group-active:duration-0 duration-300"
-    >
-      <path
-        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-        stroke-width="1.5"
-      ></path>
-      <path d="M8 12H16" stroke-width="1.5"></path>
-      <path d="M12 16V8" stroke-width="1.5"></path>
-    </svg>
-  </button>
-</div>
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
+        <ElInput
+          v-model="searchQuery"
+          placeholder="Procurar por Projetos"
+          class="w-full sm:w-auto"
+          :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500' })"
+        />
+        <ElButton
+          type="primary"
+          @click="drawer=true"
+          class="w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 transition duration-300"
+        >
+          <Icon icon="mdi:plus" class="text-xl mr-1" />
+          Criar Novo Projeto
+        </ElButton>
+      </div>
 
-
-      
       <div class=" flex flex-wrap gap-2">
-        <div v-for="project in projectsFiltered" :key="project.id" class="border  w-full flex flex-wrap  sm:w-96 lg:w-[24rem] relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out px-2">
-          <a :href="route('projects.show', project.id)" class="w-full">
+        <div v-for="project in projectsFiltered" :key="project.id" class=" flex flex-wrap w-96 relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300">
           <img :src="`/storage/${project.cover_path}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
           <div class="p-3 sm:p-4 md:p-6">
-            <div class="flex items-center gap-2 mb-2 border-b bg-red-50 w-max text-red-600 px-2 text-sm rounded-lg">
-              <Icon icon="mdi:account" class="" />
-              <p class=" ">{{ project.owner[0]?.name }}</p>
+            <div class="flex items-center gap-2 mb-2">
+              <Icon icon="mdi:account" class="text-gray-500 text-sm sm:text-base" />
+              <ElText class="text-sm sm:text-base">{{ project.owner[0]?.name }}</ElText>
             </div>
             <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3">{{ project.name }}</h3>
-            <p class="text-sm sm:text-base text-gray-600  mb-8 overflow-hidden truncate ">{{ project.description }}</p>
-          
-            <div class="flex items-center gap-2 p-1 border-b mb-1 ">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="#575757" d="M12 20a7 7 0 0 1-7-7a7 7 0 0 1 7-7a7 7 0 0 1 7 7a7 7 0 0 1-7 7m7.03-12.61l1.42-1.42c-.45-.51-.9-.97-1.41-1.41L17.62 6c-1.55-1.26-3.5-2-5.62-2a9 9 0 0 0-9 9a9 9 0 0 0 9 9c5 0 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61M11 14h2V8h-2m4-7H9v2h6z"/></svg>
-              <ElText>{{ formatDateJustYearAndMonth(project.start_date) }}</ElText>
-             </div>
-            
-            <div class="flex flex-col sm:flex-row gap-2 items-center">
-              
-             
-              <div class="flex items-center justify-between w-full">
-
-              <div v-for="pic in project.users">
-                <img :src="pic.profile_photo_url" alt="" class="rounded-full h-8 w-8">
-              </div>
-
-              
-      
-               <svg class="hover:bg-blue-200 rounded-full" @click="(e) => {
-                e.preventDefault()
-                openSendInvite(project.id)
-               }" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#575757" d="M15 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 1.9a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12.9 8A2.1 2.1 0 0 1 15 5.9M4 7v3H1v2h3v3h2v-3h3v-2H6V7zm11 6c-2.67 0-8 1.33-8 4v3h16v-3c0-2.67-5.33-4-8-4m0 1.9c2.97 0 6.1 1.46 6.1 2.1v1.1H8.9V17c0-.64 3.1-2.1 6.1-2.1"/></svg>
-
-              </div>
-
-
+            <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden">{{ project.description }}</p>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <a :href="route('projects.show', project.id)" class="w-full">
+                <ElButton
+                  size=""
+                  type="primary"
+                  class="w-full bg-blue-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-blue-500 transition duration-300"
+                >
+                  Ver Projeto
+                </ElButton>
+              </a>
+              <ElButton
+                size=""
+                @click="openSendInvite(project.id)"
+                class="w-full bg-green-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-green-500 transition duration-300"
+              >
+                Enviar Convite
+              </ElButton>
             </div>
-            </div>
-        
-        </a>
+          </div>
         </div>
-     
       </div>
-    
     </div>
 
     <ElDrawer

@@ -17,8 +17,9 @@ return new class extends Migration
             $table->text('description');
             $table->boolean('is_private')->default(false);
             $table->string('cover_path');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('start_date')->nullable()->default(null);
+            // Syntax error or access violation: 1067 Invalid default value
+            $table->timestamp('end_date')->nullable()->default(null);
             $table->timestamps();
         });
     }
