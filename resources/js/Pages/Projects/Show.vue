@@ -46,11 +46,26 @@
           <!-- Users & Create Task Button -->
           <div class="flex justify-between items-center">
             <div class="mt-8 flex items-center gap-2">
-              <div v-for="user in project.users" :key="user.name" class="flex items-center gap-2">
-                <span class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600">
+              <div v-for="user in project.users"  v-if="project.users.length < 2" :key="user.name" class="flex items-center gap-2">
+                <span  class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600">
                   {{ user.name }}
                 </span>
               </div>
+
+              <ElDropdown v-else   class="flex items-center ">
+                <ElButton type="" >
+                 <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 36 36"><path fill="#535252" d="M17.9 17.3c2.7 0 4.8-2.2 4.8-4.9s-2.2-4.8-4.9-4.8S13 9.8 13 12.4c0 2.7 2.2 4.9 4.9 4.9m-.1-7.7q.15 0 0 0c1.6 0 2.9 1.3 2.9 2.9s-1.3 2.8-2.9 2.8S15 14 15 12.5c0-1.6 1.3-2.9 2.8-2.9" class="clr-i-outline clr-i-outline-path-1"/><path fill="#535252" d="M32.7 16.7c-1.9-1.7-4.4-2.6-7-2.5h-.8q-.3 1.2-.9 2.1c.6-.1 1.1-.1 1.7-.1c1.9-.1 3.8.5 5.3 1.6V25h2v-8z" class="clr-i-outline clr-i-outline-path-2"/><path fill="#535252" d="M23.4 7.8c.5-1.2 1.9-1.8 3.2-1.3c1.2.5 1.8 1.9 1.3 3.2c-.4.9-1.3 1.5-2.2 1.5c-.2 0-.5 0-.7-.1c.1.5.1 1 .1 1.4v.6c.2 0 .4.1.6.1c2.5 0 4.5-2 4.5-4.4c0-2.5-2-4.5-4.4-4.5c-1.6 0-3 .8-3.8 2.2c.5.3 1 .7 1.4 1.3" class="clr-i-outline clr-i-outline-path-3"/><path fill="#535252" d="M12 16.4q-.6-.9-.9-2.1h-.8c-2.6-.1-5.1.8-7 2.4L3 17v8h2v-7.2c1.6-1.1 3.4-1.7 5.3-1.6c.6 0 1.2.1 1.7.2" class="clr-i-outline clr-i-outline-path-4"/><path fill="#535252" d="M10.3 13.1c.2 0 .4 0 .6-.1v-.6c0-.5 0-1 .1-1.4c-.2.1-.5.1-.7.1c-1.3 0-2.4-1.1-2.4-2.4S9 6.3 10.3 6.3c1 0 1.9.6 2.3 1.5c.4-.5 1-1 1.5-1.4c-1.3-2.1-4-2.8-6.1-1.5s-2.8 4-1.5 6.1c.8 1.3 2.2 2.1 3.8 2.1" class="clr-i-outline clr-i-outline-path-5"/><path fill="#535252" d="m26.1 22.7l-.2-.3c-2-2.2-4.8-3.5-7.8-3.4c-3-.1-5.9 1.2-7.9 3.4l-.2.3v7.6c0 .9.7 1.7 1.7 1.7h12.8c.9 0 1.7-.8 1.7-1.7v-7.6zm-2 7.3H12v-6.6c1.6-1.6 3.8-2.4 6.1-2.4c2.2-.1 4.4.8 6 2.4z" class="clr-i-outline clr-i-outline-path-6"/><path fill="none" d="M0 0h36v36H0z"/></svg> {{ project.users.length }}
+                        </ElButton>
+                    <template #dropdown>
+                 <div v-for="user in project.users"  :key="user.name" >
+                    <ElDropdownItem> <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#535252" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.7" d="M21 22c0-4.418-3.626-8-8.1-8h-1.8C6.626 14 3 17.582 3 22m9-11a4 4 0 0 1-4-4V6a4 4 0 1 1 8 0v1a4 4 0 0 1-4 4"/></svg> {{ user.name }}</ElDropdownItem>
+                  </div>
+                  </template>
+          
+              </ElDropdown>
+
+
+
             </div>
 
             <ElButton v-if="tasks.length" @click="drawer = true" class="flex items-center gap-2 mt-8" type="primary">
@@ -88,8 +103,6 @@
               </ElButton>
             </div>
             <div v-else>
-              <p class="text-center mt-4 text-2xl text-gray-400">Tarefas</p>
-
               <div class="flex flex-col overflow-auto max-h-96">
                 <div v-for="task in tasks" :key="task.id" :class="['gap-4 border mt-4 bg-white p-6 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300', task.progress === 100 ? 'bg-blue-50' : '']">
                   <div class="flex justify-between items-center">
