@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col  bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
-        <div v-if="$page.props.auth.user" class="mb-12 md:hidden bg-white shadow-md p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
+        <div v-if="$page.props.auth.user" class="mb-12 lg:hidden bg-white shadow-md p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
             <div class="flex items-center gap-2">
                 <Icon icon="mdi:cat" class="text-xl text-blue-600" />
             <span class="text-base font-medium text-gray-800">Reunião dos Devs</span>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- Dropdown for mobile -->
-        <div v-if="menuOpen" class="md:hidden bg-white shadow-lg p-4 fixed top-16 left-0 right-0 z-10">
+        <div v-if="menuOpen" class="lg:hidden bg-white shadow-lg p-4 fixed top-16 left-0 right-0 z-10">
             <nav class="flex flex-col w-full gap-3">
                 <Link
                     :href="route('projects.index')"
@@ -61,7 +61,7 @@
         <!-- Sidebar for desktop -->
         <div
             v-if="$page.props.auth.user"
-            class="hidden  md:flex w-60 bg-white shadow-md h-full p-5 flex-col items-center gap-6"
+            class="hidden  lg:flex w-60 bg-white shadow-md h-full p-5 flex-col items-center gap-6"
         >
             <!-- Logo/Icon -->
             <div class="flex flex-col items-center gap-1">

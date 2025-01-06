@@ -68,24 +68,9 @@
 
                 <!-- Users & Create Task Button -->
                 <div class="flex justify-between items-center">
-                    <div class="mt-8 flex items-center gap-2">
-                        <div
-                            v-for="user in project.users"
-                            v-if="project.users.length < 2"
-                            :key="user.name"
-                            class="flex items-center gap-2"
-                        >
-                            <span
-                                :class="[
-                                    'inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600',
-                                ]"
-                            >
-                                {{ user.name }}
-                            </span>
-                        </div>
-
-                        <ElDropdown v-else class="flex items-center">
-                            <ElButton type="">
+                    <div class="mt-8  px-2 flex items-center gap-2">
+                        <ElDropdown  class="flex items-center">
+                            <ElButton round type="">
                                 <svg
                                     class="mr-2"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +117,7 @@
                                     v-for="user in project.users"
                                     :key="user.name"
                                 >
-                                    <ElDropdownItem
+                                    <ElDropdownItem 
                                         :class="[
                                             user.pivot.role === 'owner' &&
                                                 'bg-gray-200',
@@ -166,8 +151,9 @@
                         @click="drawer = true"
                         class="flex items-center gap-2 mt-8"
                         type="primary"
+                        round
                     >
-                        <Icon icon="mdi:plus" class="mr-2 text-xl" />
+                        <Icon icon="mdi:plus" class=" mr-1 text-xl" />
                         Criar uma nova tarefa
                     </ElButton>
                 </div>
@@ -227,16 +213,23 @@
                             Criar uma nova tarefa
                         </ElButton>
                     </div>
+                    
                     <div v-else>
-                        <div class="flex flex-col overflow-auto max-h-96">
-                            <div>
-                                Filtrar por: Prioridade // Usuario // Status TODO
+                       <div class="flex items-center gap-2">
+                        <div class="flex ">
+                                <ElButton type="info" plain round>Prioridade</ElButton>
+                                <ElButton type="info" round plain >Status</ElButton>
+                                <ElButton type="info" round plain>Responsável</ElButton>
                             </div>
+                       </div>
+
+                        <div class="flex flex-col overflow-auto max-h-96">
+                           
                             <div
                                 v-for="task in tasks"
                                 :key="task.id"
                                 :class="[
-                                    'gap-4 border mt-4 bg-white  p-2 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300',
+                                    'gap-4 border mt-4 bg-white  p-3 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300',
                                     task.progress === 100 ? 'bg-blue-50' : '',
                                 ]"
                             >
@@ -302,11 +295,7 @@
                                         >
                                             <ElButton
                                                 type="primary"
-                                                style="
-                                                    border-radius: 14px;
-                                                    
-
-                                                "
+                                               round
                                             >
                                                 <Icon
                                                     icon="mdi:account"

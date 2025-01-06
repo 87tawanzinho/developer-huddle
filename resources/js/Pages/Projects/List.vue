@@ -164,7 +164,7 @@ onMounted(() => {
         <SidebarLayout />
         <div class="flex-1 p-4 mt-4">
             <div
-                class="flex space-x-2 sm:flex-row justify-center items-center gap-4  mb-6"
+                class="sm:mt-12 lg:mt-0 flex space-x-2 sm:flex-row justify-center items-center gap-4  mb-6"
             >
                 <ElInput
                     v-model="searchQuery"
