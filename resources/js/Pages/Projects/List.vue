@@ -153,27 +153,56 @@ onMounted(() => {
 
   <div class="flex flex-col lg:flex-row min-h-screen">
     <SidebarLayout />
-    <div class="flex-1 p-4 md:p-8 lg:p-12">
-      <ElInput
-          v-model="searchQuery"
-          placeholder="Procurar por Projetos"
-          class="w-full sm:w-auto"
-          size="large"
-          :prefix-icon="() => h(Icon, { icon: 'mdi:magnify', class: 'text-gray-500' })"
-        />
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
-       
-        <ElButton
-          type="primary"
-          size="large"
-          @click="drawer=true"
-          class="w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 transition duration-300"
-        >
-          <Icon icon="mdi:plus" class="text-xl mr-1" />
-          Criar Novo Projeto
-        </ElButton>
-      </div>
+    <div class="flex-1 py-4">
+ 
+      <div class="flex px-4 sm:px-0 sm:flex-row justify-center items-center gap-4 mb-6">
+        <div class="flex items-center gap-2 w-full border-b-2 rounded-lg border-gray-400 focus-within:border-blue-500">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-6 h-6 text-gray-500 absolute mx-2"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M10 18a8 8 0 100-16 8 8 0 000 16zm8-2l4 4"
+    />
+  </svg>
+  <input
+    v-model="searchQuery"
+    type="text"
+    class="w-full py-4 outline-none placeholder-gray-500 px-9 rounded-lg"
+    placeholder="Escreva para procurar.."
+  />
+</div>
 
+  <button
+    @click="drawer = true"
+    title="Add New"
+    class="group cursor-pointer outline-none hover:rotate-90 duration-300"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="50px"
+      height="50px"
+      viewBox="0 0 24 24"
+      class="stroke-blue-600 fill-none group-hover:fill-indigo-800 group-active:stroke-indigo-200 group-active:fill-indigo-600 group-active:duration-0 duration-300"
+    >
+      <path
+        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+        stroke-width="1.5"
+      ></path>
+      <path d="M8 12H16" stroke-width="1.5"></path>
+      <path d="M12 16V8" stroke-width="1.5"></path>
+    </svg>
+  </button>
+</div>
+
+
+      
       <div class=" flex flex-wrap gap-2">
         <div v-for="project in projectsFiltered" :key="project.id" class="border  w-full flex flex-wrap  sm:w-96 lg:w-[24rem] relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out ">
           <a :href="route('projects.show', project.id)" class="w-full">
