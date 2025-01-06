@@ -1,5 +1,5 @@
 <template>
-   <Icon icon="openmoji:cat" />
+   <Icon icon="mdi:cat" class="text-blue-600" />
 </template>
 
 

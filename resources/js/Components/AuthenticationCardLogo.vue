@@ -6,7 +6,7 @@ import { Icon } from '@iconify/vue';
 <template>
     <Link :href="'/'">
         <template>
-   <Icon icon="openmoji:cat" />
+   <Icon icon="mdi:cat" class="text-blue-600" />
         </template>
     </Link>
 </template>

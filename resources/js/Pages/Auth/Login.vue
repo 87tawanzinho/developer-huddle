@@ -37,7 +37,7 @@ const submit = () => {
 
         <h2 class="text-2xl text-center">Reunião dos Devs</h2>
         <template #logo>
-          <Icon icon="openmoji:cat"  class="text-[4rem]"/>
+          <Icon  icon="mdi:cat" class="text-blue-600 text-[4rem]"/>
         </template>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">

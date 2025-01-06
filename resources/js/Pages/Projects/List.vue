@@ -164,7 +164,7 @@ onMounted(() => {
         <SidebarLayout />
         <div class="flex-1 p-4 mt-4">
             <div
-                class="flex space-x-2 sm:flex-row justify-center items-center gap-4 mb-6"
+                class="flex space-x-2 sm:flex-row justify-center items-center gap-4  mb-6"
             >
                 <ElInput
                     v-model="searchQuery"
@@ -191,7 +191,7 @@ onMounted(() => {
                 </ElButton>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-6">
                 <div
                     v-for="project in projectsFiltered"
                     :key="project.id"
@@ -232,7 +232,7 @@ onMounted(() => {
                          
                      
 
-                        <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex sm:flex-row gap-2">
                             <a
                                 :href="route('projects.show', project.id)"
                                 class="w-full"
