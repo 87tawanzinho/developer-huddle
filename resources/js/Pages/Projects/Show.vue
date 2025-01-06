@@ -229,6 +229,9 @@
                     </div>
                     <div v-else>
                         <div class="flex flex-col overflow-auto max-h-96">
+                            <div>
+                                Filtrar por: Prioridade // Usuario // Status TODO
+                            </div>
                             <div
                                 v-for="task in tasks"
                                 :key="task.id"
