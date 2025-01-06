@@ -204,7 +204,7 @@ onMounted(() => {
 
       
       <div class=" flex flex-wrap gap-2">
-        <div v-for="project in projectsFiltered" :key="project.id" class="border  w-full flex flex-wrap  sm:w-96 lg:w-[24rem] relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out ">
+        <div v-for="project in projectsFiltered" :key="project.id" class="border  w-full flex flex-wrap  sm:w-96 lg:w-[24rem] relative bg-white rounded-lg hover:shadow-lg transition duration-200 ease-in-out px-2">
           <a :href="route('projects.show', project.id)" class="w-full">
           <img :src="`/storage/${project.cover_path}`" alt="Project Image" class="w-full h-32 sm:h-48 object-cover rounded-t-lg" />
           <div class="p-3 sm:p-4 md:p-6">
