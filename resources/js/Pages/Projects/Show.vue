@@ -22,11 +22,11 @@
               <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-800 leading-tight">{{ project.name }}</h1>
 
-                <div v-if="$page.props.auth.user.id === project.owner[0].id" class="absolute right-8 top-2 sm:right-10">
+                <div v-if="$page.props.auth.user.id === project.owner[0].id" class="absolute right-8 top-12 sm:right-10">
                   <Icon
                     @click="deleteProjectIfOwner(project.id)"
-                    icon="mdi:delete"
-                    class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75"
+                    icon="streamline:delete-1"
+                    class="text-lg cursor-pointer text-red-800 transition-opacity duration-200 hover:opacity-75"
                   />
                 </div>
               </div>
@@ -375,7 +375,7 @@ const deleteProjectIfOwner = (id) => {
     ElMessageBox.confirm('Tem certeza que deseja excluir este projeto?', 'Confirmação', {
         confirmButtonText: 'Sim',
         cancelButtonText: 'Não',
-        type: 'warning',
+        type: 'error',
     }).then(() => {
         router.delete(route('projects.delete', { id }));
     }).catch(() => {
