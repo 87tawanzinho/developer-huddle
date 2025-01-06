@@ -42,13 +42,14 @@
               </p>
             </div>
           </div>
-
+  
           <!-- Users & Create Task Button -->
           <div class="flex justify-between items-center">
             <div class="mt-8 flex items-center gap-2">
               <div v-for="user in project.users"  v-if="project.users.length < 2" :key="user.name" class="flex items-center gap-2">
-                <span  class="inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600">
+                <span  :class="['inline-block px-3 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-400 to-blue-600'], [user.pivot.role === 'owner' && 'bg-gray-200']">
                   {{ user.name }}
+                   
                 </span>
               </div>
 
@@ -58,7 +59,7 @@
                         </ElButton>
                     <template #dropdown>
                  <div v-for="user in project.users"  :key="user.name" >
-                    <ElDropdownItem> <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#535252" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.7" d="M21 22c0-4.418-3.626-8-8.1-8h-1.8C6.626 14 3 17.582 3 22m9-11a4 4 0 0 1-4-4V6a4 4 0 1 1 8 0v1a4 4 0 0 1-4 4"/></svg> {{ user.name }}</ElDropdownItem>
+                    <ElDropdownItem :class="[user.pivot.role === 'owner' && 'bg-gray-200' ]"> <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#535252" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.7" d="M21 22c0-4.418-3.626-8-8.1-8h-1.8C6.626 14 3 17.582 3 22m9-11a4 4 0 0 1-4-4V6a4 4 0 1 1 8 0v1a4 4 0 0 1-4 4"/></svg> {{ user.name }}</ElDropdownItem>
                   </div>
                   </template>
           
