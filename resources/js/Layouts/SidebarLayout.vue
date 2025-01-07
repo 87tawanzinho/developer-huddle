@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col  bg-gray-50 text-gray-900">
+    <div  class="flex flex-col  bg-gray-50 text-gray-900">
         <!-- Topbar for mobile -->
         <div v-if="$page.props.auth.user" class="mb-12 lg:hidden bg-white shadow-md p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-10">
             <div class="flex items-center gap-2">
@@ -137,6 +137,11 @@ import { ref } from 'vue';
 import { useInvitesStore } from '@/stores/useInviteStore';
 import Invites from '@/Components/Invites.vue';
 import { computed } from 'vue';
+import { useDark, useToggle } from '@vueuse/core'
+
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
+
 
 const menuOpen = ref(false);
 const inviteStore = useInvitesStore();
@@ -148,3 +153,4 @@ function toggleMenu() {
     menuOpen.value = !menuOpen.value;
 }
 </script>
+

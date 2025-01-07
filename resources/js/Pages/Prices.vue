@@ -2,7 +2,7 @@
     <Head title="Planos" />
     <div class="flex flex-col lg:flex-row">
         <SidebarLayout/>
-        <div class="flex justify-center min-h-screen w-full mt-2 px-4">
+        <div class="flex justify-center min-h-screen w-full mt-16 lg:mt-6 px-4">
             <div
                 class="flex flex-col items-center bg-gray-50 py-4 px-4 sm:px-6 lg:px-12 rounded-lg shadow-lg w-full max-w-5xl">
 

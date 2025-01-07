@@ -3,7 +3,7 @@
     <div class="flex min-h-screen bg-gray-100">
         <!-- Sidebar -->
         <SidebarLayout />
-
+        <!-- ////////////// TODO CLICA NA TAREFA E TRANSFORMA EM CARTA/FOLDER -->
         <!-- Main Content -->
         <div class="flex-1 flex justify-center w-full mt-12 sm:mt-0 sm:p-12">
             <div
@@ -34,7 +34,6 @@
                                 "
                                 class="absolute right-8 top-12 sm:right-10"
                             >
-                            
                                 <Icon
                                     @click="deleteProjectIfOwner(project.id)"
                                     icon="streamline:delete-1"
@@ -69,8 +68,8 @@
 
                 <!-- Users & Create Task Button -->
                 <div class="flex justify-between items-center">
-                    <div class="mt-8  px-2 flex items-center gap-2">
-                        <ElDropdown  class="flex items-center">
+                    <div class="mt-8 px-2 flex items-center gap-2">
+                        <ElDropdown class="flex items-center">
                             <ElButton type="">
                                 <svg
                                     class="mr-2"
@@ -118,7 +117,7 @@
                                     v-for="user in project.users"
                                     :key="user.name"
                                 >
-                                    <ElDropdownItem 
+                                    <ElDropdownItem
                                         :class="[
                                             user.pivot.role === 'owner' &&
                                                 'bg-gray-200',
@@ -152,43 +151,46 @@
                         @click="drawer = true"
                         class="flex items-center gap-2 mt-8"
                         type="primary"
-                        style="font-size: 16px;"
+                        style="font-size: 16px"
                         round
                     >
-                        <Icon icon="mdi:plus" class=" mr-1 text-2xl" />
+                        <Icon icon="mdi:plus" class="mr-1 text-2xl" />
                         Criar
                     </ElButton>
                 </div>
 
                 <!-- Project Dates -->
                 <div class="mt-8 flex items-center gap-2 sm:gap-4 mb-4">
-    <div
-        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
-    >
-        <Icon
-            icon="mdi:calendar-start"
-            class="w-6 h-6 text-gray-600"
-        />
-        <div>
-            <span class="text-sm text-gray-600">Início</span>
-            <p class="text-gray-600">{{ formatDate(project.start_date) }}</p>
-        </div>
-    </div>
+                    <div
+                        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
+                    >
+                        <Icon
+                            icon="mdi:calendar-start"
+                            class="w-6 h-6 text-gray-600"
+                        />
+                        <div>
+                            <span class="text-sm text-gray-600">Início</span>
+                            <p class="text-gray-600">
+                                {{ formatDate(project.start_date) }}
+                            </p>
+                        </div>
+                    </div>
 
-    <div
-        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
-    >
-        <Icon
-            icon="mdi:calendar-end"
-            class="w-6 h-6 text-gray-600"
-        />
-        <div>
-            <span class="text-sm text-gray-600">Fim</span>
-            <p class="text-gray-600">{{ formatDate(project.end_date) }}</p>
-        </div>
-    </div>
-</div>
-
+                    <div
+                        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
+                    >
+                        <Icon
+                            icon="mdi:calendar-end"
+                            class="w-6 h-6 text-gray-600"
+                        />
+                        <div>
+                            <span class="text-sm text-gray-600">Fim</span>
+                            <p class="text-gray-600">
+                                {{ formatDate(project.end_date) }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tasks Section -->
                 <div>
@@ -208,19 +210,34 @@
                             Criar
                         </ElButton>
                     </div>
-                    
+
                     <div v-else>
-                       <div class="flex items-center gap-2">
-                        <div class="flex ">
-                                <ElButton type="info" plain round>Prioridade</ElButton>
-                                <ElButton type="info" round plain >Status</ElButton>
-                                <ElButton type="info" round plain>Responsável</ElButton>
+                        <div
+                            class="flex items-center justify-between gap-2 py-2"
+                        >
+                            <div class="flex">
+                                <ElButton type="info" plain round
+                                    >Prioridade</ElButton
+                                >
+                                <ElButton type="info" round plain
+                                    >Status</ElButton
+                                >
+                                <ElButton type="info" round plain
+                                    >Responsável</ElButton
+                                >
                             </div>
-                       </div>
+                            <ElButton
+                                plain
+                                circle
+                                full-circle
+                                @click="shrink = !shrink"
+                                ><Icon icon="lucide:shrink"
+                            /></ElButton>
+                        </div>
 
                         <div class="flex flex-col overflow-auto max-h-96">
-                           
                             <div
+                                v-if="shrink"
                                 v-for="task in tasks"
                                 :key="task.id"
                                 :class="[
@@ -241,11 +258,16 @@
                                             {{ task.title }}
                                         </h3>
                                     </div>
-                                    <span :class="{
-                      'text-blue-600': task.status === 'done',
-                      'text-yellow-600': task.status === 'in_progress',
-                      'text-purple-600': task.status === 'todo'
-                    }"   class="text-sm font-medium flex items-center gap-2"
+                                    <span
+                                        :class="{
+                                            'text-blue-600':
+                                                task.status === 'done',
+                                            'text-yellow-600':
+                                                task.status === 'in_progress',
+                                            'text-purple-600':
+                                                task.status === 'todo',
+                                        }"
+                                        class="text-sm font-medium flex items-center gap-2"
                                     >
                                         <Icon
                                             v-if="task.status === 'done'"
@@ -278,15 +300,12 @@
                                 </p>
 
                                 <div class="flex justify-between mt-4">
-                                    <div class="flex items-center gap-2 ">
+                                    <div class="flex items-center gap-2">
                                         <ElDropdown
                                             onclick="changeResponsible"
                                             placement="top-start"
                                         >
-                                            <ElButton
-                                                
-                                               round
-                                            >
+                                            <ElButton round>
                                                 <Icon
                                                     icon="mdi:account"
                                                     class="w-4 h-4 mr-1"
@@ -318,11 +337,16 @@
                                         </ElDropdown>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <span :class="{
-                        'bg-green-600': task.priority === 'low',
-                        'bg-yellow-600': task.priority === 'medium',
-                        'bg-red-600': task.priority === 'high'
-                      }" class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-gray-100 flex items-center"
+                                        <span
+                                            :class="{
+                                                'bg-green-600':
+                                                    task.priority === 'low',
+                                                'bg-yellow-600':
+                                                    task.priority === 'medium',
+                                                'bg-red-600':
+                                                    task.priority === 'high',
+                                            }"
+                                            class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-gray-100 flex items-center"
                                         >
                                             <Icon
                                                 v-if="task.priority === 'low'"
@@ -356,6 +380,127 @@
                                         changeProgress(task.progress, task.id)
                                     "
                                 />
+                            </div>
+
+                            <div
+                                v-else
+                                class="flex flex-col gap-4 mt-4 justify-center border bg-white p-3 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300"
+                            >
+                                <div
+                                    class="border p-1 rounded-lg flex items-center gap-4 w-full"
+                                    v-for="task in tasks"
+                                    :key="task.id"
+                                >
+                                    <!-- Foto e nome à esquerda com largura definida -->
+                                    <div class="flex items-center gap-2 w-1/4">
+                                        <img
+                                            class="rounded-full h-8 w-8"
+                                            :src="
+                                                task.responsible
+                                                    .profile_photo_url
+                                            "
+                                        />
+                                        <ElText>[{{ task.title }}]</ElText>
+                                    </div>
+
+                                    <!-- ElSlider no meio com largura definida -->
+                                    <div class="flex justify-center w-1/2">
+                                        <ElSlider
+                                            :show-tooltip="false"
+                                            :model-value="task.progress"
+                                            class="sliderStyle"
+                                        />
+                                    </div>
+
+                                    <!-- Status e Prioridade à direita com largura definida -->
+                                    <div
+                                        class="flex items-center justify-end gap-4 w-1/4"
+                                    >
+                                        <!-- Status -->
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                :class="{
+                                                    'text-blue-600':
+                                                        task.status === 'done',
+                                                    'text-yellow-600':
+                                                        task.status ===
+                                                        'in_progress',
+                                                    'text-purple-600':
+                                                        task.status === 'todo',
+                                                }"
+                                                class="text-sm font-medium flex items-center gap-2"
+                                            >
+                                                <Icon
+                                                    v-if="
+                                                        task.status === 'done'
+                                                    "
+                                                    icon="mdi:check-circle"
+                                                    class="w-5 h-5"
+                                                />
+                                                <Icon
+                                                    v-if="
+                                                        task.status ===
+                                                        'in_progress'
+                                                    "
+                                                    icon="mdi:progress-clock"
+                                                    class="w-5 h-5"
+                                                />
+                                                <Icon
+                                                    v-if="
+                                                        task.status === 'todo'
+                                                    "
+                                                    icon="mdi:clipboard-outline"
+                                                    class="w-5 h-5"
+                                                />
+                                            </span>
+                                        </div>
+
+                                        <!-- Prioridade -->
+                                        <div>
+                                            <span
+                                                :class="{
+                                                    'bg-green-600':
+                                                        task.priority === 'low',
+                                                    'bg-yellow-600':
+                                                        task.priority ===
+                                                        'medium',
+                                                    'bg-red-600':
+                                                        task.priority ===
+                                                        'high',
+                                                }"
+                                                class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center justify-center"
+                                            >
+                                                <Icon
+                                                    v-if="
+                                                        task.priority === 'low'
+                                                    "
+                                                    icon="mdi:flag-outline"
+                                                    class="w-4 h-4 mr-1"
+                                                />
+                                                <Icon
+                                                    v-if="
+                                                        task.priority ===
+                                                        'medium'
+                                                    "
+                                                    icon="mdi:flag-outline"
+                                                    class="w-4 h-4 mr-1"
+                                                />
+                                                <Icon
+                                                    v-if="
+                                                        task.priority === 'high'
+                                                    "
+                                                    icon="mdi:flag"
+                                                    class="w-4 h-4 mr-1"
+                                                />
+                                                {{
+                                                    translatedPriority[
+                                                        task.priority
+                                                    ]
+                                                }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -664,7 +809,7 @@ import { ref, computed } from "vue";
 
 const drawer = ref(false);
 const showFullDescription = ref(false);
-
+const shrink = ref(false);
 const create = ref({
     taskTitle: "",
     taskDescription: "",
@@ -725,9 +870,9 @@ const deleteProjectIfOwner = (id) => {
     )
         .then(() => {
             router.delete(route("projects.delete", { id }), {
-                  onError: () => {
-                    ElMessage.error('Ocorreu um erro ao deletar o projeto.')
-                }
+                onError: () => {
+                    ElMessage.error("Ocorreu um erro ao deletar o projeto.");
+                },
             });
         })
         .catch(() => {
@@ -778,8 +923,8 @@ const deleteTask = (id) => {
         .then(() => {
             router.delete(route("projects.deleteTask", { id }), {
                 onError: () => {
-                    ElMessage.error('Ocorreu um erro ao deletar a tarefa.')
-                }
+                    ElMessage.error("Ocorreu um erro ao deletar a tarefa.");
+                },
             });
         })
         .catch(() => {
@@ -884,3 +1029,19 @@ function updateTask(type, id, value) {
     }
 }
 </script>
+
+<style>
+/* Esconder a bolinha do slider com a classe el-slider__button */
+.el-slider__button {
+    display: none;
+}
+.el-slider {
+    width: 200px; /* Defina a largura que você preferir */
+}
+
+@media (max-width: 640px) {
+    .sliderStyle {
+        width: 70%; /* Largura mínima para telas grandes */
+    }
+}
+</style>
