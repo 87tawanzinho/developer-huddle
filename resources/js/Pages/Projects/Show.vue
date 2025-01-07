@@ -150,7 +150,7 @@
                         v-if="tasks.length"
                         @click="drawer = true"
                         class="flex items-center gap-2 mt-8"
-                        type=""
+                        type="primary"
                         style="font-size: 16px;"
                         round
                     >
@@ -162,7 +162,7 @@
                 <!-- Project Dates -->
                 <div class="mt-8 flex items-center gap-2 sm:gap-4 mb-4">
     <div
-        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-green-50"
+        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
     >
         <Icon
             icon="mdi:calendar-start"
@@ -175,7 +175,7 @@
     </div>
 
     <div
-        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-red-50"
+        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-blue-400"
     >
         <Icon
             icon="mdi:calendar-end"
@@ -223,7 +223,7 @@
                                 v-for="task in tasks"
                                 :key="task.id"
                                 :class="[
-                                    'gap-4 border mt-4 bg-white  p-3 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300',
+                                    'gap-4 border  mt-4 bg-white  p-3 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300',
                                     task.progress === 100 ? 'bg-blue-50' : '',
                                 ]"
                             >
@@ -240,9 +240,11 @@
                                             {{ task.title }}
                                         </h3>
                                     </div>
-                                    <span
-                                       
-                                        class="text-gray-600 text-sm font-medium flex items-center gap-2"
+                                    <span :class="{
+                      'text-blue-600': task.status === 'done',
+                      'text-yellow-600': task.status === 'in_progress',
+                      'text-purple-600': task.status === 'todo'
+                    }"   class="text-sm font-medium flex items-center gap-2"
                                     >
                                         <Icon
                                             v-if="task.status === 'done'"
@@ -315,26 +317,28 @@
                                         </ElDropdown>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <span
-                                            
-                                            class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-gray-600 flex items-center"
+                                        <span :class="{
+                        'bg-green-600': task.priority === 'low',
+                        'bg-yellow-600': task.priority === 'medium',
+                        'bg-red-600': task.priority === 'high'
+                      }" class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-gray-100 flex items-center"
                                         >
                                             <Icon
                                                 v-if="task.priority === 'low'"
                                                 icon="mdi:flag-outline"
-                                                class="w-4 h-4"
+                                                class="w-4 h-4 mr-1"
                                             />
                                             <Icon
                                                 v-if="
                                                     task.priority === 'medium'
                                                 "
                                                 icon="mdi:flag-outline"
-                                                class="w-4 h-4"
+                                                class="w-4 h-4 mr-1"
                                             />
                                             <Icon
                                                 v-if="task.priority === 'high'"
                                                 icon="mdi:flag"
-                                                class="w-4 h-4"
+                                                class="w-4 h-4 mr-1"
                                             />
                                             {{
                                                 translatedPriority[
