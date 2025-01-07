@@ -237,7 +237,7 @@
 
                         <div class="flex flex-col overflow-auto max-h-96">
                             <div
-                                v-if="shrink"
+                                v-show="shrink"
                                 v-for="task in tasks"
                                 :key="task.id"
                                 :class="[
@@ -383,7 +383,7 @@
                             </div>
 
                             <div
-                                v-else
+                                v-show="!shrink"
                                 class="flex flex-col gap-4 mt-4 justify-center border bg-white p-3 sm:p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300"
                             >
                                 <div
@@ -456,6 +456,7 @@
                                         </div>
 
                                         <!-- Prioridade -->
+
                                         <div>
                                             <span
                                                 :class="{
@@ -474,7 +475,7 @@
                                                     v-if="
                                                         task.priority === 'low'
                                                     "
-                                                    icon="mdi:flag-outline"
+                                                    icon="mdi:flag"
                                                     class="w-4 h-4 mr-1"
                                                 />
                                                 <Icon
@@ -482,7 +483,7 @@
                                                         task.priority ===
                                                         'medium'
                                                     "
-                                                    icon="mdi:flag-outline"
+                                                    icon="mdi:flag"
                                                     class="w-4 h-4 mr-1"
                                                 />
                                                 <Icon
@@ -1035,13 +1036,10 @@ function updateTask(type, id, value) {
 .el-slider__button {
     display: none;
 }
-.el-slider {
-    width: 200px; /* Defina a largura que você preferir */
-}
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
     .sliderStyle {
-        width: 70%; /* Largura mínima para telas grandes */
+        width: 70% !important; /* Largura para telas de dispositivos móveis */
     }
 }
 </style>
