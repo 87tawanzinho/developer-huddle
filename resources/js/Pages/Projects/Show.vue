@@ -393,13 +393,44 @@
                                 >
                                     <!-- Foto e nome à esquerda com largura definida -->
                                     <div class="flex items-center gap-2 w-1/4">
-                                        <img
-                                            class="rounded-full h-8 w-8"
-                                            :src="
-                                                task.responsible
-                                                    .profile_photo_url
-                                            "
-                                        />
+                                        <div class="flex items-center gap-2">
+                                            <ElDropdown
+                                                onclick="changeResponsible"
+                                                placement="bottom-start"
+                                            >
+                                                <img
+                                                    class="rounded-full h-8 w-8"
+                                                    :src="
+                                                        task.responsible
+                                                            .profile_photo_url
+                                                    "
+                                                    alt=""
+                                                />
+
+                                                <template #dropdown>
+                                                    <div
+                                                        v-for="user in project.users"
+                                                        :key="user.id || user"
+                                                    >
+                                                        <el-dropdown-item
+                                                            @click="
+                                                                () => {
+                                                                    currentTaskId =
+                                                                        task.id;
+                                                                    updateTask(
+                                                                        'responsible',
+                                                                        user.id
+                                                                    );
+                                                                }
+                                                            "
+                                                            >{{
+                                                                user.name
+                                                            }}</el-dropdown-item
+                                                        >
+                                                    </div>
+                                                </template>
+                                            </ElDropdown>
+                                        </div>
                                         <ElText class="truncate"
                                             >[{{ task.title }}]</ElText
                                         >
@@ -408,6 +439,12 @@
                                     <!-- ElSlider no meio com largura definida -->
                                     <div class="flex justify-center w-1/2">
                                         <ElSlider
+                                            @click="
+                                                changeProgress(
+                                                    task.progress,
+                                                    task.id
+                                                )
+                                            "
                                             :show-tooltip="false"
                                             :model-value="task.progress"
                                             class="sliderStyle"
@@ -660,12 +697,13 @@
                                         >Progresso</ElText
                                     >
                                     <span class="text-sm text-gray-500"
-                                        >{{ progress }}%</span
+                                        >{{ create.progress }}%</span
                                     >
                                 </div>
                                 <ElSlider
                                     v-model="create.progress"
                                     :step="10"
+                                    :show-tooltip="false"
                                     show-stops
                                 />
                             </div>
@@ -773,6 +811,7 @@
                                 v-model="newProgress"
                                 :step="10"
                                 show-stops
+                                :show-tooltip="false"
                             />
                         </div>
                         <ElText
