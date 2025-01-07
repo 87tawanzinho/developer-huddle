@@ -400,7 +400,9 @@
                                                     .profile_photo_url
                                             "
                                         />
-                                        <ElText>[{{ task.title }}]</ElText>
+                                        <ElText class="truncate"
+                                            >[{{ task.title }}]</ElText
+                                        >
                                     </div>
 
                                     <!-- ElSlider no meio com largura definida -->
@@ -414,7 +416,7 @@
 
                                     <!-- Status e Prioridade à direita com largura definida -->
                                     <div
-                                        class="flex items-center justify-end gap-4 w-1/4"
+                                        class="flex items-center justify-end gap-2 lg:gap-4 w-1/4"
                                     >
                                         <!-- Status -->
                                         <div class="flex items-center gap-2">
@@ -469,7 +471,7 @@
                                                         task.priority ===
                                                         'high',
                                                 }"
-                                                class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center justify-center"
+                                                class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center j"
                                             >
                                                 <Icon
                                                     v-if="
