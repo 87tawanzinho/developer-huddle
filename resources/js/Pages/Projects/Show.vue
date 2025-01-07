@@ -455,6 +455,17 @@
                                     <div
                                         class="flex items-center justify-end gap-2 lg:gap-4 w-1/4"
                                     >
+                                        <Icon
+                                            @click="
+                                                () => {
+                                                    showTask = true;
+                                                    activeTaskEdit = task;
+                                                }
+                                            "
+                                            icon="mdi:edit"
+                                            class="text-gray-600 cursor-pointer hover:opacity-60"
+                                        />
+
                                         <!-- Status -->
                                         <div class="flex items-center gap-2">
                                             <span
@@ -833,6 +844,35 @@
                         </div>
                     </div>
                 </ElDrawer>
+
+                <ElDrawer v-model="showTask" width="500" align-center>
+                    <div class="flex flex-col justify-center p-1">
+                        <p class="font-semibold">
+                            [{{ activeTaskEdit.title }}]
+                        </p>
+
+                        <p class="flex flex-col mt-4   p-1">
+                            <span class="font-semibold">Descrição:</span>
+                           <p class="border rounded-lg p-1"> {{ activeTaskEdit.description }}</p>
+                        </p>
+
+                        <!-- <img
+                                :src="
+                                    activeTaskEdit.responsible.profile_photo_url
+                                "
+                                class="rounded-full"
+                            />
+                            <p>
+                                {{ activeTaskEdit.responsible.name }}
+                            </p>
+
+                            <ElSlider
+                                :show-tooltip="false"
+                                :model-value="activeTaskEdit.progress"
+                            />
+                        </div> -->
+                    </div>
+                </ElDrawer>
             </div>
         </div>
     </div>
@@ -850,8 +890,10 @@ const props = defineProps(["id", "project", "users", "tasks"]);
 import { ref, computed } from "vue";
 
 const drawer = ref(false);
+const showTask = ref(false);
 const showFullDescription = ref(false);
 const shrink = ref(false);
+const activeTaskEdit = ref();
 const create = ref({
     taskTitle: "",
     taskDescription: "",
