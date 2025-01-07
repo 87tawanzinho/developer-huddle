@@ -34,6 +34,7 @@
                                 "
                                 class="absolute right-8 top-12 sm:right-10"
                             >
+                            
                                 <Icon
                                     @click="deleteProjectIfOwner(project.id)"
                                     icon="streamline:delete-1"
@@ -723,7 +724,11 @@ const deleteProjectIfOwner = (id) => {
         }
     )
         .then(() => {
-            router.delete(route("projects.delete", { id }));
+            router.delete(route("projects.delete", { id }), {
+                  onError: () => {
+                    ElMessage.error('Ocorreu um erro ao deletar o projeto.')
+                }
+            });
         })
         .catch(() => {
             // Handle cancel action
@@ -771,7 +776,11 @@ const deleteTask = (id) => {
         }
     )
         .then(() => {
-            router.delete(route("projects.deleteTask", { id }));
+            router.delete(route("projects.deleteTask", { id }), {
+                onError: () => {
+                    ElMessage.error('Ocorreu um erro ao deletar a tarefa.')
+                }
+            });
         })
         .catch(() => {
             // Handle cancel action

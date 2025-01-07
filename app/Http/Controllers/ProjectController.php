@@ -40,14 +40,15 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "name" => "required|string|max:255",
-            "description" => "required|string",
-            "start_date" => "required",
-            "end_date" => "required",
-            "image" => "image",
+         'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after:start_date', // Validação para garantir que end_date seja após start_date
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif', // 'nullable' caso não queira imagem obrigatória
         ]);
 
-        $project = Project::create([
+        try{
+            $project = Project::create([
             'name' => $request->name,
             'description' => $request->description,
             'start_date' => $request->start_date,
@@ -55,9 +56,11 @@ class ProjectController extends Controller
             'cover_path' => $request->file('image')->store('images/projects'),
         ]);
         $project->users()->attach($request->user()->id, ['role' => 'owner']);
-
-        return redirect()->back();
-    }
+            return redirect()->back();
+        } catch(\Exception $e) {
+           throw $e;
+        }
+    } 
 
     public function createTask(Request $request)
     {
@@ -88,18 +91,26 @@ class ProjectController extends Controller
 
     public function deleteTask(Request $request)
     {
+      try {
         $task = Task::findOrFail($request->id);
-
-        $task->delete();
+        $task->delete(); 
 
         return redirect()->back();
+      } catch (\Exception $e) {
+        throw $e;
+      }
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
-        $project = Project::findOrFail($id);
+        try {
+        $project = Project::findOrFail($request->id);
         $project->delete();
-        return redirect('/');
+        return redirect('/projects');
+        }
+        catch(\Exception $e) {
+            throw $e;
+        }
     }
 
     public function updateTask(Request $request, $projectId, $taskId)

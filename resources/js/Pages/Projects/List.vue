@@ -32,6 +32,7 @@ const props = defineProps({
     projects: Array,
     user: Array,
     invitations: Object,
+    errors: Object,
 });
 
 onMounted(() => {
@@ -67,7 +68,7 @@ const projectsFiltered = computed(() => {
                     .includes(searchQuery.value.toLowerCase())
         );
     } else {
-         return [...props.projects].reverse();
+        return [...props.projects].reverse();
     }
 });
 
@@ -84,17 +85,30 @@ const handleSubmit = async () => {
         return;
     }
 
-    const formData = new FormData();
-    formData.append("name", form.value.title);
-    formData.append("description", form.value.description);
-    formData.append("start_date", form.value.start_date);
-    formData.append("end_date", form.value.end_date);
+    try {
+        const formData = new FormData();
+        formData.append("name", form.value.title);
+        formData.append("description", form.value.description);
+        formData.append("start_date", form.value.start_date);
+        formData.append("end_date", form.value.end_date);
 
-    if (form.value.image && form.value.image.length > 0) {
-        formData.append("image", form.value.image[0].raw);
+        if (form.value.image && form.value.image.length > 0) {
+            formData.append("image", form.value.image[0].raw);
+        }
+        router.post(route("projects.store"), formData, {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                drawer.value = false
+            },
+            onError: (error) => {
+               
+            },
+        });
+    } catch (error) {
+        // Verificando se houve um erro na resposta da requisição
+       alert(error)
     }
-    router.post(route("projects.store"), formData);
-    drawer.value = false;
 };
 
 const isClosed = () => {
@@ -164,7 +178,7 @@ onMounted(() => {
         <SidebarLayout />
         <div class="flex-1 p-4 mt-4">
             <div
-                class="sm:mt-12 lg:mt-0 flex space-x-2 sm:flex-row justify-center items-center gap-4  mb-6"
+                class="sm:mt-12 lg:mt-0 flex space-x-2 sm:flex-row justify-center items-center gap-4 mb-6"
             >
                 <ElInput
                     v-model="searchQuery"
@@ -191,7 +205,7 @@ onMounted(() => {
                 </ElButton>
             </div>
 
-            <div class="flex flex-wrap gap-6">
+            <div class="flex justify-center lg:justify-normal overflow-auto h-[90%] pb-4 flex-wrap gap-6">
                 <div
                     v-for="project in projectsFiltered"
                     :key="project.id"
@@ -202,23 +216,23 @@ onMounted(() => {
                         alt="Project Image"
                         class="w-full h-32 sm:h-48 object-cover rounded-t-lg"
                     />
-                    <div class="p-4 w-full"> 
-                      <div class="flex justify-between items-center mb-2  ">
-                           <div class="flex items-center gap-2 ">
-                            <Icon
-                                icon="prime:user"
-                                class="text-gray-500 text-2xl "
-                            />
-                            <ElText class="">{{
-                                project.owner[0]?.name
-                            }}</ElText>
-                        </div>
+                    <div class="p-4 w-full">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <Icon
+                                    icon="prime:user"
+                                    class="text-gray-500 text-2xl"
+                                />
+                                <ElText class="">{{
+                                    project.owner[0]?.name
+                                }}</ElText>
+                            </div>
 
                             <div class="flex items-center gap-2">
-                          <Icon icon="uiw:date"  class="text-gray-500" />
-                        <ElText>Maio, 2025</ElText>
+                                <Icon icon="uiw:date" class="text-gray-500" />
+                                <ElText>Maio, 2025</ElText>
+                            </div>
                         </div>
-                      </div>
                         <h3
                             class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3"
                         >
@@ -229,8 +243,6 @@ onMounted(() => {
                         >
                             {{ project.description }}
                         </p>
-                         
-                     
 
                         <div class="flex sm:flex-row gap-2">
                             <a
@@ -327,6 +339,14 @@ onMounted(() => {
                     </ElUpload>
                 </ElFormItem>
 
+                <span
+                    class="text-sm rounded  bg-red-50 text-red-800  shadow-sm p-2"
+                    v-if="props.errors"
+                >
+                    <p v-for="error in props.errors">
+                        {{ error }}
+                    </p>
+                </span>
                 <ElFormItem
                     class="w-full flex flex-col sm:flex-row justify-between gap-2"
                 >
