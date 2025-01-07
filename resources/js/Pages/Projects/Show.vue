@@ -37,7 +37,7 @@
                                 <Icon
                                     @click="deleteProjectIfOwner(project.id)"
                                     icon="streamline:delete-1"
-                                    class="text-lg cursor-pointer text-red-800 transition-opacity duration-200 hover:opacity-75"
+                                    class="text-lg cursor-pointer text-gray-600 transition-opacity duration-200 hover:opacity-75"
                                 />
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                 <div class="flex justify-between items-center">
                     <div class="mt-8  px-2 flex items-center gap-2">
                         <ElDropdown  class="flex items-center">
-                            <ElButton round type="">
+                            <ElButton type="">
                                 <svg
                                     class="mr-2"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -150,50 +150,44 @@
                         v-if="tasks.length"
                         @click="drawer = true"
                         class="flex items-center gap-2 mt-8"
-                        type="primary"
+                        type=""
+                        style="font-size: 16px;"
                         round
                     >
-                        <Icon icon="mdi:plus" class=" mr-1 text-xl" />
-                        Criar uma nova tarefa
+                        <Icon icon="mdi:plus" class=" mr-1 text-2xl" />
+                        Criar
                     </ElButton>
                 </div>
 
                 <!-- Project Dates -->
                 <div class="mt-8 flex items-center gap-2 sm:gap-4 mb-4">
-                    <div
-                        class="flex items-center px-2 p-1 gap-4 text-sm bg-green-50 rounded-lg border border-green-200"
-                    >
-                        <Icon
-                            icon="mdi:calendar-start"
-                            class="w-6 h-6 text-green-600"
-                        />
-                        <div>
-                            <span class="text-sm font-medium text-gray-600"
-                                >Início</span
-                            >
-                            <p class="font-semibold text-gray-800">
-                                {{ formatDate(project.start_date) }}
-                            </p>
-                        </div>
-                    </div>
+    <div
+        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-green-50"
+    >
+        <Icon
+            icon="mdi:calendar-start"
+            class="w-6 h-6 text-gray-600"
+        />
+        <div>
+            <span class="text-sm text-gray-600">Início</span>
+            <p class="text-gray-600">{{ formatDate(project.start_date) }}</p>
+        </div>
+    </div>
 
-                    <div
-                        class="flex items-center px-2 p-1 gap-4 text-sm bg-red-50 rounded-lg border border-red-200"
-                    >
-                        <Icon
-                            icon="mdi:calendar-end"
-                            class="w-6 h-6 text-red-600"
-                        />
-                        <div>
-                            <span class="text-sm font-medium text-gray-600"
-                                >Fim</span
-                            >
-                            <p class="font-semibold text-gray-800">
-                                {{ formatDate(project.end_date) }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <div
+        class="flex flex-1 w-1/2 items-center px-2 p-1 gap-4 text-sm rounded-lg border border-red-50"
+    >
+        <Icon
+            icon="mdi:calendar-end"
+            class="w-6 h-6 text-gray-600"
+        />
+        <div>
+            <span class="text-sm text-gray-600">Fim</span>
+            <p class="text-gray-600">{{ formatDate(project.end_date) }}</p>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Tasks Section -->
                 <div>
@@ -210,7 +204,7 @@
                             type="primary"
                         >
                             <Icon icon="mdi:plus" class="mr-2 text-xl" />
-                            Criar uma nova tarefa
+                            Criar
                         </ElButton>
                     </div>
                     
@@ -236,8 +230,8 @@
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center gap-4">
                                         <Icon
-                                            icon="mdi:delete"
-                                            class="w-6 h-6 cursor-pointer text-red-600 transition-opacity duration-200 hover:opacity-75"
+                                            icon="material-symbols:delete-outline"
+                                            class="w-6 h-6 cursor-pointer text-gray-600 transition-opacity duration-200 hover:opacity-75"
                                             @click="deleteTask(task.id)"
                                         />
                                         <h3
@@ -247,15 +241,8 @@
                                         </h3>
                                     </div>
                                     <span
-                                        :class="{
-                                            'text-blue-500':
-                                                task.status === 'done',
-                                            'text-yellow-500':
-                                                task.status === 'in_progress',
-                                            'text-red-500':
-                                                task.status === 'todo',
-                                        }"
-                                        class="text-sm font-medium flex items-center gap-2"
+                                       
+                                        class="text-gray-600 text-sm font-medium flex items-center gap-2"
                                     >
                                         <Icon
                                             v-if="task.status === 'done'"
@@ -294,12 +281,12 @@
                                             placement="top-start"
                                         >
                                             <ElButton
-                                                type="primary"
+                                                
                                                round
                                             >
                                                 <Icon
                                                     icon="mdi:account"
-                                                    class="w-4 h-4"
+                                                    class="w-4 h-4 mr-1"
                                                 />
                                                 {{ task.responsible.name }}
                                             </ElButton>
@@ -329,15 +316,8 @@
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span
-                                            :class="{
-                                                'bg-green-600':
-                                                    task.priority === 'low',
-                                                'bg-purple-600':
-                                                    task.priority === 'medium',
-                                                'bg-red-600':
-                                                    task.priority === 'high',
-                                            }"
-                                            class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-white flex items-center"
+                                            
+                                            class="px-1 sm:px-3 py-1 rounded-full text-[13px] border-b text-gray-600 flex items-center"
                                         >
                                             <Icon
                                                 v-if="task.priority === 'low'"
