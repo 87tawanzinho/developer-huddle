@@ -852,7 +852,8 @@
                 <ElDialog v-model="showTask" width="60%" align-center>
                     <div class="flex flex-col justify-center p-1">
                         <div class="flex items-center gap-2 mb-6 ml-2">
-                            <div class="flex flex-col text-center pt-2">
+                            <div class="flex  flex-col  items-center  gap-6 text-center pt-2">
+                              <div class="flex items-center gap-4">
                                 <ElDropdown
                                     onclick="changeResponsible"
                                     placement="bottom-end"
@@ -888,8 +889,9 @@
                                     </template>
                                 </ElDropdown>
                                 {{ activeTaskEdit.responsible.name }}
-                            </div>
-                            <div class="flex items-center gap-2 ml-2">
+                              </div>
+
+                                <div class="flex  items-center gap-2 ml-2">
                                 <p>
                                     {{
                                         translatedStatus[activeTaskEdit.status]
@@ -903,6 +905,8 @@
                                     }}
                                 </p>
                             </div>
+                            </div>
+                           
                         </div>
                         <ElText size="large" class="font-semibold">
                             [{{ activeTaskEdit.title }}]
@@ -945,9 +949,9 @@
                                     class="p-2"
                                 >
                                     <div
-                                        class="flex items-center justify-between mt-2"
+                                        class="flex flex-col items-start mt-2  p-2 rounded-2xl"
                                     >
-                                        <div>
+                                        <div class="flex items-center gap-2">
                                             <img
                                                 class="rounded-full h-8 w-8"
                                                 :src="
@@ -958,6 +962,9 @@
 
                                             {{ comment.responsible.name }}
                                         </div>
+
+                                         
+                                       <div class="flex flex-col items-center mt-2 gap-2">
                                         <ElText>{{ comment.content }}</ElText>
                                         <ElButton round size="small">
                                             <Icon
@@ -965,6 +972,7 @@
                                                 class="mr-1"
                                             />{{ comment.likes }}</ElButton
                                         >
+                                       </div>
                                     </div>
                                 </div>
                             </div>
