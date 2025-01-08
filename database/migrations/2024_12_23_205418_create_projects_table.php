@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->enum('project_type', ['programming', 'design', 'engineering']);
             $table->text('description');
             $table->boolean('is_private')->default(false);
             $table->string('cover_path');

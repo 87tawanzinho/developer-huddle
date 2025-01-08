@@ -12,6 +12,8 @@ import {
     ElInput,
     ElMessage,
     ElMessageBox,
+    ElOption,
+    ElSelect,
     ElText,
     ElUpload,
 } from "element-plus";
@@ -42,6 +44,7 @@ const searchQuery = ref("");
 const form = ref({
     title: "",
     description: "",
+    project_type: "programming",
     start_date: "",
     end_date: "",
     image: [],
@@ -52,7 +55,8 @@ const isFormValid = computed(() => {
         form.value.title &&
         form.value.description &&
         form.value.start_date &&
-        form.value.end_date
+        form.value.end_date &&
+        form.value.project_type
     );
 });
 
@@ -91,6 +95,7 @@ const handleSubmit = async () => {
         formData.append("description", form.value.description);
         formData.append("start_date", form.value.start_date);
         formData.append("end_date", form.value.end_date);
+        formData.append("project_type", form.value.project_type);
 
         if (form.value.image && form.value.image.length > 0) {
             formData.append("image", form.value.image[0].raw);
@@ -99,15 +104,13 @@ const handleSubmit = async () => {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
-                drawer.value = false
+                drawer.value = false;
             },
-            onError: (error) => {
-               
-            },
+            onError: (error) => {},
         });
     } catch (error) {
         // Verificando se houve um erro na resposta da requisição
-       alert(error)
+        alert(error);
     }
 };
 
@@ -169,6 +172,12 @@ const openSendInvite = (projectId) => {
 onMounted(() => {
     isMobile.value = window.innerWidth <= 640;
 });
+
+const translatedProjectType = computed(() => ({
+    programming: "Programação",
+    design: "Design",
+    engineering: "Engenharia",
+}));
 </script>
 
 <template>
@@ -185,7 +194,7 @@ onMounted(() => {
                     placeholder="Procurar por Projetos"
                     size="large"
                     class="w-full sm:w-auto flex-grow"
-                    style="border-radius: 18px"
+                    style="border-radius: 48px"
                     :prefix-icon="
                         () =>
                             h(Icon, {
@@ -197,25 +206,30 @@ onMounted(() => {
                 <ElButton
                     type="primary"
                     size="large"
-                    style="border-radius: 8px"
+                    circle
                     @click="drawer = true"
-                    class="sm:w-auto items-center bg-blue-600 text-white font-medium hover:bg-blue-500 transition duration-300"
+                    class=""
                 >
-                    <Icon icon="mdi:plus" class="text-xl mr-1" />
+                    <Icon icon="mdi:plus" class="text-2xl" />
                 </ElButton>
             </div>
 
-            <div class="flex justify-center lg:justify-normal overflow-auto h-[90%] pb-4 flex-wrap gap-6">
+            <div
+                class="flex justify-center lg:justify-normal overflow-auto h-[9] pb-4 flex-wrap gap-6"
+            >
                 <div
                     v-for="project in projectsFiltered"
                     :key="project.id"
-                    class="flex flex-wrap w-96 relative bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-300"
+                    class="flex flex-wrap w-96 relative bg-white shadow-md hover:shadow-lg transition duration-200 ease-in-out border rounded-xl border-gray-300"
                 >
                     <img
                         :src="`/storage/${project.cover_path}`"
                         alt="Project Image"
-                        class="w-full h-32 sm:h-48 object-cover rounded-t-lg"
+                        class="w-full h-32 sm:h-48 object-cover rounded-t-xl"
                     />
+                    <ElText style="padding-left: 24px; padding-top: 12px">
+                        {{ translatedProjectType[project.project_type] }}
+                    </ElText>
                     <div class="p-4 w-full">
                         <div class="flex justify-between items-center mb-2">
                             <div class="flex items-center gap-2">
@@ -270,12 +284,12 @@ onMounted(() => {
             </div>
         </div>
 
-        <ElDrawer
+        <!--resolver responsividade mobile todo-->
+        <ElDialog
             v-model="drawer"
             style="background: #f9fafb"
             title="Criar Novo Projeto"
             :with-header="false"
-            :size="isMobile ? '100%' : '40%'"
             :before-close="isClosed"
         >
             <ElForm
@@ -323,6 +337,20 @@ onMounted(() => {
                     />
                 </ElFormItem>
 
+                <ElFormItem label="Tipo de Projeto" class="w-full">
+                    <ElSelect v-model="form.project_type">
+                        <ElOption value="programming" label="Programação"
+                            >Programação</ElOption
+                        >
+                        <ElOption value="design" label="Design"
+                            >Design</ElOption
+                        >
+                        <ElOption value="engineering" label="Engenharia"
+                            >Engenharia</ElOption
+                        >
+                    </ElSelect>
+                </ElFormItem>
+
                 <ElFormItem label="Imagem" class="w-full">
                     <ElUpload
                         action="#"
@@ -340,7 +368,7 @@ onMounted(() => {
                 </ElFormItem>
 
                 <span
-                    class="text-sm rounded  bg-red-50 text-red-800  shadow-sm p-2"
+                    class="text-sm rounded bg-red-50 text-red-800 shadow-sm p-2"
                     v-if="props.errors"
                 >
                     <p v-for="error in props.errors">
@@ -368,7 +396,7 @@ onMounted(() => {
                     </div>
                 </ElFormItem>
             </ElForm>
-        </ElDrawer>
+        </ElDialog>
     </div>
 </template>
 

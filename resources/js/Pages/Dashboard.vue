@@ -16,27 +16,6 @@ onMounted(() => {
     <AppLayout title="Perfil">
         <template #header>
             <div class="">
-                <div
-                    class="flex justify-between items-center pb-4 border-b-2 rounded-lg mt-16"
-                >
-                    <div class="flex items-center gap-8">
-                        <img
-                            :src="$page.props.auth.user.profile_photo_url"
-                            class="h-32 w-32 rounded-full"
-                            alt=""
-                        />
-
-                        <ElText style="font-size: 32px">{{
-                            $page.props.auth.user.name
-                        }}</ElText>
-                    </div>
-
-                    <Icon
-                        icon="mdi:settings"
-                        class="text-4xl text-gray-600 mt-4 transition-all hover:opacity-60 cursor-pointer"
-                    />
-                </div>
-
                 <div class="mt-24 flex flex-col items-center justify-center">
                     <h2 class="mb-6 text-2xl">Meu Plano Atual</h2>
                     <PlanCard

@@ -23,6 +23,7 @@
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "element-plus": "^2.9.1",
-        "pinia": "^2.3.0"
+        "pinia": "^2.3.0",
+        "swiper": "^11.2.0"
     }
 }

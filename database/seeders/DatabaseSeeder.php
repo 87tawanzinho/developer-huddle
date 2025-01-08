@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(class: PlanSeeder::class);
 
-        User::factory(10)->withAddress()->create();
+        User::factory(10)->withAddress()->withSubscription()->create();
         $user = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@admin'

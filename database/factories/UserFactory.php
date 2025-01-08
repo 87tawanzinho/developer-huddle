@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Address;
+use App\Models\Subscription;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -77,6 +78,17 @@ class UserFactory extends Factory
             Address::factory()
                 ->state(fn(array $attributes, User $user) => [
                     'user_id' => $user->id,
+                ])
+        );
+    }
+
+
+    public function withSubscription(): static 
+    {
+      return $this->has(
+            Subscription::factory()
+                ->state(fn(array $attributes, User $user) => [
+                    'user_id' => $user->id, // Ensure subscription is linked to the user,
                 ])
         );
     }

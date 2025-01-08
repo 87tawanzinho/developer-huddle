@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status',['todo', 'in_progress', 'done']);
             $table->tinyInteger('progress')->default(0)->unsigned();
             $table->timestamps();
+            
         });
     }
 

@@ -7,7 +7,7 @@
         <!-- Main Content -->
         <div class="flex-1 flex justify-center w-full mt-12 sm:mt-0 sm:p-12">
             <div
-                class="bg-white rounded-lg shadow-lg max-w-4xl relative w-full p-8 sm:p-10 transform transition-all hover:shadow-2xl"
+                class="bg-white rounded-lg shadow-lg max-w-5xl relative w-full p-8 sm:p-10 transform transition-all hover:shadow-2xl"
             >
                 <!-- Project Header -->
                 <div class="flex flex-col sm:flex-row items-center gap-6">
@@ -44,7 +44,7 @@
 
                         <!-- Description Section -->
                         <p
-                            class="mt-2 text-gray-500"
+                            class="mt-2 text-gray-500 text-start"
                             v-if="!showFullDescription"
                         >
                             {{ truncatedDescription }}
@@ -55,7 +55,7 @@
                                 >Ver mais</span
                             >
                         </p>
-                        <p class="mt-2 text-gray-500" v-else>
+                        <p class="mt-2 text-gray-500 text-start" v-else>
                             {{ project.description }}
                             <span
                                 @click="showFullDescription = false"
@@ -144,6 +144,10 @@
                                 </div>
                             </template>
                         </ElDropdown>
+
+                        <ElText style="margin-left: 12px">{{
+                            translatedProjectType[project.project_type]
+                        }}</ElText>
                     </div>
 
                     <ElButton
@@ -845,22 +849,132 @@
                     </div>
                 </ElDrawer>
 
-                <ElDrawer v-model="showTask" width="500" align-center>
+                <ElDialog v-model="showTask" width="60%" align-center>
                     <div class="flex flex-col justify-center p-1">
-                        <p class="font-semibold">
-                            [{{ activeTaskEdit.title }}]
-                        </p>
+                        <div class="flex items-center gap-2 mb-6 ml-2">
+                            <div class="flex flex-col text-center pt-2">
+                                <ElDropdown
+                                    onclick="changeResponsible"
+                                    placement="bottom-end"
+                                >
+                                    <img
+                                        class="rounded-full h-16 w-16"
+                                        :src="
+                                            activeTaskEdit.responsible
+                                                .profile_photo_url
+                                        "
+                                    />
 
-                        <p class="flex flex-col mt-4   p-1">
-                            <span class="font-semibold">Descrição:</span>
-                           <p class="border rounded-lg p-1"> {{ activeTaskEdit.description }}</p>
-                        </p>
+                                    <template #dropdown>
+                                        <div
+                                            v-for="user in project.users"
+                                            :key="user.id || user"
+                                        >
+                                            <el-dropdown-item
+                                                @click="
+                                                    () => {
+                                                        currentTaskId = task.id;
+                                                        updateTask(
+                                                            'responsible',
+                                                            user.id
+                                                        );
+                                                    }
+                                                "
+                                                >{{
+                                                    user.name
+                                                }}</el-dropdown-item
+                                            >
+                                        </div>
+                                    </template>
+                                </ElDropdown>
+                                {{ activeTaskEdit.responsible.name }}
+                            </div>
+                            <div class="flex items-center gap-2 ml-2">
+                                <p>
+                                    {{
+                                        translatedStatus[activeTaskEdit.status]
+                                    }}
+                                </p>
+                                <p>
+                                    {{
+                                        translatedPriority[
+                                            activeTaskEdit.priority
+                                        ]
+                                    }}
+                                </p>
+                            </div>
+                        </div>
+                        <ElText size="large" class="font-semibold">
+                            [{{ activeTaskEdit.title }}]
+                        </ElText>
+
+                        <ElText
+                            class="border rounded-xl p-1"
+                            style="
+                                margin-top: 6px;
+                                margin-bottom: 6px;
+                                padding: 4px;
+                            "
+                        >
+                            {{ activeTaskEdit.description }}</ElText
+                        >
+
+                        <ElText style="margin-top: 22px" class="font-semibold"
+                            >Comentários</ElText
+                        >
+
+                        <div
+                            class="w-full border h-96 overflow-auto rounded-xl mt-4 p-6"
+                        >
+                            <div>
+                                <ElInput
+                                    v-model="newComment"
+                                    placeholder="Novo Comentário.."
+                                >
+                                    <template #append>
+                                        <Icon
+                                            @click="commentTaskF"
+                                            icon="mdi:create-outline"
+                                            class="cursor-pointer text-lg hover:opacity-60 transition-all"
+                                        />
+                                    </template>
+                                </ElInput>
+
+                                <div
+                                    v-for="comment in activeTaskEdit.comments"
+                                    class="p-2"
+                                >
+                                    <div
+                                        class="flex items-center justify-between mt-2"
+                                    >
+                                        <div>
+                                            <img
+                                                class="rounded-full h-8 w-8"
+                                                :src="
+                                                    comment.responsible
+                                                        .profile_photo_url
+                                                "
+                                            />
+
+                                            {{ comment.responsible.name }}
+                                        </div>
+                                        <ElText>{{ comment.content }}</ElText>
+                                        <ElButton round size="small">
+                                            <Icon
+                                                icon="mdi:like"
+                                                class="mr-1"
+                                            />{{ comment.likes }}</ElButton
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- <img
                                 :src="
-                                    activeTaskEdit.responsible.profile_photo_url
+                                    activeTaskEdit.responsible.profile_photo_path
                                 "
-                                class="rounded-full"
+                                class="rounded-full w-24 h-24  object-cover"
                             />
                             <p>
                                 {{ activeTaskEdit.responsible.name }}
@@ -869,10 +983,9 @@
                             <ElSlider
                                 :show-tooltip="false"
                                 :model-value="activeTaskEdit.progress"
-                            />
-                        </div> -->
+                            /> -->
                     </div>
-                </ElDrawer>
+                </ElDialog>
             </div>
         </div>
     </div>
@@ -885,7 +998,7 @@ import { formatDate } from "../utils/formatDate.js";
 import { Icon } from "@iconify/vue";
 import { h } from "vue";
 import { router } from "@inertiajs/vue3";
-const props = defineProps(["id", "project", "users", "tasks"]);
+const props = defineProps(["id", "project", "users", "tasks", "comments"]);
 
 import { ref, computed } from "vue";
 
@@ -894,6 +1007,8 @@ const showTask = ref(false);
 const showFullDescription = ref(false);
 const shrink = ref(false);
 const activeTaskEdit = ref();
+const newComment = ref("");
+
 const create = ref({
     taskTitle: "",
     taskDescription: "",
@@ -902,6 +1017,12 @@ const create = ref({
     status: "todo",
     progress: 0,
 });
+
+const translatedProjectType = computed(() => ({
+    programming: "Programação",
+    design: "Design",
+    engineering: "Engenharia",
+}));
 
 const truncatedDescription = computed(() => {
     const maxLength = 100;
@@ -963,6 +1084,24 @@ const deleteProjectIfOwner = (id) => {
             // Handle cancel action
         });
 };
+
+// n esta atualizando
+function commentTaskF() {
+    router.post(
+        route("comments.createComment"),
+        {
+            taskId: activeTaskEdit.value.id,
+            content: newComment.value,
+        },
+        {
+            onSuccess: () => {
+                showTask.value = false;
+
+                newComment.value = "";
+            },
+        }
+    );
+}
 
 const createTask = () => {
     if (

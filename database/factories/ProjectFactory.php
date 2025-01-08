@@ -15,9 +15,10 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->sentence(),
             'description' => $this->faker->text(),
             'is_private' => $this->faker->boolean(),
+            'project_type' => $this->faker->randomElement(['programming', 'design', 'engineering']),
             'cover_path' => $this->createImage(),
             'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'end_date' => $this->faker->dateTimeBetween('now', '+1 year'),

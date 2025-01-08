@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,11 @@ Route::middleware([
     Route::post('/sendInvite', [InviteController::class, 'store'])->name('invite.send');
     Route::post('/updateInvite', [InviteController::class, 'updateInvite'])->name('projects.updateInvite');
 
+
+
+    // create comments on tasks
+
+    Route::post('/createComment', [CommentController::class, 'store'])->name('comments.createComment');
 
     Route::get('/prices', function () {
         $currentPlan = auth()->user()->plan;

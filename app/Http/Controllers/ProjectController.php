@@ -30,10 +30,11 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $users = $project->users;
+        
         return Inertia::render("Projects/Show", [
             "project" => $project->load(['tasks','owner'])->toArray(),
             'users' => $users,
-            'tasks' => $project->tasks->load(['responsible'])->toArray(),
+            'tasks' => $project->tasks->load(['responsible', 'comments', 'comments.responsible'])->toArray(),
         ]);
     }
 
@@ -42,6 +43,7 @@ class ProjectController extends Controller
         $request->validate([
          'name' => 'required|string|max:255',
         'description' => 'required|string',
+         "project_type" => "required|string",
         'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date', // Validação para garantir que end_date seja após start_date
         'image' => 'required|image|mimes:jpeg,png,jpg,gif', // 'nullable' caso não queira imagem obrigatória
@@ -51,6 +53,7 @@ class ProjectController extends Controller
             $project = Project::create([
             'name' => $request->name,
             'description' => $request->description,
+            'project_type' => $request->project_type,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'cover_path' => $request->file('image')->store('images/projects'),
