@@ -16,12 +16,14 @@ class ProjectController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $users = User::all();
         $projects = $user->projects->load(['users','owner'])->toArray();
         $invitations = $user->invitations->where('status', 'pending')->load(['owner','project'])->toArray();
 
         return Inertia::render('Projects/List', [
             'projects' => $projects,
             'user' => $user,
+            'users' => $users,
             'invitations' => $invitations,
         ]);
     }

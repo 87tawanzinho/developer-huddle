@@ -68,7 +68,7 @@
 
                 <!-- Users & Create Task Button -->
                 <div class="flex justify-between items-center">
-                    <div class="mt-8 px-2 flex items-center gap-2">
+                    <div class="mt-8  flex     items-center gap-2">
                         <ElDropdown class="flex items-center">
                             <ElButton type="">
                                 <svg
@@ -145,7 +145,7 @@
                             </template>
                         </ElDropdown>
 
-                        <ElText style="margin-left: 12px">{{
+                        <ElText     style="margin-left: 12px">{{
                             translatedProjectType[project.project_type]
                         }}</ElText>
                     </div>
@@ -511,48 +511,17 @@
 
                                         <!-- Prioridade -->
 
-                                        <div>
-                                            <span
-                                                :class="{
-                                                    'bg-green-600':
-                                                        task.priority === 'low',
-                                                    'bg-yellow-600':
-                                                        task.priority ===
-                                                        'medium',
-                                                    'bg-red-600':
-                                                        task.priority ===
-                                                        'high',
-                                                }"
+                                        <div  >
+                                            <ElTag
+                                                style="flex-direction: row; display: flex;"
                                                 class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center j"
                                             >
-                                                <Icon
-                                                    v-if="
-                                                        task.priority === 'low'
-                                                    "
-                                                    icon="mdi:flag"
-                                                    class="w-4 h-4 mr-1"
-                                                />
-                                                <Icon
-                                                    v-if="
-                                                        task.priority ===
-                                                        'medium'
-                                                    "
-                                                    icon="mdi:flag"
-                                                    class="w-4 h-4 mr-1"
-                                                />
-                                                <Icon
-                                                    v-if="
-                                                        task.priority === 'high'
-                                                    "
-                                                    icon="mdi:flag"
-                                                    class="w-4 h-4 mr-1"
-                                                />
                                                 {{
                                                     translatedPriority[
                                                         task.priority
                                                     ]
                                                 }}
-                                            </span>
+                                            </ElTag>
                                         </div>
                                     </div>
                                 </div>
@@ -894,18 +863,18 @@
                               </div>
 
                                 <div class="flex  items-center gap-2 ml-2">
-                                <p>
+                                <ElTag round type="danger"   effect="dark">
                                     {{
                                         translatedStatus[activeTaskEdit.status]
                                     }}
-                                </p>
-                                <p>
+                                </ElTag>
+                                <ElTag round type='warning'    effect="dark">
                                     {{
                                         translatedPriority[
                                             activeTaskEdit.priority
                                         ]
                                     }}
-                                </p>
+                                </ElTag>
                             </div>
                             </div>
                            

@@ -35,6 +35,7 @@ const props = defineProps({
     user: Array,
     invitations: Object,
     errors: Object,
+    users: Object
 });
 
 onMounted(() => {
@@ -116,6 +117,7 @@ const handleSubmit = async () => {
 
 const isClosed = () => {
     drawer.value = false;
+    openElDialogToInvite.value = false
     ElMessage({
         message: "Operação cancelada.",
         type: "info",
@@ -128,6 +130,17 @@ const Created = () => {
         type: "success",
     });
 };
+const usersWithInvitingForChars = computed(() => {
+    
+  if(invitingFor.value.length > 2) {
+    return props.users.map((user) => ({
+        username: user.username,
+        photo: user.profile_photo_url
+    })).filter((user) => user.username.toLowerCase().includes(invitingFor.value.toLowerCase())).slice(0,4)
+  }
+})
+
+
 
 const ErrorWhenCreated = () => {
     ElMessage({
@@ -136,37 +149,31 @@ const ErrorWhenCreated = () => {
     });
 };
 
+const invitingFor = ref('')
+const openElDialogToInvite = ref(false)
+const activeProjectId = ref(0)
 const openSendInvite = (projectId) => {
-    ElMessageBox.prompt("Pergunte a seu colega o seu username", "Convite", {
-        confirmButtonText: "OK",
-        cancelButtonText: "Cancelar",
-    })
-        .then(({ value }) => {
-            axios
-                .post(route("invite.send"), {
-                    username: value,
-                    project_id: projectId,
+    openElDialogToInvite.value = true
+    activeProjectId.value = projectId
+};  
+
+
+function sendInvite() {
+            router.post(route("invite.send"), {
+                    username: invitingFor.value,
+                    project_id: activeProjectId.value,
+                }, {
+                    onSuccess: () => {
+                        ElMessage.success('Convite enviado com sucesso para ' + invitingFor.value )
+                        invitingFor.value = ''
+                        openElDialogToInvite.value = false
+                    },
+                    onError: () => {
+                        ElMessage.error('Oops, ocorreu um erro ')
+                    }
                 })
-                .then(() => {
-                    ElMessage({
-                        type: "success",
-                        message: `Convite enviado para: ${value}`,
-                    });
-                })
-                .catch(() => {
-                    ElMessage({
-                        type: "error",
-                        message: "Falha ao enviar convite.",
-                    });
-                });
-        })
-        .catch(() => {
-            ElMessage({
-                type: "info",
-                message: "Convite cancelado.",
-            });
-        });
-};
+                
+}
 
 // Detecta o tamanho da tela para ajustar o drawer
 onMounted(() => {
@@ -278,6 +285,7 @@ const translatedProjectType = computed(() => ({
                             >
                                 Enviar Convite
                             </ElButton>
+
                         </div>
                     </div>
                 </div>
@@ -396,6 +404,39 @@ const translatedProjectType = computed(() => ({
                     </div>
                 </ElFormItem>
             </ElForm>
+        </ElDialog>
+
+        <ElDialog
+            v-model="openElDialogToInvite"
+            style="background: #f9fafb"
+            align-center
+            width="25%"
+            title="Convite"
+            :with-header="false"
+            :before-close="isClosed"
+        >
+         <ElText style="padding-left: 2px;" >Envie um convite para participarem do seu projeto</ElText>
+         <ElInput style="margin-top: 6px;" placeholder="Nome de Usuario.." v-model="invitingFor"/>
+          <div v-for="users in usersWithInvitingForChars" :key="users.photo" class="mt-4">
+           <div :class="['flex items-center gap-2 rounded-lg hover:opacity-60 cursor-pointer', users.username === invitingFor && '']" @click="invitingFor = users.username" >
+            <img :src="users.photo" alt="" class="rounded-full w-8 h-8 object-cover">
+          <div class="flex items-center justify-between w-full">
+            <span >{{ users.username }}</span>
+           
+            <ElTag effect="plain" type="info" v-if="users.username === invitingFor">
+                Selecionado
+            </ElTag>
+             
+            <ElTag effect="plain" type="info" v-if="users.username.includes(projects.users)">
+                Selecionado
+            </ElTag>
+          </div>
+           </div>
+           <div v-if="invitingFor === users.username" class="mt-4 flex justify-end">
+            <ElButton type="primary" @click="sendInvite">Enviar Convite</ElButton>
+           </div>
+          </div>
+         
         </ElDialog>
     </div>
 </template>
