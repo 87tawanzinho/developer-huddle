@@ -403,7 +403,7 @@
                                                 placement="bottom-start"
                                             >
                                                 <img
-                                                    class="rounded-full h-8 w-8"
+                                                    class="rounded-full h-8 w-8 object-cover"
                                                     :src="
                                                         task.responsible
                                                             .profile_photo_url
@@ -722,7 +722,9 @@
                                     show-stops
                                 />
                             </div>
-
+                                <div v-if="props.errors">
+                                    {{ errors }}
+                                </div>
                             <!-- Botões -->
                             <div class="flex justify-end space-x-4 pt-4">
                                 <ElButton @click="drawer = false"
@@ -849,17 +851,17 @@
                     </div>
                 </ElDrawer>
 
-                <ElDialog v-model="showTask" width="60%" align-center>
-                    <div class="flex flex-col justify-center p-1">
-                        <div class="flex items-center gap-2 mb-6 ml-2">
-                            <div class="flex  flex-col  items-center  gap-6 text-center pt-2">
+                <ElDialog v-model="showTask" width="75%" align-center>
+                    <div class="flex flex-col   p-1">
+                        <div class="flex  gap-2 mb-6 ml-2">
+                            <div class="flex  flex-col   gap-6 text-center pt-2">
                               <div class="flex items-center gap-4">
                                 <ElDropdown
                                     onclick="changeResponsible"
                                     placement="bottom-end"
                                 >
                                     <img
-                                        class="rounded-full h-16 w-16"
+                                        class="rounded-full h-16 w-16 object-cover"
                                         :src="
                                             activeTaskEdit.responsible
                                                 .profile_photo_url
@@ -907,9 +909,9 @@
                             </div>
                             </div>
                            
-                        </div>
-                        <ElText size="large" class="font-semibold">
-                            [{{ activeTaskEdit.title }}]
+                        </div class=>
+                        <ElText size="large" class="font-semibold ">
+                            {{ activeTaskEdit.title }}
                         </ElText>
 
                         <ElText
@@ -928,32 +930,21 @@
                         >
 
                         <div
-                            class="w-full border h-96 overflow-auto rounded-xl mt-4 p-6"
+                            class="w-full border h-96 overflow-auto  rounded-xl mt-4 p-6"
                         >
                             <div>
-                                <ElInput
-                                    v-model="newComment"
-                                    placeholder="Novo Comentário.."
-                                >
-                                    <template #append>
-                                        <Icon
-                                            @click="commentTaskF"
-                                            icon="mdi:create-outline"
-                                            class="cursor-pointer text-lg hover:opacity-60 transition-all"
-                                        />
-                                    </template>
-                                </ElInput>
+                              
 
                                 <div
                                     v-for="comment in activeTaskEdit.comments"
                                     class="p-2"
                                 >
                                     <div
-                                        class="flex flex-col items-start mt-2  p-2 rounded-2xl"
+                                        class="flex flex-col items-start mt-1  p-2 rounded-2xl"
                                     >
                                         <div class="flex items-center gap-2">
                                             <img
-                                                class="rounded-full h-8 w-8"
+                                                class="rounded-full h-8 w-8 object-cover"
                                                 :src="
                                                     comment.responsible
                                                         .profile_photo_url
@@ -966,15 +957,49 @@
                                          
                                        <div class="flex flex-col items-center mt-2 gap-2">
                                         <ElText>{{ comment.content }}</ElText>
-                                        <ElButton round size="small">
+                                       <div class="flex items-center gap-2">
+                                        <ElButton class="" round size="small"  @click="liked(comment.id)">
                                             <Icon
                                                 icon="mdi:like"
                                                 class="mr-1"
-                                            />{{ comment.likes }}</ElButton
+                                            />{{ comment.likes.length }}</ElButton
                                         >
+                                        <ElDropdown>
+                                            <Icon class="cursor-pointer hover:opacity-60 text-[15px]" v-if="comment.likes.length" icon="mdi:eye"  />
+
+
+                                            <template #dropdown>
+                                                <div v-for="whoLiked in comment.likes" :key="whoLiked.user.id">
+                                                   <ElDropdownItem>
+                                                    {{ whoLiked.user.name }}
+                                                   </ElDropdownItem>
+                                                </div>
+                                            </template>
+                                        </ElDropdown>
+                                       </div>
                                        </div>
                                     </div>
                                 </div>
+                            <div class="flex items-center gap-2 mt-4 ">
+                                <img :src="$page.props.auth.user.profile_photo_url" class="object-cover h-8 w-8 rounded-full" alt="">
+                                <ElInput
+                                    v-model="newComment"
+                                    placeholder="Novo Comentário.."
+                                    class=" "
+                                    textarea
+                                >
+                               
+                                     
+                                    
+                                    <template #append>
+                                        <Icon
+                                            @click="commentTaskF"
+                                            icon="mdi:create-outline"
+                                            class="cursor-pointer text-lg hover:opacity-60 transition-all"
+                                        />
+                                    </template>
+                                </ElInput>
+                            </div>
                             </div>
                         </div>
 
@@ -1006,7 +1031,7 @@ import { formatDate } from "../utils/formatDate.js";
 import { Icon } from "@iconify/vue";
 import { h } from "vue";
 import { router } from "@inertiajs/vue3";
-const props = defineProps(["id", "project", "users", "tasks", "comments"]);
+const props = defineProps(["id", "project", "users", "tasks", "comments", "errors"]);
 
 import { ref, computed } from "vue";
 
@@ -1056,6 +1081,7 @@ import {
     ElSlider,
     ElMessage,
     ElDropdown,
+    ElDropdownItem,
 } from "element-plus";
 import axios from "axios";
 
@@ -1111,6 +1137,11 @@ function commentTaskF() {
     );
 }
 
+function liked(commentId) {
+    router.post(route('comments.liked'), {commentId: commentId})
+}
+
+
 const createTask = () => {
     if (
         (create.value.status === "in_progress" &&
@@ -1129,10 +1160,15 @@ const createTask = () => {
         status: create.value.status,
         progress: create.value.progress,
         project_id: props.project.id,
-    });
+    }, {onSuccess:()=>{
+        drawer.value = false;
+    }, onError:()=>{
 
-    drawer.value = false;
+    }});
 
+    
+
+ 
     create.value.taskTitle = "";
     create.value.taskDescription = "";
     create.value.priority = "low";
@@ -1267,6 +1303,7 @@ function updateTask(type, id, value) {
     display: none;
 }
 
+ 
 @media (max-width: 700px) {
     .sliderStyle {
         width: 70% !important; /* Largura para telas de dispositivos móveis */

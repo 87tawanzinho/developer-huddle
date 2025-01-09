@@ -34,7 +34,7 @@ class ProjectController extends Controller
         return Inertia::render("Projects/Show", [
             "project" => $project->load(['tasks','owner'])->toArray(),
             'users' => $users,
-            'tasks' => $project->tasks->load(['responsible', 'comments', 'comments.responsible'])->toArray(),
+            'tasks' => $project->tasks->load(['responsible', 'comments', 'comments.responsible', 'comments.likes.user'])->toArray(),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\LikeComment;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,4 +31,35 @@ class CommentController extends Controller
             return redirect()->back();
         }
     }
+
+    public function liked(Request $request)
+    {
+        $validated = $request->validate([
+            'commentId' => 'required|exists:comments,id',
+        ]);
+    
+        $userId = Auth::id();
+    
+        if (!$userId) {
+            return response()->json(['message' => 'Usuário não autenticado.'], 401);
+        }
+    
+        $existingLike = LikeComment::where('user_id', $userId)
+            ->where('comment_id', $validated['commentId'])
+            ->first();
+    
+        if ($existingLike) {
+             $existingLike->delete();
+             return redirect()->back(); 
+        }
+    
+        LikeComment::create([
+            'user_id' => $userId,
+            'comment_id' => $validated['commentId'],
+        ]);
+    
+        return redirect()->back();
+    }
+    
+    
 }

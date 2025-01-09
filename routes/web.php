@@ -38,9 +38,13 @@ Route::middleware([
 
 
 
-    // create comments on tasks
-
+    // comments
     Route::post('/createComment', [CommentController::class, 'store'])->name('comments.createComment');
+    Route::post('/likeComment', [CommentController::class,'liked'])->name('comments.liked');
+
+
+
+
 
     Route::get('/prices', function () {
         $currentPlan = auth()->user()->plan;
