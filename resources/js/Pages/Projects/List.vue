@@ -3,6 +3,7 @@ import { Head, router } from "@inertiajs/vue3";
 import { computed, defineProps, h, ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import { useInvitesStore } from "@/stores/useInviteStore";
+import { formatDateJustYearAndMonth } from "@/Pages/utils/formatDate";
 import {
     ElButton,
     ElDatePicker,
@@ -35,7 +36,7 @@ const props = defineProps({
     user: Array,
     invitations: Object,
     errors: Object,
-    users: Object
+    users: Object,
 });
 
 onMounted(() => {
@@ -46,6 +47,7 @@ const form = ref({
     title: "",
     description: "",
     project_type: "programming",
+    structure: "scrum",
     start_date: "",
     end_date: "",
     image: [],
@@ -97,7 +99,7 @@ const handleSubmit = async () => {
         formData.append("start_date", form.value.start_date);
         formData.append("end_date", form.value.end_date);
         formData.append("project_type", form.value.project_type);
-
+        formData.append("structure", form.value.structure);
         if (form.value.image && form.value.image.length > 0) {
             formData.append("image", form.value.image[0].raw);
         }
@@ -117,7 +119,7 @@ const handleSubmit = async () => {
 
 const isClosed = () => {
     drawer.value = false;
-    openElDialogToInvite.value = false
+    openElDialogToInvite.value = false;
     ElMessage({
         message: "Operação cancelada.",
         type: "info",
@@ -131,16 +133,20 @@ const Created = () => {
     });
 };
 const usersWithInvitingForChars = computed(() => {
-    
-  if(invitingFor.value.length > 2) {
-    return props.users.map((user) => ({
-        username: user.username,
-        photo: user.profile_photo_url
-    })).filter((user) => user.username.toLowerCase().includes(invitingFor.value.toLowerCase())).slice(0,4)
-  }
-})
-
-
+    if (invitingFor.value.length > 2) {
+        return props.users
+            .map((user) => ({
+                username: user.username,
+                photo: user.profile_photo_url,
+            }))
+            .filter((user) =>
+                user.username
+                    .toLowerCase()
+                    .includes(invitingFor.value.toLowerCase())
+            )
+            .slice(0, 4);
+    }
+});
 
 const ErrorWhenCreated = () => {
     ElMessage({
@@ -149,30 +155,34 @@ const ErrorWhenCreated = () => {
     });
 };
 
-const invitingFor = ref('')
-const openElDialogToInvite = ref(false)
-const activeProjectId = ref(0)
+const invitingFor = ref("");
+const openElDialogToInvite = ref(false);
+const activeProjectId = ref(0);
 const openSendInvite = (projectId) => {
-    openElDialogToInvite.value = true
-    activeProjectId.value = projectId
-};  
-
+    openElDialogToInvite.value = true;
+    activeProjectId.value = projectId;
+};
 
 function sendInvite() {
-            router.post(route("invite.send"), {
-                    username: invitingFor.value,
-                    project_id: activeProjectId.value,
-                }, {
-                    onSuccess: () => {
-                        ElMessage.success('Convite enviado com sucesso para ' + invitingFor.value )
-                        invitingFor.value = ''
-                        openElDialogToInvite.value = false
-                    },
-                    onError: () => {
-                        ElMessage.error('Oops, ocorreu um erro ')
-                    }
-                })
-                
+    router.post(
+        route("invite.send"),
+        {
+            username: invitingFor.value,
+            project_id: activeProjectId.value,
+        },
+        {
+            onSuccess: () => {
+                ElMessage.success(
+                    "Convite enviado com sucesso para " + invitingFor.value
+                );
+                invitingFor.value = "";
+                openElDialogToInvite.value = false;
+            },
+            onError: () => {
+                ElMessage.error("Oops, ocorreu um erro ");
+            },
+        }
+    );
 }
 
 // Detecta o tamanho da tela para ajustar o drawer
@@ -251,7 +261,11 @@ const translatedProjectType = computed(() => ({
 
                             <div class="flex items-center gap-2">
                                 <Icon icon="uiw:date" class="text-gray-500" />
-                                <ElText>Maio, 2025</ElText>
+                                <ElText>{{
+                                    formatDateJustYearAndMonth(
+                                        project.start_date
+                                    )
+                                }}</ElText>
                             </div>
                         </div>
                         <h3
@@ -285,7 +299,6 @@ const translatedProjectType = computed(() => ({
                             >
                                 Enviar Convite
                             </ElButton>
-
                         </div>
                     </div>
                 </div>
@@ -359,6 +372,15 @@ const translatedProjectType = computed(() => ({
                     </ElSelect>
                 </ElFormItem>
 
+                <ElFormItem label="Estrutura" class="w-full">
+                    <ElSelect v-model="form.structure">
+                        <ElOption value="scrum" label="Scrum">Scrum</ElOption>
+                        <ElOption value="kanbam" label="Kanbam"
+                            >Kanbam</ElOption
+                        >
+                    </ElSelect>
+                </ElFormItem>
+
                 <ElFormItem label="Imagem" class="w-full">
                     <ElUpload
                         action="#"
@@ -415,28 +437,60 @@ const translatedProjectType = computed(() => ({
             :with-header="false"
             :before-close="isClosed"
         >
-         <ElText style="padding-left: 2px;" >Envie um convite para participarem do seu projeto</ElText>
-         <ElInput style="margin-top: 6px;" placeholder="Nome de Usuario.." v-model="invitingFor"/>
-          <div v-for="users in usersWithInvitingForChars" :key="users.photo" class="mt-4">
-           <div :class="['flex items-center gap-2 rounded-lg hover:opacity-60 cursor-pointer', users.username === invitingFor && '']" @click="invitingFor = users.username" >
-            <img :src="users.photo" alt="" class="rounded-full w-8 h-8 object-cover">
-          <div class="flex items-center justify-between w-full">
-            <span >{{ users.username }}</span>
-           
-            <ElTag effect="plain" type="info" v-if="users.username === invitingFor">
-                Selecionado
-            </ElTag>
-             
-            <ElTag effect="plain" type="info" v-if="users.username.includes(projects.users)">
-                Selecionado
-            </ElTag>
-          </div>
-           </div>
-           <div v-if="invitingFor === users.username" class="mt-4 flex justify-end">
-            <ElButton type="primary" @click="sendInvite">Enviar Convite</ElButton>
-           </div>
-          </div>
-         
+            <ElText style="padding-left: 2px"
+                >Envie um convite para participarem do seu projeto</ElText
+            >
+            <ElInput
+                style="margin-top: 6px"
+                placeholder="Nome de Usuario.."
+                v-model="invitingFor"
+            />
+            <div
+                v-for="users in usersWithInvitingForChars"
+                :key="users.photo"
+                class="mt-4"
+            >
+                <div
+                    :class="[
+                        'flex items-center gap-2 rounded-lg hover:opacity-60 cursor-pointer',
+                        users.username === invitingFor && '',
+                    ]"
+                    @click="invitingFor = users.username"
+                >
+                    <img
+                        :src="users.photo"
+                        alt=""
+                        class="rounded-full w-8 h-8 object-cover"
+                    />
+                    <div class="flex items-center justify-between w-full">
+                        <span>{{ users.username }}</span>
+
+                        <ElTag
+                            effect="plain"
+                            type="info"
+                            v-if="users.username === invitingFor"
+                        >
+                            Selecionado
+                        </ElTag>
+
+                        <ElTag
+                            effect="plain"
+                            type="info"
+                            v-if="users.username.includes(projects.users)"
+                        >
+                            Selecionado
+                        </ElTag>
+                    </div>
+                </div>
+                <div
+                    v-if="invitingFor === users.username"
+                    class="mt-4 flex justify-end"
+                >
+                    <ElButton type="primary" @click="sendInvite"
+                        >Enviar Convite</ElButton
+                    >
+                </div>
+            </div>
         </ElDialog>
     </div>
 </template>

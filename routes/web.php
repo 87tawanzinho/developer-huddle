@@ -49,6 +49,12 @@ Route::middleware([
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
 
+    // notices
+      Route::get('/updates', function () {
+        return Inertia::render('Updates');
+      } )->name('updates');
+
+
 
     Route::get('/prices', function () {
         $currentPlan = auth()->user()->plan;

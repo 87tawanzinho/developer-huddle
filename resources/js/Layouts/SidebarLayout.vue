@@ -145,6 +145,17 @@
                     />
                     <span>Planos</span>
                 </Link>
+
+                <Link
+                    :href="route('updates')"
+                    class="flex items-center gap-2 p-2 w-full text-base font-medium text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-600 transition"
+                >
+                    <Icon
+                        icon="arcticons:cbc-news"
+                        class="text-xl text-blue-600"
+                    />
+                    <span>Portal de Noticias</span>
+                </Link>
             </nav>
         </div>
 

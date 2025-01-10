@@ -7,6 +7,8 @@ import SidebarLayout from "@/Layouts/SidebarLayout.vue";
 
     <div class="flex flex-col lg:flex-row min-h-screen">
         <SidebarLayout />
-        <p>TIMELINE</p>
+        <p class="flex justify-center w-full items-center">
+            Em Desenvolvimento
+        </p>
     </div>
 </template>
