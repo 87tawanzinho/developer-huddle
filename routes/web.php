@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,9 @@ Route::middleware([
     Route::post('/likeComment', [CommentController::class,'liked'])->name('comments.liked');
 
 
+
+    // feed 
+    Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
 
 

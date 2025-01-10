@@ -111,7 +111,7 @@ const clearPhotoFileInput = () => {
                 </div>
 
                 <!-- Nova Previa da Foto de Perfil -->
-                <div v-show="photoPreview" class="mt-2">
+                <div v-show="photoPreview" class="mt-6 flex">
                     <span
                         class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
                         :style="
@@ -119,23 +119,24 @@ const clearPhotoFileInput = () => {
                         "
                     />
                 </div>
+                <div>
+                    <SecondaryButton
+                        class="mt-2 me-2"
+                        type="button"
+                        @click.prevent="selectNewPhoto"
+                    >
+                        Selecionar uma Nova Foto
+                    </SecondaryButton>
 
-                <SecondaryButton
-                    class="mt-2 me-2"
-                    type="button"
-                    @click.prevent="selectNewPhoto"
-                >
-                    Selecionar uma Nova Foto
-                </SecondaryButton>
-
-                <SecondaryButton
-                    v-if="user.profile_photo_path"
-                    type="button"
-                    class="mt-2"
-                    @click.prevent="deletePhoto"
-                >
-                    Remover Foto
-                </SecondaryButton>
+                    <SecondaryButton
+                        v-if="user.profile_photo_path"
+                        type="button"
+                        class="mt-2"
+                        @click.prevent="deletePhoto"
+                    >
+                        Remover Foto
+                    </SecondaryButton>
+                </div>
 
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
