@@ -13,7 +13,7 @@
             <ElButton  style="width: 120px; border-radius: 12px;">Login</ElButton>
           </Link>
 
-          <Link :href="route('dashboard')" v-else>
+          <Link :href="route('profile.show')" v-else>
              <div class="flex items-center gap-2">
               <p class="text-sm text-gray-600 hidden lg:flex" >{{ $page.props.auth.user.name }}</p>
               <img :src="$page.props.auth.user.profile_photo_url" alt="User Avatar" class="w-10 h-10 rounded-full" />

@@ -457,7 +457,7 @@
 
                                     <!-- Status e Prioridade à direita com largura definida -->
                                     <div
-                                        class="flex items-center justify-end gap-2 lg:gap-4 w-1/4"
+                                        class="flex items-center justify-end gap-2 lg:gap-4 w-auto lg:w-1/4"
                                     >
                                         <Icon
                                             @click="
@@ -471,7 +471,7 @@
                                         />
 
                                         <!-- Status -->
-                                        <div class="flex items-center gap-2">
+                                        <!-- <div class="flex items-center gap-2">
                                             <span
                                                 :class="{
                                                     'text-blue-600':
@@ -507,13 +507,14 @@
                                                     class="w-5 h-5"
                                                 />
                                             </span>
-                                        </div>
+                                        </div> -->
 
                                         <!-- Prioridade -->
 
                                         <div  >
                                             <ElTag
-                                                style="flex-direction: row; display: flex;"
+                                          :type="task.priority === 'low' ? 'info' : (task.priority === 'medium' ? 'warning' : (task.priority === 'high' ? 'danger' : ''))"
+                                                style="flex-direction: type row; display: flex;"
                                                 class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center j"
                                             >
                                                 {{

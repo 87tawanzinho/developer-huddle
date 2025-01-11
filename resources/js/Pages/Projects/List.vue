@@ -224,71 +224,72 @@ const translatedProjectType = computed(() => ({
             <div
                 class="flex justify-center lg:justify-normal overflow-auto h-[9] pb-4 flex-wrap gap-6"
             >
-                <div
-                    v-for="project in projectsFiltered"
-                    :key="project.id"
-                    class="flex flex-wrap w-96 relative bg-white shadow-md hover:shadow-lg transition duration-200 ease-in-out border rounded-xl border-gray-300"
-                >
-                    <img
-                        :src="`/storage/${project.cover_path}`"
-                        alt="Project Image"
-                        class="w-full h-32 sm:h-48 object-cover rounded-t-xl"
-                    />
-                    <ElText style="padding-left: 24px; padding-top: 12px">
-                        {{ translatedProjectType[project.project_type] }}
-                    </ElText>
-                    <div class="p-4 w-full">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <Icon
-                                    icon="prime:user"
-                                    class="text-gray-500 text-2xl"
-                                />
-                                <ElText class="">{{
-                                    project.owner[0]?.name
-                                }}</ElText>
-                            </div>
+            <div
+    v-for="project in projectsFiltered"
+    :key="project.id"
+    class="flex flex-wrap w-96    bg-white shadow-md hover:shadow-lg transition duration-200 ease-in-out border rounded-xl border-gray-300"
+>
+    <img
+        :src="`/storage/${project.cover_path}`"
+        alt="Project Image"
+        class="w-full h-32 sm:h-48 object-cover rounded-t-xl"
+    />
+    <ElText style="padding-left: 24px; padding-top: 12px">
+        {{ translatedProjectType[project.project_type] }}
+    </ElText>
+    <div class="p-4 w-full">
+        <div class="flex justify-between items-center mb-2">
+            <div class="flex items-center gap-2">
+                <Icon
+                    icon="prime:user"
+                    class="text-gray-500 text-2xl"
+                />
+                <ElText class="">{{
+                    project.owner[0]?.name
+                }}</ElText>
+            </div>
 
-                            <div class="flex items-center gap-2">
-                                <Icon icon="uiw:date" class="text-gray-500" />
-                                <ElText>Maio, 2025</ElText>
-                            </div>
-                        </div>
-                        <h3
-                            class="text-base sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3"
-                        >
-                            {{ project.name }}
-                        </h3>
-                        <p
-                            class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden"
-                        >
-                            {{ project.description }}
-                        </p>
+            <div class="flex items-center gap-2">
+                <Icon icon="uiw:date" class="text-gray-500" />
+                <ElText>Maio, 2025</ElText>
+            </div>
+        </div>
+        <h3
+            class="text-base h-16 sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3"
+        >
+            {{ project.name }}
+        </h3>
+        <p
+            class="text-sm sm:text-base h-24 text-gray-600 mb-3   overflow-auto"
+        >
+            {{ project.description }}
+        </p>
+    </div>
 
-                        <div class="flex sm:flex-row gap-2">
-                            <a
-                                :href="route('projects.show', project.id)"
-                                class="w-full"
-                            >
-                                <ElButton
-                                    size=""
-                                    type="primary"
-                                    class="w-full bg-blue-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-blue-500 transition duration-300"
-                                >
-                                    Ver Projeto
-                                </ElButton>
-                            </a>
-                            <ElButton
-                                size=""
-                                @click="openSendInvite(project.id)"
-                                class="w-full bg-green-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-green-500 transition duration-300"
-                            >
-                                Enviar Convite
-                            </ElButton>
+    <!-- Mover os botões para o final da div -->
+    <div class="p-4 w-full flex sm:flex-row gap-2">
+        <a
+            :href="route('projects.show', project.id)"
+            class="w-full"
+        >
+            <ElButton
+                size=""
+                type="primary"
+                class="w-full bg-blue-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-blue-500 transition duration-300"
+            >
+                Ver Projeto
+            </ElButton>
+        </a>
+        <ElButton
+            size=""
+            @click="openSendInvite(project.id)"
+            class="w-full bg-green-600 text-white font-medium rounded-lg p-1.5 sm:p-2 text-sm sm:text-base hover:bg-green-500 transition duration-300"
+        >
+            Enviar Convite
+        </ElButton>
+    </div>
+</div>
 
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
