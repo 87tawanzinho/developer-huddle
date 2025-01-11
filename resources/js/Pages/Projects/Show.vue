@@ -68,7 +68,7 @@
 
                 <!-- Users & Create Task Button -->
                 <div class="flex justify-between items-center">
-                    <div class="mt-8  flex     items-center gap-2">
+                    <div class="mt-8 flex items-center gap-2">
                         <ElDropdown class="flex items-center">
                             <ElButton type="">
                                 <svg
@@ -145,7 +145,7 @@
                             </template>
                         </ElDropdown>
 
-                        <ElText     style="margin-left: 12px">{{
+                        <ElText style="margin-left: 12px">{{
                             translatedProjectType[project.project_type]
                         }}</ElText>
                     </div>
@@ -220,13 +220,13 @@
                             class="flex items-center justify-between gap-2 py-2"
                         >
                             <div class="flex">
-                                <ElButton type="info" plain round
+                                <ElButton disabled type="info" plain round
                                     >Prioridade</ElButton
                                 >
-                                <ElButton type="info" round plain
+                                <ElButton disabled type="info" round plain
                                     >Status</ElButton
                                 >
-                                <ElButton type="info" round plain
+                                <ElButton disabled type="info" round plain
                                     >Responsável</ElButton
                                 >
                             </div>
@@ -462,7 +462,7 @@
                                         <Icon
                                             @click="
                                                 () => {
-                                                    showTask = true;
+                                                    showTask = !showTask;
                                                     activeTaskEdit = task;
                                                 }
                                             "
@@ -511,7 +511,7 @@
 
                                         <!-- Prioridade -->
 
-                                        <div  >
+                                        <div>
                                             <ElTag
                                           :type="task.priority === 'low' ? 'info' : (task.priority === 'medium' ? 'warning' : (task.priority === 'high' ? 'danger' : ''))"
                                                 style="flex-direction: type row; display: flex;"
@@ -692,9 +692,9 @@
                                     show-stops
                                 />
                             </div>
-                                <div v-if="props.errors">
-                                    {{ errors }}
-                                </div>
+                            <div v-if="props.errors">
+                                {{ errors }}
+                            </div>
                             <!-- Botões -->
                             <div class="flex justify-end space-x-4 pt-4">
                                 <ElButton @click="drawer = false"
@@ -820,160 +820,181 @@
                         </div>
                     </div>
                 </ElDrawer>
+            </div>
+        </div>
 
-                <ElDialog v-model="showTask" width="75%" align-center>
-                    <div class="flex flex-col   p-1">
-                        <div class="flex  gap-2 mb-6 ml-2">
-                            <div class="flex  flex-col   gap-6 text-center pt-2">
-                              <div class="flex items-center gap-4">
-                                <ElDropdown
-                                    onclick="changeResponsible"
-                                    placement="bottom-end"
-                                >
-                                    <img
-                                        class="rounded-full h-16 w-16 object-cover"
-                                        :src="
-                                            activeTaskEdit.responsible
-                                                .profile_photo_url
-                                        "
-                                    />
+        <div v-if="showTask" class="mt-16">
+            <div
+                class="overflow-auto border-r-2 shadow-md flex flex-col h-5/6 bg-white w-[30rem] p-4"
+            >
+                <div class="flex gap-2 mb-6 ml-2">
+                    <div class="flex flex-col gap-6 text-center pt-2">
+                        <div class="flex items-center gap-4">
+                            <ElDropdown
+                                onclick="changeResponsible"
+                                placement="bottom-end"
+                            >
+                                <img
+                                    class="rounded-full h-16 w-16 object-cover"
+                                    :src="
+                                        activeTaskEdit.responsible
+                                            .profile_photo_url
+                                    "
+                                />
 
-                                    <template #dropdown>
-                                        <div
-                                            v-for="user in project.users"
-                                            :key="user.id || user"
-                                        >
-                                            <el-dropdown-item
-                                                @click="
-                                                    () => {
-                                                        currentTaskId = task.id;
-                                                        updateTask(
-                                                            'responsible',
-                                                            user.id
-                                                        );
-                                                    }
-                                                "
-                                                >{{
-                                                    user.name
-                                                }}</el-dropdown-item
-                                            >
-                                        </div>
-                                    </template>
-                                </ElDropdown>
-                                {{ activeTaskEdit.responsible.name }}
-                              </div>
-
-                                <div class="flex  items-center gap-2 ml-2">
-                                <ElTag round type="danger"   effect="dark">
-                                    {{
-                                        translatedStatus[activeTaskEdit.status]
-                                    }}
-                                </ElTag>
-                                <ElTag round type='warning'    effect="dark">
-                                    {{
-                                        translatedPriority[
-                                            activeTaskEdit.priority
-                                        ]
-                                    }}
-                                </ElTag>
-                            </div>
-                            </div>
-                           
-                        </div class=>
-                        <ElText size="large" class="font-semibold ">
-                            {{ activeTaskEdit.title }}
-                        </ElText>
-
-                        <ElText
-                            class="border rounded-xl p-1"
-                            style="
-                                margin-top: 6px;
-                                margin-bottom: 6px;
-                                padding: 4px;
-                            "
-                        >
-                            {{ activeTaskEdit.description }}</ElText
-                        >
-
-                        <ElText style="margin-top: 22px" class="font-semibold"
-                            >Comentários</ElText
-                        >
-
-                        <div
-                            class="w-full border h-96 overflow-auto  rounded-xl mt-4 p-6"
-                        >
-                            <div>
-                              
-
-                                <div
-                                    v-for="comment in activeTaskEdit.comments"
-                                    class="p-2"
-                                >
+                                <template #dropdown>
                                     <div
-                                        class="flex flex-col items-start mt-1  p-2 rounded-2xl"
+                                        v-for="user in project.users"
+                                        :key="user.id || user"
                                     >
-                                        <div class="flex items-center gap-2">
-                                            <img
-                                                class="rounded-full h-8 w-8 object-cover"
-                                                :src="
-                                                    comment.responsible
-                                                        .profile_photo_url
-                                                "
-                                            />
-
-                                            {{ comment.responsible.name }}
-                                        </div>
-
-                                         
-                                       <div class="flex flex-col items-center mt-2 gap-2">
-                                        <ElText>{{ comment.content }}</ElText>
-                                       <div class="flex items-center gap-2">
-                                        <ElButton class="" round size="small"  @click="liked(comment.id)">
-                                            <Icon
-                                                icon="mdi:like"
-                                                class="mr-1"
-                                            />{{ comment.likes.length }}</ElButton
+                                        <el-dropdown-item
+                                            @click="
+                                                updateTask(
+                                                    'responsible',
+                                                    user.id
+                                                )
+                                            "
+                                            >{{ user.name }}</el-dropdown-item
                                         >
-                                        <ElDropdown>
-                                            <Icon class="cursor-pointer hover:opacity-60 text-[15px]" v-if="comment.likes.length" icon="mdi:eye"  />
-
-
-                                            <template #dropdown>
-                                                <div v-for="whoLiked in comment.likes" :key="whoLiked.user.id">
-                                                   <ElDropdownItem>
-                                                    {{ whoLiked.user.name }}
-                                                   </ElDropdownItem>
-                                                </div>
-                                            </template>
-                                        </ElDropdown>
-                                       </div>
-                                       </div>
                                     </div>
-                                </div>
-                            <div class="flex items-center gap-2 mt-4 ">
-                                <img :src="$page.props.auth.user.profile_photo_url" class="object-cover h-8 w-8 rounded-full" alt="">
-                                <ElInput
-                                    v-model="newComment"
-                                    placeholder="Novo Comentário.."
-                                    class=" "
-                                    textarea
-                                >
-                               
-                                     
-                                    
-                                    <template #append>
-                                        <Icon
-                                            @click="commentTaskF"
-                                            icon="mdi:create-outline"
-                                            class="cursor-pointer text-lg hover:opacity-60 transition-all"
-                                        />
-                                    </template>
-                                </ElInput>
-                            </div>
-                            </div>
+                                </template>
+                            </ElDropdown>
+                            {{ activeTaskEdit.responsible.name }}
                         </div>
 
-                        <!-- <img
+                        <div class="flex text-start gap-2 ml-2 flex-col w-full">
+                            <div class="flex justify- items-center">
+                                <div class="flex gap-4 items-center">
+                                    <div class="flex gap-2 items-center">
+                                        <ElText>Status</ElText>
+                                        <ElTag round>
+                                            {{
+                                                translatedStatus[
+                                                    activeTaskEdit.status
+                                                ]
+                                            }}
+                                        </ElTag>
+                                    </div>
+                                    <div class="flex gap-2 items-center">
+                                        <ElText>Prioridade</ElText>
+                                        <ElTag round>
+                                            {{
+                                                translatedPriority[
+                                                    activeTaskEdit.priority
+                                                ]
+                                            }}
+                                        </ElTag>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p size="large" class="font-semibold px-1 text-gray-600">
+                    {{ activeTaskEdit.title }}
+                </p>
+
+                <ElText
+                    class="rounded-xl p-1"
+                    style="margin-top: 6px; margin-bottom: 6px; padding: 4px"
+                >
+                    {{ activeTaskEdit.description }}</ElText
+                >
+
+                <div class="border rounded-xl p-1 mt-[52px]">
+                    <p class="border-b p-2">Comentários</p>
+
+                    <div class="w-full h-80 overflow-auto rounded-xl p-2">
+                        <div>
+                            <div
+                                v-for="comment in activeTaskEdit.comments"
+                                :key="comment.id"
+                                class="p-2"
+                            >
+                                <div
+                                    class="flex flex-col items-start mt-1 p-2 rounded-2xl"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <img
+                                            class="rounded-full h-8 w-8 object-cover"
+                                            :src="
+                                                comment.responsible
+                                                    .profile_photo_url
+                                            "
+                                        />
+                                        {{ comment.responsible.name }}
+                                    </div>
+
+                                    <div class="flex flex-col mt-2 gap-2">
+                                        <!-- Corrigido para garantir que o conteúdo seja renderizado corretamente -->
+                                        <span>{{ comment.content }}</span>
+                                        <!-- Se ElText não existir ou não for necessário -->
+
+                                        <div class="flex items-center gap-2">
+                                            <ElButton
+                                                round
+                                                size="small"
+                                                @click="liked(comment.id)"
+                                            >
+                                                <Icon
+                                                    icon="mdi:like"
+                                                    class="mr-1"
+                                                />
+                                                {{ comment.likes.length }}
+                                            </ElButton>
+
+                                            <!-- Apenas mostra o dropdown se houver likes -->
+                                            <ElDropdown
+                                                v-if="comment.likes.length"
+                                            >
+                                                <Icon
+                                                    class="cursor-pointer hover:opacity-60 text-[15px]"
+                                                    icon="mdi:eye"
+                                                />
+                                                <template #dropdown>
+                                                    <div
+                                                        v-for="whoLiked in comment.likes"
+                                                        :key="whoLiked.user.id"
+                                                    >
+                                                        <ElDropdownItem>
+                                                            {{
+                                                                whoLiked.user
+                                                                    .name
+                                                            }}
+                                                        </ElDropdownItem>
+                                                    </div>
+                                                </template>
+                                            </ElDropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <img
+                            :src="$page.props.auth.user.profile_photo_url"
+                            class="object-cover h-8 w-8 rounded-full"
+                            alt=""
+                        />
+                        <ElInput
+                            v-model="newComment"
+                            placeholder="Novo Comentário.."
+                            class=" "
+                            textarea
+                        >
+                            <template #append>
+                                <Icon
+                                    @click="commentTaskF"
+                                    icon="mdi:create-outline"
+                                    class="cursor-pointer text-lg hover:opacity-60 transition-all"
+                                />
+                            </template>
+                        </ElInput>
+                    </div>
+                </div>
+
+                <!-- <img
                                 :src="
                                     activeTaskEdit.responsible.profile_photo_path
                                 "
@@ -987,8 +1008,6 @@
                                 :show-tooltip="false"
                                 :model-value="activeTaskEdit.progress"
                             /> -->
-                    </div>
-                </ElDialog>
             </div>
         </div>
     </div>
@@ -1001,7 +1020,14 @@ import { formatDate } from "../utils/formatDate.js";
 import { Icon } from "@iconify/vue";
 import { h } from "vue";
 import { router } from "@inertiajs/vue3";
-const props = defineProps(["id", "project", "users", "tasks", "comments", "errors"]);
+const props = defineProps([
+    "id",
+    "project",
+    "users",
+    "tasks",
+    "comments",
+    "errors",
+]);
 
 import { ref, computed } from "vue";
 
@@ -1099,18 +1125,28 @@ function commentTaskF() {
         },
         {
             onSuccess: () => {
-                showTask.value = false;
-
                 newComment.value = "";
+                activeTaskEdit.value = props.tasks.find(
+                    (task) => task.id === activeTaskEdit.value.id
+                );
             },
         }
     );
 }
 
 function liked(commentId) {
-    router.post(route('comments.liked'), {commentId: commentId})
+    router.post(
+        route("comments.liked"),
+        { commentId: commentId },
+        {
+            onSuccess: () => {
+                activeTaskEdit.value = props.tasks.find(
+                    (task) => task.id === activeTaskEdit.value.id
+                );
+            },
+        }
+    );
 }
-
 
 const createTask = () => {
     if (
@@ -1122,23 +1158,25 @@ const createTask = () => {
             "O progresso está em 100%, mas você disse que ainda está em andamento."
         );
     }
-    router.post(route("projects.createTask"), {
-        title: create.value.taskTitle,
-        description: create.value.taskDescription,
-        priority: create.value.priority,
-        responsible_id: create.value.responsible_id,
-        status: create.value.status,
-        progress: create.value.progress,
-        project_id: props.project.id,
-    }, {onSuccess:()=>{
-        drawer.value = false;
-    }, onError:()=>{
+    router.post(
+        route("projects.createTask"),
+        {
+            title: create.value.taskTitle,
+            description: create.value.taskDescription,
+            priority: create.value.priority,
+            responsible_id: create.value.responsible_id,
+            status: create.value.status,
+            progress: create.value.progress,
+            project_id: props.project.id,
+        },
+        {
+            onSuccess: () => {
+                drawer.value = false;
+            },
+            onError: () => {},
+        }
+    );
 
-    }});
-
-    
-
- 
     create.value.taskTitle = "";
     create.value.taskDescription = "";
     create.value.priority = "low";
@@ -1273,7 +1311,6 @@ function updateTask(type, id, value) {
     display: none;
 }
 
- 
 @media (max-width: 700px) {
     .sliderStyle {
         width: 70% !important; /* Largura para telas de dispositivos móveis */

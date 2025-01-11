@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('project_type', ['programming', 'design', 'engineering']);
+            $table->enum('structure', ['scrum', 'kanbam']);
             $table->text('description');
             $table->boolean('is_private')->default(false);
             $table->string('cover_path');

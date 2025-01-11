@@ -46,6 +46,7 @@ class ProjectController extends Controller
          'name' => 'required|string|max:255',
         'description' => 'required|string',
          "project_type" => "required|string",
+           "structure" => "required|string",
         'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date', // Validação para garantir que end_date seja após start_date
         'image' => 'required|image|mimes:jpeg,png,jpg,gif', // 'nullable' caso não queira imagem obrigatória
@@ -56,6 +57,7 @@ class ProjectController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'project_type' => $request->project_type,
+             'structure' => $request->structure,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'cover_path' => $request->file('image')->store('images/projects'),

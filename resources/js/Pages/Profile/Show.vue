@@ -31,7 +31,6 @@ defineProps({
                     <div
                         class="mt-24 flex flex-col items-center justify-center"
                     >
-                        <h2 class="mb-6 text-2xl">Meu Plano Atual</h2>
                         <PlanCard
                             :title="
                                 $page.props.auth.user.subscription.plan.name
