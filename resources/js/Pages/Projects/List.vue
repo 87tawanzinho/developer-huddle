@@ -3,7 +3,7 @@ import { Head, router } from "@inertiajs/vue3";
 import { computed, defineProps, h, ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import { useInvitesStore } from "@/stores/useInviteStore";
-import { formatDateJustYearAndMonth } from "@/Pages/utils/formatDate";
+import { formatDate, formatDateJustYearAndMonth } from "@/Pages/utils/formatDate";
 import {
     ElButton,
     ElDatePicker,
@@ -235,17 +235,19 @@ const translatedProjectType = computed(() => ({
                 </ElButton>
             </div>
             <div class="w-full">
-                <div class="flex justify-end px-24 pb-2">
-                    <ElDropdown placement="bottom-end">
-                        <ElButton>Mudar Visualização</ElButton>
-                        <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="showLarge = false">Em Tabela</el-dropdown-item>
-          <el-dropdown-item @click="showLarge = true">Em Cartas</el-dropdown-item>
+                <div class="flex  px-2 pb-2 border-b mb-4">
+                
+      <div class="flex gap-2">
+        <div :class="[!showLarge && 'border-b border-blue-400  ']">
+            <ElText @click="showLarge = false" style="cursor: default;" >Em Tabela</ElText>
+        </div>
+       <div :class="[showLarge && 'border-b border-blue-400  ' ] ">
+        <ElText @click="showLarge = true" style="cursor: default;">Em Cartas</ElText>
+       </div>
+      </div>
          
-        </el-dropdown-menu>
-      </template>
-                    </ElDropdown>
+        
+       
                 </div>
             </div>
             <div v-if="showLarge"
@@ -329,29 +331,54 @@ const translatedProjectType = computed(() => ({
 </div>
 
 <div v-else class="flex flex-col">
-    
-  <el-table :data="projectsFiltered" style="width: 100%">
-    <el-table-column type="selection" width="55" />
-    <el-table-column label="Foto" width="120">
+    <el-table :data="projectsFiltered" style="width: 100%;">
+  <el-table-column label="Foto" width="120">
     <template #default="scope">
-      <el-image :src="'storage/'+scope.row.cover_path" style="width: 32px; height: 32px; border-radius: 100%; object-fit: cover;" />
+      <el-image :src="'storage/' + scope.row.cover_path" 
+                style="width: 32px; height: 32px; border-radius: 100%; object-fit: cover;" />
     </template>
-    
   </el-table-column>
-    <el-table-column property="name" label="Nome" width="120"   show-overflow-tooltip />
- 
-   
-    <el-table-column
-      property="description"
-      label="Descrição"
-      width="240"
-      show-overflow-tooltip
-    />
-    <el-table-column label="Date" width="120">
-      <template #default="scope">{{ formatDateJustYearAndMonth(scope.row.start_date) }}</template>
-    </el-table-column>
-    <el-table-column property="address" label="Address" />
-  </el-table>
+
+  <el-table-column property="name" label="Nome" width="150" show-overflow-tooltip />
+
+  <el-table-column
+    property="description"
+    label="Descrição"
+    min-width="200"
+    show-overflow-tooltip
+  />
+
+  <el-table-column label="Começo do Projeto" width="180">
+    <template #default="scope">{{ formatDate(scope.row.start_date) }}</template>
+  </el-table-column>
+
+  <el-table-column label="Final do Projeto" width="180">
+    <template #default="scope">{{ formatDate(scope.row.end_date) }}</template>
+  </el-table-column>
+
+  <el-table-column property="project_type" label="Tipo" width="120">
+    <template #default="scope">
+        <el-tag :type="scope.row.project_type === 'programming' ? 'primary' : 'success'">
+            {{ scope.row.project_type }}
+        </el-tag>
+    </template>
+  </el-table-column>
+
+  <el-table-column property="structure" label="Estrutura do Projeto" width="120">
+    <template #default="scope">
+        <el-tag :type="scope.row.structure === 'scrum' ? 'primary' : 'success'">
+            {{ scope.row.structure }}
+        </el-tag>
+    </template>
+  </el-table-column>
+  <el-table-column label="Operações" width="200">
+    <template #default="scope">
+      <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Editar</el-button>
+      <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Deletar</el-button>
+    </template>
+  </el-table-column>
+</el-table>
+
 
    
 </div>

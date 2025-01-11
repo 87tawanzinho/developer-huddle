@@ -692,7 +692,7 @@
                                     show-stops
                                 />
                             </div>
-                            <div v-if="props.errors">
+                            <div v-if="props.errors.length">
                                 {{ errors }}
                             </div>
                             <!-- Botões -->
