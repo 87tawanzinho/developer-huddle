@@ -8,6 +8,7 @@ import {
     ElButton,
     ElDatePicker,
     ElDrawer,
+    ElDropdown,
     ElForm,
     ElFormItem,
     ElInput,
@@ -38,6 +39,8 @@ const props = defineProps({
     errors: Object,
     users: Object,
 });
+
+const showLarge = ref(false)
 
 onMounted(() => {
     inviteStore.invitations = props.invitations;
@@ -202,6 +205,7 @@ const translatedProjectType = computed(() => ({
 
     <div class="flex flex-col lg:flex-row min-h-screen">
         <SidebarLayout />
+        
         <div class="flex-1 p-4 mt-4">
             <div
                 class="sm:mt-12 lg:mt-0 flex space-x-2 sm:flex-row justify-center items-center gap-4 mb-6"
@@ -230,8 +234,21 @@ const translatedProjectType = computed(() => ({
                     <Icon icon="mdi:plus" class="text-2xl" />
                 </ElButton>
             </div>
-
-            <div
+            <div class="w-full">
+                <div class="flex justify-end px-24 pb-2">
+                    <ElDropdown placement="bottom-end">
+                        <ElButton>Mudar Visualização</ElButton>
+                        <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="showLarge = false">Em Tabela</el-dropdown-item>
+          <el-dropdown-item @click="showLarge = true">Em Cartas</el-dropdown-item>
+         
+        </el-dropdown-menu>
+      </template>
+                    </ElDropdown>
+                </div>
+            </div>
+            <div v-if="showLarge"
                 class="flex justify-center lg:justify-normal overflow-auto h-[9] pb-4 flex-wrap gap-6"
             >
             <div
@@ -274,29 +291,17 @@ const translatedProjectType = computed(() => ({
                             {{ project.name }}
                         </h3>
                         <p
-                            class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 h-16 sm:h-20 md:h-24 overflow-hidden"
-                        >
-                            {{ project.description }}
-                        </p>
-            <div class="flex items-center gap-2">
-                <Icon icon="uiw:date" class="text-gray-500" />
-                <ElText>Maio, 2025</ElText>
-            </div>
-        </div>
-        <h3
-            class="text-base h-16 sm:text-lg md:text-xl font-medium text-gray-800 mb-2 sm:mb-3"
-        >
-            {{ project.name }}
-        </h3>
-        <p
             class="text-sm sm:text-base h-24 text-gray-600 mb-3   overflow-auto"
         >
             {{ project.description }}
         </p>
-    </div>
 
-    <!-- Mover os botões para o final da div -->
-    <div class="p-4 w-full flex sm:flex-row gap-2">
+           
+        </div>
+         
+       
+    
+        <div class="p-4 w-full flex sm:flex-row gap-2">
         <a
             :href="route('projects.show', project.id)"
             class="w-full"
@@ -317,7 +322,40 @@ const translatedProjectType = computed(() => ({
             Enviar Convite
         </ElButton>
     </div>
+    </div>
+
+    <!-- Mover os botões para o final da div -->
+      
 </div>
+
+<div v-else class="flex flex-col">
+    
+  <el-table :data="projectsFiltered" style="width: 100%">
+    <el-table-column type="selection" width="55" />
+    <el-table-column label="Foto" width="120">
+    <template #default="scope">
+      <el-image :src="'storage/'+scope.row.cover_path" style="width: 32px; height: 32px; border-radius: 100%; object-fit: cover;" />
+    </template>
+    
+  </el-table-column>
+    <el-table-column property="name" label="Nome" width="120"   show-overflow-tooltip />
+ 
+   
+    <el-table-column
+      property="description"
+      label="Descrição"
+      width="240"
+      show-overflow-tooltip
+    />
+    <el-table-column label="Date" width="120">
+      <template #default="scope">{{ formatDateJustYearAndMonth(scope.row.start_date) }}</template>
+    </el-table-column>
+    <el-table-column property="address" label="Address" />
+  </el-table>
+
+   
+</div>
+
 
             </div>
         </div>
@@ -509,7 +547,7 @@ const translatedProjectType = computed(() => ({
                 </div>
             </div>
         </ElDialog>
-    </div>
+   
 </template>
 
 <style scoped>
