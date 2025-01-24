@@ -49,7 +49,7 @@ class ProjectController extends Controller
            "structure" => "required|string",
         'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date', // Validação para garantir que end_date seja após start_date
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif', // 'nullable' caso não queira imagem obrigatória
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp', // 'nullable' caso não queira imagem obrigatória
         ]);
 
         try{

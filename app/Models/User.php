@@ -31,14 +31,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'phone',
-        'cpf_cnpj',
-        'password',
-        'address_id',
-        'gateway_id',
+        "name",
+        "username",
+        "email",
+        "phone",
+        "cpf_cnpj",
+        "password",
+        "address_id",
+        "gateway_id",
+        "customerId",
     ];
 
     /**
@@ -47,12 +48,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-        'gateway_id',
-        'address_id',
+        "password",
+        "remember_token",
+        "two_factor_recovery_codes",
+        "two_factor_secret",
+        "gateway_id",
+        "address_id",
     ];
 
     /**
@@ -61,7 +62,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        "email_verified_at" => "datetime",
     ];
 
     /**
@@ -69,11 +70,9 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    protected $appends = ["profile_photo_url"];
 
-    protected $with = ['subscription'];
+    protected $with = ["subscription"];
 
     public function subscription(): HasOne
     {
@@ -87,29 +86,35 @@ class User extends Authenticatable
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'user_projects')
-            ->withPivot('role');
+        return $this->belongsToMany(Project::class, "user_projects")->withPivot(
+            "role"
+        );
     }
 
     public function invitations(): HasMany
     {
-        return $this->hasMany(Invitation::class, 'invited_id');
+        return $this->hasMany(Invitation::class, "invited_id");
     }
 
     public function invitationsSent(): HasMany
     {
-        return $this->hasMany(Invitation::class, 'owner_id');
+        return $this->hasMany(Invitation::class, "owner_id");
     }
 
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class, 'responsible_id');
+        return $this->hasMany(Task::class, "responsible_id");
     }
 
     public function plan(): HasOneThrough
     {
-        return $this->hasOneThrough(Plan::class, Subscription::class,
-            'user_id', 'id', 'id', 'plan_id'
+        return $this->hasOneThrough(
+            Plan::class,
+            Subscription::class,
+            "user_id",
+            "id",
+            "id",
+            "plan_id"
         );
     }
 }
