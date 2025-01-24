@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Plan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 Route::get("/", function () {
     return Inertia::render("LandingPage");
@@ -73,35 +75,32 @@ Route::middleware([
 
 Route::get("/payment", [PaymentController::class, "store"])->name("payment");
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-
-Route::post("/create-customer", function (Request $request) {
+Route::post("/create-payment", function (Request $request) {
     $response = Http::withHeaders([
         "Content-Type" => "application/json",
-        "access_token" => env("ASAAS_ACCESS_TOKEN"), // Pegue o token do arquivo .env
-    ])->post("https://sandbox.asaas.com/api/v3/customers", [
-        "name" => $request->input("name"),
-        "cpfCnpj" => $request->input("cpfCnpj"),
+        "access_token" => env("ASAAS_ACCESS_TOKEN"),
+    ])->post("https://sandbox.asaas.com/api/v3/paymentLinks", [
+        "billingType" => "UNDEFINED",
+        "chargeType" => "RECURRENT",
+        "value" => $request->price,
+        "isAddressRequired" => false,
+        "name" => "Plano " . $request->name,
+        "endDate" => "10",
+        "dueDateLimitDays" => 12,
     ]);
 
-    if ($response->failed()) {
+    if ($response->successful()) {
+        // Envia a URL de pagamento como resposta para o frontend
+        return response()->json([
+            "url" => $response->json()["url"],
+        ]);
+    } else {
         return response()->json(
             [
-                "error" => "Erro ao criar cliente no Asaas",
+                "error" => "Não foi possível criar o link de pagamento.",
                 "details" => $response->json(),
             ],
-            $response->status()
+            400
         );
     }
-
-    $user = User::find(Auth::id());
-    if ($user) {
-        $user->update([
-            "customerId" => $response->json()["id"],
-        ]);
-        $user->save();
-    }
-
-    return $response->json()["id"];
-})->name("create-customer");
+})->name("create-payment");

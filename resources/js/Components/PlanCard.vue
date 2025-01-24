@@ -1,6 +1,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-
+import axios from "axios";
+import { router } from "@inertiajs/vue3";
 const props = defineProps({
     title: String,
     description: String,
@@ -12,6 +13,29 @@ const props = defineProps({
     textSubscribe: String,
     changeStyle: Boolean,
 });
+
+function goShopping(name, price) {
+    axios
+        .post("create-payment", {
+            // O objeto de parâmetros deve estar dentro do método post
+            name: name,
+            price: price,
+        })
+        .then((response) => {
+            // Redireciona para a URL retornada pelo backend
+            window.location.href = response.data.url;
+        })
+        .catch((error) => {
+            console.error(
+                "Erro ao criar pagamento:",
+                error.response?.data || error.message,
+            );
+            alert(
+                "Erro ao criar pagamento: " +
+                    (error.response?.data?.error || "Erro desconhecido"),
+            );
+        });
+}
 </script>
 
 <template>
@@ -108,6 +132,7 @@ const props = defineProps({
             </div>
 
             <button
+                @click="goShopping(title, price)"
                 v-if="!isCurrent"
                 class="mt-6 w-full btn-primary flex items-center justify-center"
             >
