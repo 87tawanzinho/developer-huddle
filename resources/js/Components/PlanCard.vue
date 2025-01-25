@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue";
 import axios from "axios";
 import { router } from "@inertiajs/vue3";
+import { ElMessageBox } from "element-plus";
 const props = defineProps({
     title: String,
     description: String,
@@ -12,9 +13,21 @@ const props = defineProps({
     isCurrent: Boolean,
     textSubscribe: String,
     changeStyle: Boolean,
+    currentPlan: Object,
 });
 
 function goShopping(name, price) {
+    if (
+        (props.currentPlan.name === "Basic" && name === "Free") ||
+        (props.currentPlan.name === "Premium" && name === "Free") ||
+        (props.currentPlan.name === "Enterprise" && name === "Free")
+    ) {
+        ElMessageBox.alert("Você não pode voltar para o plano Free", "Erro", {
+            confirmButtonText: "OK",
+            type: "error",
+        });
+        return;
+    }
     axios
         .post("create-payment", {
             // O objeto de parâmetros deve estar dentro do método post
