@@ -296,7 +296,7 @@
                                     @click="
                                         changeDescriptionDrawer(
                                             task.description,
-                                            task.id
+                                            task.id,
                                         )
                                     "
                                 >
@@ -328,7 +328,7 @@
                                                                     task.id;
                                                                 updateTask(
                                                                     'responsible',
-                                                                    user.id
+                                                                    user.id,
                                                                 );
                                                             }
                                                         "
@@ -423,7 +423,7 @@
                                                                         task.id;
                                                                     updateTask(
                                                                         'responsible',
-                                                                        user.id
+                                                                        user.id,
                                                                     );
                                                                 }
                                                             "
@@ -446,7 +446,7 @@
                                             @click="
                                                 changeProgress(
                                                     task.progress,
-                                                    task.id
+                                                    task.id,
                                                 )
                                             "
                                             :show-tooltip="false"
@@ -513,8 +513,21 @@
 
                                         <div>
                                             <ElTag
-                                          :type="task.priority === 'low' ? 'info' : (task.priority === 'medium' ? 'warning' : (task.priority === 'high' ? 'danger' : ''))"
-                                                style="flex-direction: type row; display: flex;"
+                                                :type="
+                                                    task.priority === 'low'
+                                                        ? 'info'
+                                                        : task.priority ===
+                                                            'medium'
+                                                          ? 'warning'
+                                                          : task.priority ===
+                                                              'high'
+                                                            ? 'danger'
+                                                            : ''
+                                                "
+                                                style="
+                                                    flex-direction: type row;
+                                                    display: flex;
+                                                "
                                                 class="text-center px-1 sm:px-3 py-1 rounded-sm text-[13px] w-16 text-gray-100 flex items-center j"
                                             >
                                                 {{
@@ -669,6 +682,63 @@
                                                     class="mr-2 text-blue-500"
                                                 />
                                                 Concluído
+                                            </div>
+                                        </ElOption>
+                                    </ElSelect>
+                                </div>
+
+                                <div class="w-full">
+                                    <ElText class="text-gray-700"
+                                        >Finalidade da Tarefa</ElText
+                                    >
+                                    <ElSelect
+                                        v-model="create.specifically"
+                                        class="w-full"
+                                    >
+                                        <ElOption
+                                            value="newResource"
+                                            label="Novo Recurso"
+                                        >
+                                            <div class="flex items-center">
+                                                <Icon
+                                                    icon="mdi:plus-circle-outline"
+                                                    class="mr-2 text-green-500"
+                                                />
+                                                Adicionar um novo recurso
+                                            </div>
+                                        </ElOption>
+                                        <ElOption
+                                            value="fixBug"
+                                            label="Corrigir um Erro"
+                                        >
+                                            <div class="flex items-center">
+                                                <Icon
+                                                    icon="mdi:alert-circle-outline"
+                                                    class="mr-2 text-yellow-500"
+                                                />
+                                                Corrigir um erro
+                                            </div>
+                                        </ElOption>
+                                        <ElOption
+                                            value="improveExperience"
+                                            label="Melhorar a experiência"
+                                        >
+                                            <div class="flex items-center">
+                                                <Icon
+                                                    icon="mdi:tune"
+                                                    class="mr-2 text-red-500"
+                                                />
+                                                Melhorar a experiência do
+                                                usuário
+                                            </div>
+                                        </ElOption>
+                                        <ElOption value="other" label="Outros">
+                                            <div class="flex items-center">
+                                                <Icon
+                                                    icon="mdi:help-circle-outline"
+                                                    class="mr-2 text-gray-500"
+                                                />
+                                                Outros
                                             </div>
                                         </ElOption>
                                     </ElSelect>
@@ -851,7 +921,7 @@
                                             @click="
                                                 updateTask(
                                                     'responsible',
-                                                    user.id
+                                                    user.id,
                                                 )
                                             "
                                             >{{ user.name }}</el-dropdown-item
@@ -1041,6 +1111,7 @@ const newComment = ref("");
 const create = ref({
     taskTitle: "",
     taskDescription: "",
+    specifically: "newResource",
     priority: "low",
     responsible_id: undefined,
     status: "todo",
@@ -1101,7 +1172,7 @@ const deleteProjectIfOwner = (id) => {
             confirmButtonText: "Sim",
             cancelButtonText: "Não",
             type: "error",
-        }
+        },
     )
         .then(() => {
             router.delete(route("projects.delete", { id }), {
@@ -1127,10 +1198,10 @@ function commentTaskF() {
             onSuccess: () => {
                 newComment.value = "";
                 activeTaskEdit.value = props.tasks.find(
-                    (task) => task.id === activeTaskEdit.value.id
+                    (task) => task.id === activeTaskEdit.value.id,
                 );
             },
-        }
+        },
     );
 }
 
@@ -1141,10 +1212,10 @@ function liked(commentId) {
         {
             onSuccess: () => {
                 activeTaskEdit.value = props.tasks.find(
-                    (task) => task.id === activeTaskEdit.value.id
+                    (task) => task.id === activeTaskEdit.value.id,
                 );
             },
-        }
+        },
     );
 }
 
@@ -1155,7 +1226,7 @@ const createTask = () => {
         (create.value.status === "todo" && create.value.progress === 100)
     ) {
         return ElMessage.error(
-            "O progresso está em 100%, mas você disse que ainda está em andamento."
+            "O progresso está em 100%, mas você disse que ainda está em andamento.",
         );
     }
     router.post(
@@ -1163,6 +1234,7 @@ const createTask = () => {
         {
             title: create.value.taskTitle,
             description: create.value.taskDescription,
+            specifically: create.value.specifically,
             priority: create.value.priority,
             responsible_id: create.value.responsible_id,
             status: create.value.status,
@@ -1174,7 +1246,7 @@ const createTask = () => {
                 drawer.value = false;
             },
             onError: () => {},
-        }
+        },
     );
 
     create.value.taskTitle = "";
@@ -1193,7 +1265,7 @@ const deleteTask = (id) => {
             confirmButtonText: "Sim",
             cancelButtonText: "Não",
             type: "warning",
-        }
+        },
     )
         .then(() => {
             router.delete(route("projects.deleteTask", { id }), {
@@ -1243,7 +1315,7 @@ function updateTask(type, id, value) {
                     }),
                     {
                         description: newDescription.value,
-                    }
+                    },
                 );
                 newDescription.value = "";
                 descriptionDrawer.value = false;
@@ -1268,7 +1340,7 @@ function updateTask(type, id, value) {
                     }),
                     {
                         progress: newProgress.value,
-                    }
+                    },
                 );
                 newProgress.value = 0;
                 progressDrawer.value = false;
@@ -1282,7 +1354,7 @@ function updateTask(type, id, value) {
                 {
                     confirmButtonText: "Ok",
                     type: "error",
-                }
+                },
             );
         }
     }
@@ -1296,7 +1368,7 @@ function updateTask(type, id, value) {
                 }),
                 {
                     responsible_id: id,
-                }
+                },
             );
         } catch (error) {
             console.log(error);

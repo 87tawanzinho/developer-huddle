@@ -12,14 +12,14 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id',
-        'responsible_id',
-        'title',
-        'description',
-        'priority',
-        'status',
-        'progress',
-        
+        "project_id",
+        "responsible_id",
+        "title",
+        "description",
+        "priority",
+        "status",
+        "progress",
+        "specifically",
     ];
 
     public function projects(): BelongsTo
@@ -29,10 +29,10 @@ class Task extends Model
 
     public function responsible(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'responsible_id');
+        return $this->belongsTo(User::class, "responsible_id");
     }
 
-    public function comments(): HasMany 
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
