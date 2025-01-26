@@ -421,7 +421,7 @@ const translatedProjectType = computed(() => ({
                             <div class="flex gap-2">
                                 <a :href="route('projects.show', scope.row.id)">
                                     <el-button size="small"
-                                        >Editar</el-button
+                                        >Visualizar</el-button
                                     ></a
                                 >
                                 <el-button

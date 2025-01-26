@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        "webhook/asaas", // Add the actual webhook route URI here
     ];
 }

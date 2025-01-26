@@ -1175,7 +1175,7 @@ const deleteProjectIfOwner = (id) => {
         },
     )
         .then(() => {
-            router.delete(route("projects.delete", { id }), {
+            router.delete(route("projects.destroy", { id }), {
                 onError: () => {
                     ElMessage.error("Ocorreu um erro ao deletar o projeto.");
                 },

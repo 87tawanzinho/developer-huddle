@@ -99,6 +99,7 @@ class ProjectController extends Controller
         $task->title = $request->title;
         $task->description = $request->description;
         $task->status = $request->status;
+        $task->specifically = $request->specifically;
         $task->priority = $request->priority;
         $task->responsible_id = $request->responsible_id;
         $task->progress = $request->progress;
@@ -125,7 +126,7 @@ class ProjectController extends Controller
         try {
             $project = Project::findOrFail($projectId);
             $project->delete();
-            return redirect()->back();
+            return redirect()->route("projects.index");
         } catch (\Exception $e) {
             return response()->json(
                 ["message" => "Erro ao deletar projeto."],

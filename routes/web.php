@@ -104,3 +104,7 @@ Route::post("/create-payment", function (Request $request) {
         );
     }
 })->name("create-payment");
+
+use App\Http\Controllers\AsaasWebhookController;
+
+Route::post("/webhook/asaas", [AsaasWebhookController::class, "handleWebhook"]);
