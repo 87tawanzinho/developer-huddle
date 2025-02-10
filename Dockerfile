@@ -37,6 +37,8 @@ RUN composer install --no-dev --optimize-autoloader
 # Instalar dependências do Node.js e executar build
 RUN npm install && npm run build
 
+RUN php artisan serve
+
 # Expor portas necessárias
 EXPOSE 8080 8443
 
