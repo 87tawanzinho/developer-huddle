@@ -38,7 +38,7 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install && npm run build
 
 # Expor portas necessárias
-EXPOSE 80 443
+EXPOSE 8080 8443
 
 # Comando para iniciar o PHP-FPM e o Nginx
 CMD ["sh", "-c", "php-fpm -D && nginx -c /etc/nginx/nginx.conf  -g 'daemon off;'" ]
